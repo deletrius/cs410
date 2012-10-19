@@ -1,0 +1,2 @@
+serviceClass: loclock.client.MessageService
+path: 8322B0BDE0338709AF5865D71C0993DA.gwt.rpc

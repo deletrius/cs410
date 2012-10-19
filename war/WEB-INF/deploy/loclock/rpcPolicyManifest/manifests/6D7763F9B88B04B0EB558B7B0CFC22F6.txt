@@ -1,0 +1,2 @@
+serviceClass: loclock.client.CalendarService
+path: A3C93C5530A1BDA8CB77948DCE9F3C2A.gwt.rpc

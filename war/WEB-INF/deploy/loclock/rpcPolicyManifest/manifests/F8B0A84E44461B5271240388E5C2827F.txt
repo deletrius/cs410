@@ -1,0 +1,2 @@
+serviceClass: loclock.client.LocationService
+path: F6B0C4B0A59B1795B554CFD14E92D175.gwt.rpc

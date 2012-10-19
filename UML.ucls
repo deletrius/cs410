@@ -1,0 +1,576 @@
+<class-diagram version="1.0.10" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" corner="BOTTOM_RIGHT" language="java" name="loclock.client.FileUploadService" project="loclock" 
+    file="/loclock/src/loclock/client/FileUploadService.java" binary="false">    
+    <position height="-1" width="-1" x="604" y="640"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="2" corner="BOTTOM_RIGHT" language="java" name="loclock.client.LocationService" project="loclock" 
+    file="/loclock/src/loclock/client/LocationService.java" binary="false">    
+    <position height="-1" width="-1" x="1558" y="1483"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" name="loclock.server.User" project="loclock" 
+    file="/loclock/src/loclock/server/User.java" binary="false">    
+    <position height="-1" width="-1" x="1712" y="1733"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" name="loclock.server.SubscriptionServiceImpl" project="loclock" 
+    file="/loclock/src/loclock/server/SubscriptionServiceImpl.java" binary="false">    
+    <position height="-1" width="-1" x="479" y="1674"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="loclock.server.PMF" project="loclock" 
+    file="/loclock/src/loclock/server/PMF.java" binary="false">    
+    <position height="-1" width="-1" x="918" y="2379"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="6" corner="BOTTOM_RIGHT" language="java" name="loclock.client.TimeTableService" project="loclock" 
+    file="/loclock/src/loclock/client/TimeTableService.java" binary="false">    
+    <position height="-1" width="-1" x="352" y="657"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="7" corner="BOTTOM_RIGHT" language="java" name="loclock.client.ChatPanelManager" project="loclock" 
+    file="/loclock/src/loclock/client/ChatPanelManager.java" binary="false">    
+    <position height="-1" width="-1" x="1020" y="820"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="8" corner="BOTTOM_RIGHT" language="java" name="loclock.client.MessageServiceAsync" project="loclock" 
+    file="/loclock/src/loclock/client/MessageServiceAsync.java" binary="false">    
+    <position height="-1" width="-1" x="1154" y="1237"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="9" corner="BOTTOM_RIGHT" language="java" name="loclock.server.FileUploadServlet" project="loclock" 
+    file="/loclock/src/loclock/server/FileUploadServlet.java" binary="false">    
+    <position height="-1" width="-1" x="460" y="811"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="10" corner="BOTTOM_RIGHT" language="java" name="loclock.client.NotLoggedInException" project="loclock" 
+    file="/loclock/src/loclock/client/NotLoggedInException.java" binary="false">    
+    <position height="-1" width="-1" x="1113" y="2254"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="11" corner="BOTTOM_RIGHT" language="java" name="loclock.client.Service" project="loclock" 
+    file="/loclock/src/loclock/client/Service.java" binary="false">    
+    <position height="-1" width="-1" x="1066" y="226"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="12" corner="BOTTOM_RIGHT" language="java" name="loclock.client.CalendarServiceAsync" project="loclock" 
+    file="/loclock/src/loclock/client/CalendarServiceAsync.java" binary="false">    
+    <position height="-1" width="-1" x="-81" y="1239"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="13" corner="BOTTOM_RIGHT" language="java" name="loclock.client.MainServices.LoginService" project="loclock" 
+    file="/loclock/src/loclock/client/MainServices.java" binary="false">    
+    <position height="-1" width="-1" x="1460" y="725"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="14" corner="BOTTOM_RIGHT" language="java" name="loclock.server.MessageServiceImpl" project="loclock" 
+    file="/loclock/src/loclock/server/MessageServiceImpl.java" binary="false">    
+    <position height="-1" width="-1" x="958" y="1691"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="15" corner="BOTTOM_RIGHT" language="java" name="loclock.client.NotificationTabService" project="loclock" 
+    file="/loclock/src/loclock/client/NotificationTabService.java" binary="false">    
+    <position height="-1" width="-1" x="826" y="622"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="16" corner="BOTTOM_RIGHT" language="java" name="loclock.server.NotificationServiceImpl" project="loclock" 
+    file="/loclock/src/loclock/server/NotificationServiceImpl.java" binary="false">    
+    <position height="-1" width="-1" x="2411" y="1716"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="17" corner="BOTTOM_RIGHT" language="java" name="loclock.client.MainServices" project="loclock" 
+    file="/loclock/src/loclock/client/MainServices.java" binary="false">    
+    <position height="-1" width="-1" x="1590" y="421"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="18" corner="BOTTOM_RIGHT" language="java" name="loclock.client.AccountServiceAsync" project="loclock" 
+    file="/loclock/src/loclock/client/AccountServiceAsync.java" binary="false">    
+    <position height="-1" width="-1" x="1528" y="1227"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="19" corner="BOTTOM_RIGHT" language="java" name="loclock.server.Notification" project="loclock" 
+    file="/loclock/src/loclock/server/Notification.java" binary="false">    
+    <position height="-1" width="-1" x="2670" y="1725"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="20" corner="BOTTOM_RIGHT" language="java" name="loclock.client.LocationServiceAsync" project="loclock" 
+    file="/loclock/src/loclock/client/LocationServiceAsync.java" binary="false">    
+    <position height="-1" width="-1" x="1896" y="1259"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface id="21" corner="BOTTOM_RIGHT" language="java" name="loclock.client.AccountService" project="loclock" 
+    file="/loclock/src/loclock/client/AccountService.java" binary="false">    
+    <position height="-1" width="-1" x="1171" y="1449"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface id="22" corner="BOTTOM_RIGHT" language="java" name="loclock.client.SubscriptionService" project="loclock" 
+    file="/loclock/src/loclock/client/SubscriptionService.java" binary="false">    
+    <position height="-1" width="-1" x="489" y="1466"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="23" corner="BOTTOM_RIGHT" language="java" name="loclock.client.FriendService" project="loclock" 
+    file="/loclock/src/loclock/client/FriendService.java" binary="false">    
+    <position height="-1" width="-1" x="1024" y="649"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="24" corner="BOTTOM_RIGHT" language="java" name="loclock.client.RequestService" project="loclock" 
+    file="/loclock/src/loclock/client/RequestService.java" binary="false">    
+    <position height="-1" width="-1" x="2058" y="1475"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="25" corner="BOTTOM_RIGHT" language="java" name="loclock.server.CalendarServiceImpl" project="loclock" 
+    file="/loclock/src/loclock/server/CalendarServiceImpl.java" binary="false">    
+    <position height="-1" width="-1" x="-156" y="1665"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="26" corner="BOTTOM_RIGHT" language="java" name="loclock.server.Message" project="loclock" 
+    file="/loclock/src/loclock/server/Message.java" binary="false">    
+    <position height="-1" width="-1" x="911" y="1953"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="27" corner="BOTTOM_RIGHT" language="java" name="loclock.server.AccountServiceImpl" project="loclock" 
+    file="/loclock/src/loclock/server/AccountServiceImpl.java" binary="false">    
+    <position height="-1" width="-1" x="1204" y="1657"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="28" corner="BOTTOM_RIGHT" language="java" name="loclock.client.SubscriptionServiceAsync" 
+    project="loclock" file="/loclock/src/loclock/client/SubscriptionServiceAsync.java" binary="false">    
+    <position height="-1" width="-1" x="764" y="1244"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="29" corner="BOTTOM_RIGHT" language="java" name="loclock.server.RequestServiceImpl" project="loclock" 
+    file="/loclock/src/loclock/server/RequestServiceImpl.java" binary="false">    
+    <position height="-1" width="-1" x="1926" y="1682"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="30" corner="BOTTOM_RIGHT" language="java" name="loclock.server.Subscription" project="loclock" 
+    file="/loclock/src/loclock/server/Subscription.java" binary="false">    
+    <position height="-1" width="-1" x="693" y="1716"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="31" corner="BOTTOM_RIGHT" language="java" name="loclock.client.ChatPanel" project="loclock" 
+    file="/loclock/src/loclock/client/ChatPanel.java" binary="false">    
+    <position height="-1" width="-1" x="1022" y="1024"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="32" corner="BOTTOM_RIGHT" language="java" name="loclock.client.StudentRecord" project="loclock" 
+    file="/loclock/src/loclock/client/StudentRecord.java" binary="false">    
+    <position height="-1" width="-1" x="779" y="864"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="33" corner="BOTTOM_RIGHT" language="java" name="loclock.server.LocationServiceImpl" project="loclock" 
+    file="/loclock/src/loclock/server/LocationServiceImpl.java" binary="false">    
+    <position height="-1" width="-1" x="1452" y="1733"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="34" corner="BOTTOM_RIGHT" language="java" name="loclock.client.NotificationService" project="loclock" 
+    file="/loclock/src/loclock/client/NotificationService.java" binary="false">    
+    <position height="-1" width="-1" x="2407" y="1466"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface id="35" corner="BOTTOM_RIGHT" language="java" name="loclock.client.MessageService" project="loclock" 
+    file="/loclock/src/loclock/client/MessageService.java" binary="false">    
+    <position height="-1" width="-1" x="913" y="1456"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="36" corner="BOTTOM_RIGHT" language="java" name="loclock.client.MapService" project="loclock" 
+    file="/loclock/src/loclock/client/MapService.java" binary="false">    
+    <position height="-1" width="-1" x="1234" y="724"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="37" corner="BOTTOM_RIGHT" language="java" name="loclock.server.Request" project="loclock" 
+    file="/loclock/src/loclock/server/Request.java" binary="false">    
+    <position height="-1" width="-1" x="2162" y="1699"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="38" corner="BOTTOM_RIGHT" language="java" name="loclock.client.Account" project="loclock" 
+    file="/loclock/src/loclock/client/Account.java" binary="false">    
+    <position height="-1" width="-1" x="1714" y="749"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface id="39" corner="BOTTOM_RIGHT" language="java" name="loclock.client.CalendarService" project="loclock" 
+    file="/loclock/src/loclock/client/CalendarService.java" binary="false">    
+    <position height="102" width="343" x="-216" y="1407"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <interface id="40" corner="BOTTOM_RIGHT" language="java" name="loclock.client.NotificationServiceAsync" 
+    project="loclock" file="/loclock/src/loclock/client/NotificationServiceAsync.java" binary="false">    
+    <position height="-1" width="-1" x="376" y="1245"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class id="41" corner="TOP_LEFT" language="java" name="loclock.server.Calendar" project="loclock" 
+    file="/loclock/src/loclock/server/Calendar.java" binary="false">    
+    <position height="-1" width="-1" x="196" y="1827"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="42" corner="BOTTOM_RIGHT" language="java" name="loclock.client.Loclock" project="loclock" 
+    file="/loclock/src/loclock/client/Loclock.java" binary="false">    
+    <position height="-1" width="-1" x="1586" y="224"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="43" corner="BOTTOM_RIGHT" language="java" name="com.smartgwt.client.widgets.tab.Tab" project="loclock" 
+    file="/loclock/war/WEB-INF/lib/smartgwt.jar" binary="true">    
+    <position height="-1" width="-1" x="1062" y="10"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="44" corner="BOTTOM_RIGHT" language="java" name="com.google.gwt.maps.client.MapWidget" project="loclock" 
+    file="/loclock/war/WEB-INF/lib/gwt-maps-3.0.2b.gwt22.jar" binary="true">    
+    <position height="-1" width="-1" x="1231" y="445"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <dependency id="45">    
+    <end type="SOURCE" refId="29"/>    
+    <end type="TARGET" refId="37"/>  
+  </dependency>  
+  <dependency id="46">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="26"/>  
+  </dependency>  
+  <dependency id="47">    
+    <bendpoint x="-149" y="2253"/>    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <association id="48">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="49" name="chats"/>      
+      <multiplicity id="50" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="31" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="51">    
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="52" name="locationService"/>      
+      <multiplicity id="53" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="54">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="11"/>  
+  </dependency>  
+  <dependency id="55">    
+    <end type="SOURCE" refId="23"/>    
+    <end type="TARGET" refId="32"/>  
+  </dependency>  
+  <association id="56">    
+    <end type="SOURCE" refId="36" navigable="false">      
+      <attribute id="57" name="locationService"/>      
+      <multiplicity id="58" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="20" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="59">    
+    <bendpoint x="2411" y="2252"/>    
+    <end type="SOURCE" refId="16"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <generalization id="60">    
+    <end type="SOURCE" refId="23"/>    
+    <end type="TARGET" refId="11"/>  
+  </generalization>  
+  <association id="61">    
+    <end type="SOURCE" refId="36" navigable="false">      
+      <attribute id="62" name="mapwidget"/>      
+      <multiplicity id="63" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="44" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="64">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="41"/>  
+  </dependency>  
+  <association id="65">    
+    <end type="SOURCE" refId="42" navigable="false">      
+      <attribute id="66" name="mainServices"/>      
+      <multiplicity id="67" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="17" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="68">    
+    <bendpoint x="1112" y="1698"/>    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <association id="69">    
+    <end type="SOURCE" refId="36" navigable="false">      
+      <attribute id="70" name="accountService"/>      
+      <multiplicity id="71" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="18" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="72">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="43"/>  
+  </generalization>  
+  <realization id="73">    
+    <end type="SOURCE" refId="33"/>    
+    <end type="TARGET" refId="2"/>  
+  </realization>  
+  <association id="74">    
+    <end type="SOURCE" refId="23" navigable="false">      
+      <attribute id="75" name="chatManager"/>      
+      <multiplicity id="76" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="77">    
+    <bendpoint x="1921" y="2377"/>    
+    <end type="SOURCE" refId="29"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="78">    
+    <bendpoint x="-147" y="2379"/>    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <association id="79">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="80" name="accountService"/>      
+      <multiplicity id="81" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="18" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="82">    
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="83" name="mainServicesInstance"/>      
+      <multiplicity id="84" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="17" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="85">    
+    <end type="SOURCE" refId="31" navigable="false">      
+      <attribute id="86" name="messageService"/>      
+      <multiplicity id="87" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="88">    
+    <end type="SOURCE" refId="29"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <generalization id="89">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="11"/>  
+  </generalization>  
+  <realization id="90">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="35"/>  
+  </realization>  
+  <dependency id="91">    
+    <bendpoint x="480" y="2379"/>    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <dependency id="92">    
+    <end type="SOURCE" refId="33"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <association id="93">    
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="94" name="loginService"/>      
+      <multiplicity id="95" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="96">    
+    <end type="SOURCE" refId="17" navigable="false">      
+      <attribute id="97" name="account"/>      
+      <multiplicity id="98" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="38" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="99">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="11"/>  
+  </generalization>  
+  <generalization id="100">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="11"/>  
+  </generalization>  
+  <realization id="101">    
+    <end type="SOURCE" refId="29"/>    
+    <end type="TARGET" refId="24"/>  
+  </realization>  
+  <realization id="102">    
+    <end type="SOURCE" refId="27"/>    
+    <end type="TARGET" refId="21"/>  
+  </realization>  
+  <dependency id="103">    
+    <end type="SOURCE" refId="17"/>    
+    <end type="TARGET" refId="36"/>  
+  </dependency>  
+  <dependency id="104">    
+    <bendpoint x="1450" y="2254"/>    
+    <end type="SOURCE" refId="33"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <association id="105">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="106" name="calendarService"/>      
+      <multiplicity id="107" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="12" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="108">    
+    <end type="SOURCE" refId="25"/>    
+    <end type="TARGET" refId="39"/>  
+  </realization>  
+  <realization id="109">    
+    <end type="SOURCE" refId="16"/>    
+    <end type="TARGET" refId="34"/>  
+  </realization>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

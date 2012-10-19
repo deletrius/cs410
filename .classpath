@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="test-classes" path="test"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-maps-3.0.2b.gwt22.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-calendar-v3-0.3-alpha.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-gdata.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/smartgwt.jar"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/v2"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/ical4j-1.0.3.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>

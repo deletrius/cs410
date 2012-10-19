@@ -1,0 +1,2 @@
+serviceClass: loclock.client.GreetingService
+path: B8A0FD1D5EBF42C743CBFC936BEF3902.gwt.rpc

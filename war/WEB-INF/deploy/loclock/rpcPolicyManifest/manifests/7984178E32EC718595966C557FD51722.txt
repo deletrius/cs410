@@ -1,0 +1,2 @@
+serviceClass: loclock.client.AccountService
+path: E0395437FF65179301CA8E450DF705E0.gwt.rpc

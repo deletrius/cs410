@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee                http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <!-- Servlets -->
+  <servlet>
+    <servlet-name>greetServlet</servlet-name>
+    <servlet-class>loclock.server.GreetingServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>uploadServlet</servlet-name>
+    <servlet-class>loclock.server.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ParserServlet</servlet-name>
+    <servlet-class>loclock.server.ParserServiceImpl</servlet-class>
+  </servlet>
+   <servlet>
+    <servlet-name>CalendarServlet</servlet-name>
+    <servlet-class>loclock.server.CalendarServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AccountServlet</servlet-name>
+    <servlet-class>loclock.server.AccountServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>messageService</servlet-name>
+    <servlet-class>loclock.server.MessageServiceImpl</servlet-class>
+  </servlet>
+  
+  
+  <servlet>
+    <servlet-name>locationService</servlet-name>
+    <servlet-class>loclock.server.LocationServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>notificationService</servlet-name>
+    <servlet-class>loclock.server.NotificationServiceImpl</servlet-class>
+  </servlet>
+  
+   <servlet-mapping>
+    <servlet-name>CalendarServlet</servlet-name>
+    <url-pattern>/loclock/CalendarServlet</url-pattern>
+  </servlet-mapping>
+  
+   <servlet-mapping>
+    <servlet-name>ParserServlet</servlet-name>
+    <url-pattern>/loclock/parserServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>greetServlet</servlet-name>
+    <url-pattern>/loclock/greet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>AccountServlet</servlet-name>
+    <url-pattern>/loclock/Account</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>messageService</servlet-name>
+    <url-pattern>/loclock/message</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>uploadServlet</servlet-name>
+    <url-pattern>/loclock/upload</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>locationService</servlet-name>
+    <url-pattern>/loclock/user</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>notificationService</servlet-name>
+    <url-pattern>/loclock/notification</url-pattern>
+  </servlet-mapping>
+  
+  <!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>Loclock.html</welcome-file>
+  </welcome-file-list>
+
+  <servlet>
+    <servlet-name>SystemServiceServlet</servlet-name>
+    <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+    <init-param>
+      <param-name>services</param-name>
+      <param-value/>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>SystemServiceServlet</servlet-name>
+    <url-pattern>/_ah/spi/*</url-pattern>
+  </servlet-mapping>
+
+</web-app>
