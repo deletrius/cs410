@@ -27,7 +27,7 @@ public class ParserServiceImpl extends RemoteServiceServlet implements ParserSer
 		Scanner scan = new Scanner(str);
 		scan.useDelimiter(":");
 		rawData = new ArrayList<String>();
-		DateFormat dateTimeFormat = new SimpleDateFormat("yyyymmdd/hhmmss");
+		DateFormat dateTimeFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 		DateFormat dateFormat = new SimpleDateFormat("yyyymmdd");
 		while(scan.hasNextLine()){
 			Date endDate = new Date();
@@ -46,7 +46,7 @@ public class ParserServiceImpl extends RemoteServiceServlet implements ParserSer
 				
 				//endDate.setTime(Long.parseLong(endTime));
 				try{
-					endDate=dateTimeFormat.parse(endDateStr+"/"+235959);
+					endDate=dateTimeFormat.parse(endDateStr+235959);
 					
 				}
 				catch (ParseException e) {   
@@ -88,7 +88,7 @@ public class ParserServiceImpl extends RemoteServiceServlet implements ParserSer
 				
 				String startTime = str1.substring(index+40);
 				try{
-					classStartDate=dateTimeFormat.parse(startDate+"/"+startTime);
+					classStartDate=dateTimeFormat.parse(startDate+startTime);
 	
 					System.out.println("Start Date is:"+ classStartDate);
 				}
