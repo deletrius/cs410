@@ -25,11 +25,7 @@ public class Loclock implements EntryPoint {
 	
 	public void onModuleLoad() {
 		mainServices=MainServices.getInstance();		
-		mainServices.addService(new FileUploadService());
-		mainServices.addService(new FriendService("Raymond")); //@@ TODO stub for usrname
-		mainServices.addService(new TimeTableService());
-		mainServices.addService(new NotificationTabService());
-		mainServices.addService(new SettingTabService());
+		
 
 /*
 	VerticalPanel statsPanel = new VerticalPanel();
