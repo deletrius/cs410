@@ -12,7 +12,7 @@ import javax.jdo.annotations.PrimaryKey;
 public class Message {
 
 		@PrimaryKey
-		@Persistent//(valueStrategy = IdGeneratorStrategy.IDENTITY)
+		@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 		private Long id;
 		
 		@Persistent

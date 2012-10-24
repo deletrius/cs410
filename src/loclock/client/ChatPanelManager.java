@@ -48,7 +48,8 @@ public class ChatPanelManager extends TabSet{
 					for (String[] i: result)
 					{
 						openChat(i[0],i[1]);
-						findChat(i[1]).updateConvoTextBox(i[2]);
+						//@@ TODO
+						findChat(i[1]).updateConvoTextBox(i[0]+": "+i[3]+"\n"+i[2]);
 					}
 					
 				}});
