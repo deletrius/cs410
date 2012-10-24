@@ -28,7 +28,7 @@ public class TimeTableService extends Service{
 		super();
 		
 		this.setTitle("Calendar");
-
+		
 		buildGoogleCalendar();
 		this.setPane(calendar);
 	}
@@ -53,7 +53,7 @@ public class TimeTableService extends Service{
 		//		}));
 		//calendar.setData(calendarService.getEvent("UserName"));
 		//calendar.setData(CalendarData.getRecords()); 
-		
+		System.out.println("aaaa "+MainServices.account);
 		if(MainServices.account != null)
 		{
 		calendarService.getEventByUserName(MainServices.account.getEmailAddress(), 

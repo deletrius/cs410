@@ -3,25 +3,68 @@ package loclock.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import loclock.server.Message;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.smartgwt.client.widgets.tab.Tab;
 import com.smartgwt.client.widgets.tab.TabSet;
+import com.smartgwt.client.widgets.tab.events.CloseClickHandler;
+import com.smartgwt.client.widgets.tab.events.TabCloseClickEvent;
+import com.sun.java.swing.plaf.windows.WindowsBorders;
 
 public class ChatPanelManager extends TabSet{
 	private List<ChatPanel> chats;
-	
-	public ChatPanelManager()
+	private MessageServiceAsync messageService = GWT.create(MessageService.class);
+	private String fromUser;
+	public ChatPanelManager(String fromUser)
 	{
 		super();
-		this.setSize("50%", "100%");
+		this.fromUser=fromUser;
+		this.setSize("100%", "30%");
 		chats=new ArrayList<ChatPanel>();
+		this.addCloseClickHandler(new CloseClickHandler()
+		{
+
+		@Override
+		public void onCloseClick(TabCloseClickEvent event) {
+			chats.remove(getSelectedTabNumber());			
+		}});
+		
+		
+		try{
+			messageService.retrieveMessage(fromUser, 
+					new AsyncCallback<List<String[]>>(){
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Failed to retrieve message");
+				}
+
+				@Override
+				public void onSuccess(List<String[]> result) {
+					for (String[] i: result)
+					{
+						openChat(i[0],i[1]);
+						findChat(i[1]).updateConvoTextBox(i[2]);
+					}
+					
+				}});
+		} catch (NotLoggedInException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void openChat(String from, String to)
 	{
-		int i=findChat(to);
-		if (i!=-1)
+		ChatPanel i=findChat(to);
+		if (i!=null)
+		{			
 			this.selectTab(i);
+		}
 		else
 		{
 			ChatPanel chat=new ChatPanel(from, to);
@@ -37,19 +80,18 @@ public class ChatPanelManager extends TabSet{
 	
 	public void closeChat(String to)
 	{
-		int i=findChat(to);
-		if (i!=-1)
+		ChatPanel i=findChat(to);
+		if (i!=null)
 			this.removeTab(i);
-
 	}
 	
-	private int findChat(String to)
+	private ChatPanel findChat(String to)
 	{
 		for(int i=0;i<chats.size();i++)
 		{
 			if (chats.get(i).getToUserName().equals(to))
-				return i;
+				return chats.get(i);
 		}
-		return -1;
+		return null;
 	}
 }

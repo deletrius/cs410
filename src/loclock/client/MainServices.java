@@ -83,7 +83,9 @@ public class MainServices extends TabSet{
 					Window.alert("Error Message: "+caught);
 				}
 				public void onSuccess(Account result) {
+					
 					account = result;
+					System.out.println("bbbb "+MainServices.account);
 					if(account.isLoggedIn()){
 						System.out.println("is logged in");
 						loadLoggedInScreen();
@@ -115,7 +117,6 @@ public class MainServices extends TabSet{
 			rootLayout.draw();
 		}
 		protected void loadLoggedInScreen() {
-			
 			System.out.println("OK");
 			//rootLayout.destroy();
 			rootLayout=new HLayout(5);
@@ -130,12 +131,14 @@ public class MainServices extends TabSet{
 			
 			addUser(account.getEmailAddress());
 			addMapService();
+			
 			addService(new FileUploadService());
-			addService(new FriendService("Raymond")); //@@ TODO stub for usrname
+			addService(new FriendService("ubc Student")); //@@ TODO stub for usrname
 			addService(new TimeTableService());
 			addService(new NotificationTabService());
 			addService(new SettingTabService());
 			rootLayout.addMember(MainServices.this);
+			
 			rootLayout.draw();
 
 			
