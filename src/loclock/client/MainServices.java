@@ -133,7 +133,7 @@ public class MainServices extends TabSet{
 			addMapService();
 			
 			addService(new FileUploadService());
-			addService(new FriendService("Raymond")); //@@ TODO stub for usrname
+			addService(new FriendService("ubc Student")); //@@ TODO stub for usrname
 			addService(new TimeTableService());
 			addService(new NotificationTabService());
 			addService(new SettingTabService());

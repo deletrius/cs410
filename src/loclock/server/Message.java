@@ -12,7 +12,7 @@ import javax.jdo.annotations.PrimaryKey;
 public class Message {
 
 		@PrimaryKey
-		@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+		@Persistent//(valueStrategy = IdGeneratorStrategy.IDENTITY)
 		private Long id;
 		
 		@Persistent
@@ -32,7 +32,7 @@ public class Message {
 		}
 		
 		public Message(String fromUser, String toUser, String messageBody, Date timestamp) {
-			this();
+			this();			
 			this.fromUser = fromUser;
 			this.toUser = toUser;
 			this.messageBody = messageBody;
