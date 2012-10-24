@@ -1,0 +1,2 @@
+serviceClass: loclock.client.ParserService
+path: 2F23701C28B275DC5750B1C2AFE01B41.gwt.rpc

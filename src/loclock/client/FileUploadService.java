@@ -1,6 +1,12 @@
 package loclock.client;
 
+
+
+import java.text.ParseException;
+import com.google.gwt.i18n.client.DateTimeFormat; 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -16,6 +22,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.widgets.Label;
 
+import com.smartgwt.client.widgets.calendar.CalendarEvent;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.FileItem;
@@ -29,6 +36,13 @@ import com.smartgwt.client.data.DSRequest;
 public class FileUploadService extends Service{
 	private static final String UPLOAD_ACTION_URL = GWT.getModuleBaseURL() + "upload";
 	private VLayout fileUploadForm;
+	private long dateTimeStart;
+	private long dateTimeEnd;
+	TimeTableService timeTableService;
+	
+	
+	private DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyyMMddHHmmss");
+	//new SimpleDateFormat("yyyyMMddHHmmss");
 	public FileUploadService()
 	{
 		super();
@@ -37,11 +51,11 @@ public class FileUploadService extends Service{
 		fileUploadForm.setSize("100%", "100%");
 		//fileUploadForm.setNumCols(4);  		
 		//fileUploadForm.setAutoFocus(false);
-		
+
 
 		Label lblUbcStudents = new Label("UBC Students:\r\nDownload your schedule from UBC courses as a .ics file and then upload it here.");
 
-		
+
 		final FormPanel form = new FormPanel();
 		form.setAction(UPLOAD_ACTION_URL);
 
@@ -98,8 +112,8 @@ public class FileUploadService extends Service{
 				String str = event.getResults().toString();
 				ParserServiceAsync parser = GWT.create(ParserService.class);
 				
-				
-				parser.parse(str,new AsyncCallback<ArrayList<ArrayList<String>>>(){
+
+				parser.parse(str,MainServices.account.getEmailAddress(),new AsyncCallback<List<ArrayList<Object>>>(){
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -107,21 +121,82 @@ public class FileUploadService extends Service{
 						System.out.println("Failed");
 					}
 
+					
+
 					@Override
-					public void onSuccess(ArrayList<ArrayList<String>> result) {
-						// TODO Auto-generated method stub
+					public void onSuccess(List<ArrayList<Object>> result) {
+						System.out.println("parserService succeed");
 						
-						//System.out.println(event.getResults().toString());
-					}});
-				
-			}
+						CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
+						for(int i=1;i<result.size();i++){
+							//dateTimeStart = (Long) Long.parseLong(result.get(i).get(2).toString());
+							//dateTimeEnd = (Long) Long.parseLong(result.get(i).get(3).toString());
+							
+							String str1 = result.get(i).get(2).toString();
+							String str2 = result.get(i).get(3).toString();
+							Date d1 = new Date();
+							Date d2 = new Date();
+							d1 = dateTimeFormat.parse(str1);
+							d2 = dateTimeFormat.parse(str2);
+							System.out.println(d1);
+							System.out.println("Size is: "+ str1.length());
+							System.out.println(d2);
+							System.out.println("Size is: "+ str2.length());
+							System.out.println("i is: "+ i);
+							//String str1 = result.get(i).get(2).toString();
+							//String str2 = result.get(i).get(3).toString();
+							
+						calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
+
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
+								Window.alert("Problem");
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								// TODO Auto-generated method stub
+								//timeTableService.buildGoogleCalendar();
+							}});
+						}
+						/**
+						for(int i =0; i<result.size();i++){
+							//System.out.println(result.get(i).get(0).toString());
+							//System.out.println(result.get(i).get(1).toString());
+							//String str1 = result.get(i).get(2).toString();
+							//String str2 = result.get(i).get(3).toString();
+							
+							//Date startDate = new Date();
+							//Date endDate = new Date();
+							//startDate = dateTimeFormat.parse(result.get(i).get(2).toString());
+						//	System.out.println(result.get(i).get(0));
+							//System.out.println(result.get(i).get(1));
+							//System.out.println(startDate);
+							//System.out.println(result.get(i).get(3));
+							//try {
+								//calendarService.saveEvent("1234567890@example.com", result.get(i).get(0).toString(), result.get(i).get(1).toString(), startDate, endDate);
+							//} catch (NotLoggedInException e) {
+								// TODO Auto-generated catch block
+							//	Window.alert("fileupload.calendarService failed");
+							//}
+						
+						}
+						//timeTableService.buildGoogleCalendar();
+						 * **/
+						 
+					}
+					
+					
+				});
+}
 		});
 		//FormItem lol;
 		//fileUploadForm.add(form);
 		VerticalPanel newV=new VerticalPanel();
 		newV.add(lblUbcStudents);
 		newV.add(form);
-		
+
 		fileUploadForm.addChild(newV);
 		//fileUploadForm.addChild(form);
 		this.setPane(fileUploadForm);
