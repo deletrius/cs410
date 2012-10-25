@@ -30,7 +30,8 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 
 	@Override
 	public List<String[]> retrieveMessage(String fromName) throws NotLoggedInException {
-		Query q = PMF.getPersistenceManager().newQuery(Message.class);
+		PersistenceManager pm=PMF.getPersistenceManager();
+		Query q = pm.newQuery(Message.class);
 		 q.setFilter("toUser == u");
 		 q.declareParameters("String u");
 		 List<Message> incomingMessages = (List<Message>) q.execute(fromName);
@@ -45,9 +46,10 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 			 messageToStringArray[2]=i.getMessageBody();
 			 messageToStringArray[3]=i.getTimeStamp().toString();
 			 result.add(messageToStringArray);
+			 pm.deletePersistent(i);
 		 }
+		 pm.close();
 		 
-		 // PMF.getPersistenceManager().deletePersistentAll(result);
 		 
 		return result;
 	}

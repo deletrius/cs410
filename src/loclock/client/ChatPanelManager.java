@@ -47,20 +47,20 @@ public class ChatPanelManager extends TabSet{
 				public void onSuccess(List<String[]> result) {
 					for (String[] i: result)
 					{
-						openChat(i[0],i[1]);
-						//@@ TODO
-						findChat(i[1]).updateConvoTextBox(i[0]+": "+i[3]+"\n"+i[2]);
+						openChat(i[1],i[0]);
+						
+						findChat(i[0]).updateConvoTextBox(i[0]+": "+i[3]+"\n"+i[2]);
 					}
 					
 				}});
 		} catch (NotLoggedInException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void openChat(String from, String to)
 	{
+		// TODO check for subscription
 		ChatPanel i=findChat(to);
 		if (i!=null)
 		{			
