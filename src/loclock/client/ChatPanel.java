@@ -2,7 +2,15 @@ package loclock.client;
 
 
 //import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -37,14 +45,15 @@ public class ChatPanel extends Tab{
 	private TextAreaItem inputTextBox;
 	private ButtonItem sendBtn;
 	private DynamicForm form;
-
+	private List<Object> messageBuffer;
+	
 
 	public ChatPanel(String from, String to)
 	{		
 		super(to);
 		DataSourceTextField dt1=new DataSourceTextField("inputText","InputText",250,true);
 		DataSourceTextField dt2=new DataSourceTextField("convoText","ConvoText");
-
+		messageBuffer=new ArrayList<Object>();
 
 		//
 		DataSource ds=new DataSource();
@@ -129,32 +138,111 @@ public class ChatPanel extends Tab{
 		
 	}
 
-	public void updateConvoTextBox(String content)
+	public void removeBufferDuplicates()
 	{
-		if (convoTextBox.getValueAsString()!=null)
-			convoTextBox.setValue(content+"\n"+convoTextBox.getValueAsString());
-		else			
-			convoTextBox.setValue(content);
+		HashSet h= new HashSet(messageBuffer);
+		messageBuffer.clear();
+		messageBuffer.addAll(h);
+		Set<Object> s = new TreeSet<Object>(new Comparator<Object>() {
+
+	        @Override
+	        public int compare(Object o1, Object o2) {
+	        	String[] m1=(String[])o1;
+	        	String[] m2=(String[])o2;
+	        	
+	            for (int i =0;i<m1.length;i++)
+	            {
+	            	if (m1[i].compareTo(m2[i])!=0)
+	            	{
+	            		System.out.println(m1[i]+" "+m2[i]);
+	            		return 1;
+	            	}
+	            }
+	            //System.out.println("lol");
+	            return 0;
+	        }
+	    });
+		
+		 s.addAll(messageBuffer);
+		 messageBuffer.clear();
+		 messageBuffer.addAll(s);
+		 //sortedMessageBuffer = Arrays.asList(s.toArray());
+		 //messageBuffer.add(new String[]{"0","1","2","4"});
+		 
+		Collections.sort(messageBuffer,new Comparator<Object>() {
+
+	        @Override
+	        public int compare(Object o1, Object o2) {
+	        	String[] m1=(String[])o1;
+	        	String[] m2=(String[])o2;
+	        	if (new Date(m1[3]).before(new Date(m2[3])))
+	        		return -1;
+	        	else if (new Date(m1[3]).after(new Date(m2[3])))
+	        		return 1;
+	            return 0;
+	        }
+	    });
+	   
+	    
+	}
+	public void updateConvoTextBox(String content, String Date)
+	{
+		updateConvoTextBox("Me", content, Date);
+	}
+	
+	public void refreshConvoTextBox()
+	{
+		convoTextBox.clearValue();
+		for (Object i: messageBuffer)
+		{
+			String[] m=(String[]) i;
+			if (convoTextBox.getValueAsString()!=null)
+				convoTextBox.setValue(m[0]+" ("+m[3]+"):"+"\n"+m[2]+"\n"+convoTextBox.getValueAsString());
+			else			
+				convoTextBox.setValue(m[0]+" ("+m[3]+"):"+"\n"+m[2]);
+		}
+	}
+	public void updateConvoTextBox(String fromUser, String content, String Date)
+	{
+//		if (convoTextBox.getValueAsString()!=null)
+//			convoTextBox.setValue(fromUser+" ("+Date+"):"+"\n"+content+"\n"+convoTextBox.getValueAsString());
+//		else			
+//			convoTextBox.setValue(fromUser+" ("+Date+"):"+"\n"+content);
+		String[] m=new String[4];
+		m[0]=fromUser;
+		m[1]="";
+		m[2]=content;
+		m[3]=Date;
+		System.out.println(m[0]+" "+m[1]+" "+m[2]+" "+m[3]+" ");
+		
+		System.out.println(messageBuffer==null);
+		
+		messageBuffer.add(m);
+		
+		removeBufferDuplicates();
+		refreshConvoTextBox();
 
 		//@@ TODO change from user to "me"
 
 	}
+	
 
 	public void sendMessage(String content)
 	{
 
 		try {
-			messageService.sendMessage(fromUserName, toUserName,content, new Date (), 
+			final Date timestamp=new Date();
+			messageService.sendMessage(fromUserName, toUserName,content, timestamp, 
 					new AsyncCallback<Void>(){
 
 				@Override
 				public void onFailure(Throwable caught) {
-					updateConvoTextBox("Failed to send the following message: "+ inputTextBox.getValueAsString());
+					updateConvoTextBox("Failed to send the following message: "+ inputTextBox.getValueAsString(),timestamp.toString());
 				}
 
 				@Override
 				public void onSuccess(Void result) {
-					updateConvoTextBox(fromUserName +": "+ inputTextBox.getValueAsString());
+					updateConvoTextBox(inputTextBox.getValueAsString(),timestamp.toString());
 					inputTextBox.clearValue();	
 				}});
 		} catch (NotLoggedInException e) {

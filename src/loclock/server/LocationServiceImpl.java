@@ -12,6 +12,9 @@ import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
+
+import org.datanucleus.exceptions.NucleusObjectNotFoundException;
+
 import loclock.client.LocationService;
 import loclock.client.NotLoggedInException;
 
@@ -89,6 +92,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 				usersList.add(user.getUser());
 			}
 		} 
+		
 		finally 
 		{
 			pm.close();
@@ -107,6 +111,22 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 	    } finally {
 	        pm.close();
 	    }
+	}
+	
+	public String getUserByID (String username) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try{
+			User user = pm.getObjectById(User.class, username);
+			return user.getUser();
+		}
+		catch (JDOObjectNotFoundException e)
+		{
+			return null;
+		}		
+		finally {
+			 pm.close();
+		}
 	}
 	
 	public List<ArrayList<Object>> getUsersAsArrayList() throws NotLoggedInException {

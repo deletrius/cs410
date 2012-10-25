@@ -20,17 +20,20 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 
 	private static final Logger LOG = Logger.getLogger(LocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
-	
+	private static PersistenceManager pm=PMF.getPersistenceManager();
 	@Override
 	public void sendMessage(String fromName, String toName, String messageBody,
 			Date timestamp) throws NotLoggedInException {
-		getPersistenceManager().makePersistent(new Message(fromName, toName, messageBody, timestamp));
+		
+		pm.makePersistent(new Message(fromName, toName, messageBody, timestamp));
+		
 		
 	}
 
 	@Override
 	public List<String[]> retrieveMessage(String fromName) throws NotLoggedInException {
-		PersistenceManager pm=PMF.getPersistenceManager();
+		//PersistenceManager pm=PMF.getPersistenceManager();
+		
 		Query q = pm.newQuery(Message.class);
 		 q.setFilter("toUser == u");
 		 q.declareParameters("String u");
@@ -46,9 +49,14 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 			 messageToStringArray[2]=i.getMessageBody();
 			 messageToStringArray[3]=i.getTimeStamp().toString();
 			 result.add(messageToStringArray);
+			 
+			 //pm.currentTransaction().begin();
 			 pm.deletePersistent(i);
+			 //pm.currentTransaction().commit();
+			 
 		 }
-		 pm.close();
+		 
+		// pm.close();
 		 
 		 
 		return result;
