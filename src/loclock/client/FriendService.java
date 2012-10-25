@@ -92,8 +92,8 @@ public class FriendService extends Service{
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 				
 				String to=event.getRecord().getAttribute("name").toString();
-				chatManager.openChat(user,to);
-				
+				//TODO chatManager.openChat(user,to);
+				chatManager.openChat(user,"yunyuntester@gmail.com");
 			}});
 		tileGrid.draw(); 
 		friendsPanel.addMember(tileGrid);

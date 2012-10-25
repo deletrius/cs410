@@ -138,89 +138,89 @@ public class ChatPanel extends Tab{
 		
 	}
 
-	public void removeBufferDuplicates()
-	{
-		HashSet h= new HashSet(messageBuffer);
-		messageBuffer.clear();
-		messageBuffer.addAll(h);
-		Set<Object> s = new TreeSet<Object>(new Comparator<Object>() {
-
-	        @Override
-	        public int compare(Object o1, Object o2) {
-	        	String[] m1=(String[])o1;
-	        	String[] m2=(String[])o2;
-	        	
-	            for (int i =0;i<m1.length;i++)
-	            {
-	            	if (m1[i].compareTo(m2[i])!=0)
-	            	{
-	            		System.out.println(m1[i]+" "+m2[i]);
-	            		return 1;
-	            	}
-	            }
-	            //System.out.println("lol");
-	            return 0;
-	        }
-	    });
-		
-		 s.addAll(messageBuffer);
-		 messageBuffer.clear();
-		 messageBuffer.addAll(s);
-		 //sortedMessageBuffer = Arrays.asList(s.toArray());
-		 //messageBuffer.add(new String[]{"0","1","2","4"});
-		 
-		Collections.sort(messageBuffer,new Comparator<Object>() {
-
-	        @Override
-	        public int compare(Object o1, Object o2) {
-	        	String[] m1=(String[])o1;
-	        	String[] m2=(String[])o2;
-	        	if (new Date(m1[3]).before(new Date(m2[3])))
-	        		return -1;
-	        	else if (new Date(m1[3]).after(new Date(m2[3])))
-	        		return 1;
-	            return 0;
-	        }
-	    });
-	   
-	    
-	}
+//	public void removeBufferDuplicates()
+//	{
+//		HashSet h= new HashSet(messageBuffer);
+//		messageBuffer.clear();
+//		messageBuffer.addAll(h);
+//		Set<Object> s = new TreeSet<Object>(new Comparator<Object>() {
+//
+//	        @Override
+//	        public int compare(Object o1, Object o2) {
+//	        	String[] m1=(String[])o1;
+//	        	String[] m2=(String[])o2;
+//	        	
+//	            for (int i =0;i<m1.length;i++)
+//	            {
+//	            	if (m1[i].compareTo(m2[i])!=0)
+//	            	{
+//	            		System.out.println(m1[i]+" "+m2[i]);
+//	            		return 1;
+//	            	}
+//	            }
+//	            //System.out.println("lol");
+//	            return 0;
+//	        }
+//	    });
+//		
+//		 s.addAll(messageBuffer);
+//		 messageBuffer.clear();
+//		 messageBuffer.addAll(s);
+//		 //sortedMessageBuffer = Arrays.asList(s.toArray());
+//		 //messageBuffer.add(new String[]{"0","1","2","4"});
+//		 
+//		Collections.sort(messageBuffer,new Comparator<Object>() {
+//
+//	        @Override
+//	        public int compare(Object o1, Object o2) {
+//	        	String[] m1=(String[])o1;
+//	        	String[] m2=(String[])o2;
+//	        	if (new Date(m1[3]).before(new Date(m2[3])))
+//	        		return -1;
+//	        	else if (new Date(m1[3]).after(new Date(m2[3])))
+//	        		return 1;
+//	            return 0;
+//	        }
+//	    });
+//	   
+//	    
+//	}
 	public void updateConvoTextBox(String content, String Date)
 	{
-		updateConvoTextBox("Me", content, Date);
+		updateConvoTextBox(fromUserName, content, Date);
 	}
 	
-	public void refreshConvoTextBox()
-	{
-		convoTextBox.clearValue();
-		for (Object i: messageBuffer)
-		{
-			String[] m=(String[]) i;
-			if (convoTextBox.getValueAsString()!=null)
-				convoTextBox.setValue(m[0]+" ("+m[3]+"):"+"\n"+m[2]+"\n"+convoTextBox.getValueAsString());
-			else			
-				convoTextBox.setValue(m[0]+" ("+m[3]+"):"+"\n"+m[2]);
-		}
-	}
+//	public void refreshConvoTextBox()
+//	{
+//		convoTextBox.clearValue();
+//		for (Object i: messageBuffer)
+//		{
+//			String[] m=(String[]) i;
+//			if (convoTextBox.getValueAsString()!=null)
+//				convoTextBox.setValue(m[0]+" ("+m[3]+"):"+"\n"+m[2]+"\n"+convoTextBox.getValueAsString());
+//			else			
+//				convoTextBox.setValue(m[0]+" ("+m[3]+"):"+"\n"+m[2]);
+//		}
+//	}
 	public void updateConvoTextBox(String fromUser, String content, String Date)
 	{
-//		if (convoTextBox.getValueAsString()!=null)
-//			convoTextBox.setValue(fromUser+" ("+Date+"):"+"\n"+content+"\n"+convoTextBox.getValueAsString());
-//		else			
-//			convoTextBox.setValue(fromUser+" ("+Date+"):"+"\n"+content);
-		String[] m=new String[4];
-		m[0]=fromUser;
-		m[1]="";
-		m[2]=content;
-		m[3]=Date;
-		System.out.println(m[0]+" "+m[1]+" "+m[2]+" "+m[3]+" ");
+		if (convoTextBox.getValueAsString()!=null)
+			convoTextBox.setValue(fromUser+" ("+Date+"):"+"\n"+content+"\n"+convoTextBox.getValueAsString());
+		else			
+			convoTextBox.setValue(fromUser+" ("+Date+"):"+"\n"+content);
+//		String[] m=new String[4];
+//		m[0]=fromUser;
+//		m[1]="";
+//		m[2]=content;
+//		m[3]=Date;
+//		System.out.println(m[0]+" "+m[1]+" "+m[2]+" "+m[3]+" ");
+//		
+//		System.out.println(messageBuffer==null);
+//		
+//		messageBuffer.add(m);
 		
-		System.out.println(messageBuffer==null);
-		
-		messageBuffer.add(m);
-		
-		removeBufferDuplicates();
-		refreshConvoTextBox();
+//		removeBufferDuplicates();
+//		refreshConvoTextBox();
 
 		//@@ TODO change from user to "me"
 
