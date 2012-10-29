@@ -57,7 +57,7 @@ public class FriendService extends Service{
 		this.user=user;
 		friendsPanel=new VLayout();
 		friendsPanel.setSize("100%", "100%");
-		chatManager=new ChatPanelManager();
+		chatManager=new ChatPanelManager(user);
 		
 		buildFriendList();
 		buildRequest();
@@ -68,23 +68,22 @@ public class FriendService extends Service{
 	
 	public void buildFriendList(){
 		TileGrid tileGrid = new TileGrid();  
-		tileGrid.setWidth("*");  
-		tileGrid.setHeight("50%");
-		//tileGrid.setSize("600px", "600px");
-		//tileGrid.setHeight(400);  
-		//tileGrid.setWidth100();  
+		tileGrid.setWidth("100%");  
+		tileGrid.setHeight("70%");
+		tileGrid.setTileHeight(150);
+		tileGrid.setTileWidth(100);
 		tileGrid.setCanReorderTiles(true);  
 		tileGrid.setShowAllRecords(true); 
 		//  Record rec = new StudentRecord("name",picture,"Profile");
-		Record[] record = new StudentRecord[]{new StudentRecord("ubc Student", "images.jpg","Profile")};
+		Record[] record = new StudentRecord[]{new StudentRecord("ubc Student", "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile")};
 		tileGrid.setData(record); 
 
 		DetailViewerField pictureField = new DetailViewerField("picture"); 
 
 		pictureField.setType("image");  
-		pictureField.setImageWidth(186);  
-		pictureField.setImageHeight(120);  
-		pictureField.setImageURLPrefix("images/");
+		pictureField.setImageWidth(100);  
+		pictureField.setImageHeight(100);  
+		//pictureField.setImageURLPrefix("war/images/");
 		DetailViewerField nameField = new DetailViewerField("name");  
 		tileGrid.setFields(pictureField, nameField);  
 		tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler(){
@@ -93,8 +92,8 @@ public class FriendService extends Service{
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 				
 				String to=event.getRecord().getAttribute("name").toString();
-				chatManager.openChat(user,to);
-				
+				//TODO chatManager.openChat(user,to);
+				chatManager.openChat(user,"yunyuntester@gmail.com");
 			}});
 		tileGrid.draw(); 
 		friendsPanel.addMember(tileGrid);
