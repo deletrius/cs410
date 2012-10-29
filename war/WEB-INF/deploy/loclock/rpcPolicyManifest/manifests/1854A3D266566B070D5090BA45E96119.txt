@@ -1,0 +1,2 @@
+serviceClass: loclock.client.NotificationService
+path: B4D7AFB93D72882C6816B774422C38FB.gwt.rpc

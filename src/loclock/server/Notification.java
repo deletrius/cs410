@@ -19,14 +19,18 @@ public class Notification {
 	@Persistent
 	private String toUser;
 	
+	@Persistent
+	private String content;
+	
 	public Notification() {
 		
 	}
 	
-	public Notification(String fromUser, String toUser) {
+	public Notification(String fromUser, String toUser, String content) {
 		this();
 		this.fromUser = fromUser;
 		this.toUser = toUser;
+		this.content = content;
 	}
 
 	public Long getId() {
@@ -47,5 +51,13 @@ public class Notification {
 
 	public void setToUser(String toUser) {
 		this.toUser = toUser;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 }
