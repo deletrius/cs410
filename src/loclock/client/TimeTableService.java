@@ -21,14 +21,14 @@ public class TimeTableService extends Service{
 	private static final String CAL_PUBLIC_URL = "https://www.google.com/calendar/embed?src=phihl3hmbh48lq5ml3ek9cj19o%40group.calendar.google.com&ctz=Australia/Brisbane";
 	private Frame googleCalendar = new Frame(CAL_PUBLIC_URL);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
-	private Calendar calendar;
+	public Calendar calendar;
 	
 	public TimeTableService()
 	{	
 		super();
 		
 		this.setTitle("Calendar");
-
+		
 		buildGoogleCalendar();
 		this.setPane(calendar);
 	}
@@ -53,7 +53,7 @@ public class TimeTableService extends Service{
 		//		}));
 		//calendar.setData(calendarService.getEvent("UserName"));
 		//calendar.setData(CalendarData.getRecords()); 
-		
+		System.out.println("aaaa "+MainServices.account);
 		if(MainServices.account != null)
 		{
 		calendarService.getEventByUserName(MainServices.account.getEmailAddress(), 

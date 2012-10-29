@@ -118,11 +118,10 @@ public class FriendService extends Service{
 
 					public void onFailure(Throwable caught) {
 						Window.alert(caught.getMessage());
-						//Window.alert("user null on server");
 					}
 
 					public void onSuccess(String result) {
-						label0.setText("The Searching Result: " + result);
+						label0.setText("The Searching Result: ");
 						if(result==null)
 							Window.alert("Player does not exist in ");
 						else
@@ -135,7 +134,6 @@ public class FriendService extends Service{
 			
 		});
 		friendsPanel.addMember(requestForm);
-		friendsPanel.addMember(label0);
 	}
 
 //	public void buildFriends() {

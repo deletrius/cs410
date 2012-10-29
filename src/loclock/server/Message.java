@@ -32,7 +32,7 @@ public class Message {
 		}
 		
 		public Message(String fromUser, String toUser, String messageBody, Date timestamp) {
-			this();
+			this();			
 			this.fromUser = fromUser;
 			this.toUser = toUser;
 			this.messageBody = messageBody;

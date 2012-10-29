@@ -1,6 +1,9 @@
 package loclock.client;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.types.Overflow;
@@ -26,10 +29,32 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class NotificationTabService extends Service{
 	
+	private final NotificationServiceAsync notificationService = GWT.create(NotificationService.class);
+	private String notificationContents;
+	private HTMLFlow notificationHtmlFlow;
+	private VLayout notificationVLayout;
+	private SectionStackSection notificationSection;
+	private SectionStack sectionStack;
+	
 	public NotificationTabService()
 	{
 		super("Notifications", "http://cdn1.iconfinder.com/data/icons/Project_Icons___Version_1_1_9_by_bogo_d/PNG/Notification.png");
-//		this.setTitle("Notifications");
+		
+		// test add notification into system
+		notificationService.addNotification(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), "I see you.", new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				// TODO Auto-generated method stub
+				System.out.println("Successful notification added.");
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				System.out.println("Failed failed failed notification added.");
+			}
+		});
 		
 		VLayout layout = new VLayout();  
         layout.setMembersMargin(10);  
@@ -88,7 +113,7 @@ public class NotificationTabService extends Service{
             }  
         });    
   
-        SectionStack sectionStack = new SectionStack();  
+        sectionStack = new SectionStack();  
   
 //        System.out.println(GWT.getHostPageBaseURL() + "world.png");
         String title = Canvas.imgHTML("http://www1.usaid.gov/images/icons/obama_icon.jpg") + " Obama";
@@ -166,5 +191,45 @@ public class NotificationTabService extends Service{
         // ====================Code used to show notifications to user with animated 'fly onscreen'====================
         
         this.setPane(layout);
+        
+        notificationService.getNotificationsByUsername(MainServices.account.getEmailAddress(), new AsyncCallback<List<String>>() {
+			
+			@Override
+			public void onSuccess(List<String> result) {
+				// TODO Auto-generated method stub
+				for (String aString : result)
+				{
+					sectionStack.addSection(produceNewNotification(aString));
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	private SectionStackSection produceNewNotification(String content)
+	{
+		notificationContents = content;
+		
+		notificationHtmlFlow = new HTMLFlow();
+		notificationHtmlFlow.setOverflow(Overflow.AUTO);  
+		notificationHtmlFlow.setPadding(10);
+		
+		notificationHtmlFlow.setContents(notificationContents);
+		
+		notificationVLayout = new VLayout();
+		notificationVLayout.addMember(notificationHtmlFlow);
+		
+		notificationSection = new SectionStackSection(MainServices.account.getEmailAddress());
+		notificationSection.addItem(notificationVLayout);
+		notificationSection.setExpanded(true);
+		
+		return notificationSection;
 	}
 }
+
+
