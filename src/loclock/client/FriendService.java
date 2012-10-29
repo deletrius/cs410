@@ -3,7 +3,11 @@ package loclock.client;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
+//import com.google.gwt.event.dom.client.ClickEvent;
+//import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -11,9 +15,21 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+//import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.widgets.Button;
+
+import com.smartgwt.client.widgets.form.DynamicForm;
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.TextAreaItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
+import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+//import com.smartgwt.client.widgets.drawing.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tile.TileGrid;
 import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
@@ -25,7 +41,13 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 public class FriendService extends Service{
 	private ChatPanelManager chatManager;
 	private VLayout friendsPanel;
+	private DynamicForm requestForm;
 	private String user;
+	private LocationServiceAsync locationService = GWT.create(LocationService.class);
+	
+	TextAreaItem searchBox = new TextAreaItem();
+	ButtonItem searchButton = new ButtonItem("Search");
+	
 //	private static final List<String> DAYS = Arrays.asList("Sunday", "Monday",
 //			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 	public FriendService(String user)
@@ -38,6 +60,7 @@ public class FriendService extends Service{
 		chatManager=new ChatPanelManager();
 		
 		buildFriendList();
+		buildRequest();
 		friendsPanel.addMember(chatManager);
 		this.setPane(friendsPanel);
 		
@@ -76,6 +99,45 @@ public class FriendService extends Service{
 		tileGrid.draw(); 
 		friendsPanel.addMember(tileGrid);
 	} 
+	
+	public void buildRequest(){
+		requestForm=new DynamicForm();
+		requestForm.setSize("100%", "20%");
+		requestForm.setItems(searchBox,searchButton);
+		//friendsPanel.addMember(searchButton);
+		final Label label0 = new Label();
+		final Label label = new Label();
+		
+		searchButton.addClickHandler(new ClickHandler(){
+		
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+			
+				String userName = searchBox.getValueAsString();
+				locationService.getUserByID(userName, new AsyncCallback<String>(){
+
+					public void onFailure(Throwable caught) {
+						Window.alert(caught.getMessage());
+						//Window.alert("user null on server");
+					}
+
+					public void onSuccess(String result) {
+						label0.setText("The Searching Result: " + result);
+						if(result==null)
+							Window.alert("Player does not exist in ");
+						else
+							System.out.println(result);
+							//label.setText(result);
+					}
+					
+					});
+			}
+			
+		});
+		friendsPanel.addMember(requestForm);
+		friendsPanel.addMember(label0);
+	}
 
 //	public void buildFriends() {
 //

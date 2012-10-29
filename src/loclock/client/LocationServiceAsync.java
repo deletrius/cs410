@@ -18,4 +18,5 @@ public interface LocationServiceAsync {
 	
 	void getUsersAsArrayList(AsyncCallback<List<ArrayList<Object>>> callback);
 
+	void getUserByID(String username, AsyncCallback<String> callback);
 }
