@@ -120,7 +120,10 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 			User user = pm.getObjectById(User.class, username);
 			return user.getUser();
 		}
-		
+		catch (JDOObjectNotFoundException e)
+		{
+			return null;
+		}		
 		finally {
 			 pm.close();
 		}
