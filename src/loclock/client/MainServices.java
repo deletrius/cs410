@@ -1,14 +1,29 @@
 package loclock.client;
 
+import com.google.api.gwt.client.GoogleApiRequestTransport;
+import com.google.api.gwt.client.OAuth2Login;
+import com.google.api.gwt.services.plus.shared.Plus;
+import com.google.api.gwt.services.plus.shared.Plus.ActivitiesContext.ListRequest.Collection;
+import com.google.api.gwt.services.plus.shared.Plus.PlusAuthScope;
+import com.google.api.gwt.services.plus.shared.model.Activity;
+import com.google.api.gwt.services.plus.shared.model.ActivityFeed;
+import com.google.api.gwt.services.plus.shared.model.Person;
+import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
+import com.google.web.bindery.requestfactory.shared.Receiver;
 
  
 
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.TabSet;
@@ -20,6 +35,10 @@ public class MainServices extends TabSet{
 	private HLayout rootLayout;
 	private LoginService loginService;
 	
+	private static final Plus plus = GWT.create(Plus.class);
+	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
+	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
+	private static final String APPLICATION_NAME = "PlusSample/1.0";
 	
 	public static Account account = null;
 	private static volatile MainServices mainServicesInstance;
@@ -115,7 +134,23 @@ public class MainServices extends TabSet{
 			rootLayout.setAlign(Alignment.CENTER);
 			rootLayout.addMember(loginLayout);
 			rootLayout.draw();
+			
+			plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
+			 final IButton b = new IButton("Authenticate to get public activities");
+
+			 b.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+				
+				@Override
+				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+					// TODO Auto-generated method stub
+					login();
+					Window.alert("After login!");
+				}
+			});
+			
+			 loginLayout.addMember(b);
 		}
+		
 		protected void loadLoggedInScreen() {
 			System.out.println("OK");
 			//rootLayout.destroy();
@@ -140,9 +175,55 @@ public class MainServices extends TabSet{
 			rootLayout.addMember(MainServices.this);
 			
 			rootLayout.draw();
-
-			
 		}
+		
+		private void login() 
+		{
+		    OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
+		      @Override
+		      public void onSuccess(Void v) {
+		        getMe();
+		      }
+
+		      @Override
+		      public void onFailure(Exception e) {
+		        println(e.getMessage());
+		      }
+		    });
+		  }
+		
+		private void getMe() {
+		    plus.people().get("me").to(new Receiver<Person>() {
+		      @Override
+		      public void onSuccess(Person person) {
+		        println("Hello " + person.getDisplayName());
+		        Window.alert("Hello, this is your name: " + person.getDisplayName());
+		        getMyActivities();
+		      }
+		    }).fire();
+		  }
+		
+		private void getMyActivities() {			
+		    plus.activities().list("me", Collection.PUBLIC).to(new Receiver<ActivityFeed>() {
+		      @Override
+		      public void onSuccess(ActivityFeed feed) {
+		        println("===== PUBLIC ACTIVITIES =====");
+		        if (feed.getItems() == null || feed.getItems().isEmpty()) {
+		          println("You have no public activities");
+		        } else {
+		          for (Activity a : feed.getItems()) {
+		            println(a.getTitle());
+		          }
+		        }
+		      }
+		    }).fire();
+		  }
+		
+		private void println(String msg) {
+			Window.alert(msg);
+			//loginLayout.addMember(new Label(msg));
+			//rootLayout.draw();
+		  }
 		
 		private void addUser(final String username)
 		{
