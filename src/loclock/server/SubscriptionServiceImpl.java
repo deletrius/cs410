@@ -13,21 +13,21 @@ public class SubscriptionServiceImpl {
 	
 	public void addFriend(String friendName, String requesterEmail){
 		
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-
-		Query q = pm.newQuery(Subscription.class, "emailAddress == requesterEmail");
-		q.declareParameters("String requesterName");
-		
-		try{
-			List<Subscription> results = (List<Subscription>) q.execute(requesterEmail);
-			Subscription sub = results.get(0);
-			sub.addFriend(friendName);
-		}
-		
-		finally{
-			q.closeAll();
-			pm.close();
-		}
+//		PersistenceManager pm = PMF.get().getPersistenceManager();
+//
+//		Query q = pm.newQuery(Subscription.class, "emailAddress == requesterEmail");
+//		q.declareParameters("String requesterName");
+//		
+//		try{
+//			List<Subscription> results = (List<Subscription>) q.execute(requesterEmail);
+//			Subscription sub = results.get(0);
+//			sub.addFriend(friendName);
+//		}
+//		
+//		finally{
+//			q.closeAll();
+//			pm.close();
+//		}
 		
 	}
 	

@@ -22,6 +22,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.IButton;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -29,6 +30,7 @@ import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 //import com.smartgwt.client.widgets.drawing.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tile.TileGrid;
@@ -47,6 +49,7 @@ public class FriendService extends Service{
 	
 	TextAreaItem searchBox = new TextAreaItem();
 	ButtonItem searchButton = new ButtonItem("Search");
+	IButton requestButton = new IButton("Add Friend");
 	
 //	private static final List<String> DAYS = Arrays.asList("Sunday", "Monday",
 //			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
@@ -102,7 +105,7 @@ public class FriendService extends Service{
 	public void buildRequest(){
 		requestForm=new DynamicForm();
 		requestForm.setSize("100%", "20%");
-		requestForm.setItems(searchBox,searchButton);
+		requestForm.setItems(searchBox, searchButton);
 		//friendsPanel.addMember(searchButton);
 		final Label label0 = new Label();
 		final Label label = new Label();
@@ -120,19 +123,53 @@ public class FriendService extends Service{
 						Window.alert(caught.getMessage());
 					}
 
-					public void onSuccess(String result) {
-						label0.setText("The Searching Result: ");
+					public void onSuccess(final String result) {
+						label0.setText("The Searching Result: " + result);
 						if(result==null)
 							Window.alert("Player does not exist in ");
 						else
+						{
+							final HLayout requestPanel = new HLayout();
+							friendsPanel.addMember(requestPanel);
+							requestPanel.addMember(label0);
+							requestPanel.addMember(requestButton);
+							requestButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+								
+								@Override
+								public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+									// TODO Auto-generated method stub
+									RequestServiceAsync requestService = GWT.create(RequestService.class);
+									System.out.println(MainServices.account.getEmailAddress());
+									System.out.println(result);
+									requestService.sendInvitation(MainServices.account.getEmailAddress(), result, new AsyncCallback<Void>(){
+
+										@Override
+										public void onFailure(Throwable caught) {
+											// TODO Auto-generated method stub
+											
+											Window.alert(caught.getMessage());
+										}
+
+										@Override
+										public void onSuccess(Void result) {
+											// TODO Auto-generated method stub
+											Window.alert("Invitation sent!");
+										}
+
+										
+									});
+								}
+							});
 							System.out.println(result);
 							//label.setText(result);
+						}
 					}
 					
 					});
 			}
 			
 		});
+		
 		friendsPanel.addMember(requestForm);
 	}
 
