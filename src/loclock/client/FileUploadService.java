@@ -5,6 +5,7 @@ package loclock.client;
 import java.text.ParseException;
 import com.google.gwt.i18n.client.DateTimeFormat; 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.widgets.Label;
 
@@ -39,8 +41,7 @@ public class FileUploadService extends Service{
 	private long dateTimeStart;
 	private long dateTimeEnd;
 	TimeTableService timeTableService;
-	
-	
+	final long WEEKS_IN_MILLIS = 1000 * 60 * 60 * 24*7;
 	private DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyyMMddHHmmss");
 	//new SimpleDateFormat("yyyyMMddHHmmss");
 	public FileUploadService()
@@ -134,18 +135,30 @@ public class FileUploadService extends Service{
 							
 							String str1 = result.get(i).get(2).toString();
 							String str2 = result.get(i).get(3).toString();
+							String str3 = result.get(i).get(4).toString();
+							//System.out.println("str3 is: "+ str3);
 							Date d1 = new Date();
 							Date d2 = new Date();
+							Date dateTermEnd = new Date();
 							d1 = dateTimeFormat.parse(str1);
 							d2 = dateTimeFormat.parse(str2);
-							System.out.println(d1);
-							System.out.println("Size is: "+ str1.length());
-							System.out.println(d2);
-							System.out.println("Size is: "+ str2.length());
-							System.out.println("i is: "+ i);
+							dateTermEnd  = dateTimeFormat.parse(str3+"235959");
+							//System.out.println(d1);
+							//System.out.println("Size is: "+ str1.length());
+							//System.out.println(d2);
+							//System.out.println("Size is: "+ str2.length());
+							//System.out.println("i is: "+ i);
 							//String str1 = result.get(i).get(2).toString();
 							//String str2 = result.get(i).get(3).toString();
+							int weekDiff =(int) ((dateTermEnd.getTime()-d1.getTime())/WEEKS_IN_MILLIS);
+
+							System.out.println("WEEKS_IN_MILLIS is:"+ weekDiff);
+							//cal1.set(d1.getYear(), d1.getMonth(), d1.getDay(), d1.getHours(), d1.getMinutes(), d1.getSeconds());
+							//cal2.set(d2.getYear(), d2.getMonth(), d2.getDay(), d2.getHours(), d2.getMinutes(), d2.getSeconds());
+							for(int j=0; j<weekDiff;j++){
+								
 							
+							if(d1.before(dateTermEnd)){
 						calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
 
 							@Override
@@ -157,8 +170,21 @@ public class FileUploadService extends Service{
 							@Override
 							public void onSuccess(Void result) {
 								// TODO Auto-generated method stub
-								//timeTableService.buildGoogleCalendar();
-							}});
+								//timeTableService.calendarDraw();
+								
+								
+								
+							}});}
+							CalendarUtil.addDaysToDate(d1, 7);
+							System.out.println("d1 is:" + d1);
+							System.out.println(" ");
+							System.out.println(" ");
+							System.out.println(" ");
+							CalendarUtil.addDaysToDate(d2, 7);
+						
+							
+							}
+							TimeTableService.calendar.redraw();
 						}
 						/**
 						for(int i =0; i<result.size();i++){
@@ -189,6 +215,8 @@ public class FileUploadService extends Service{
 					
 					
 				});
+				TimeTableService.calendar.redraw();
+				
 }
 		});
 		//FormItem lol;

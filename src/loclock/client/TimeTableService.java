@@ -21,7 +21,7 @@ public class TimeTableService extends Service{
 	private static final String CAL_PUBLIC_URL = "https://www.google.com/calendar/embed?src=phihl3hmbh48lq5ml3ek9cj19o%40group.calendar.google.com&ctz=Australia/Brisbane";
 	private Frame googleCalendar = new Frame(CAL_PUBLIC_URL);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
-	public Calendar calendar;
+	public static Calendar calendar;
 	
 	public TimeTableService()
 	{	
@@ -32,6 +32,7 @@ public class TimeTableService extends Service{
 		buildGoogleCalendar();
 		this.setPane(calendar);
 	}
+	
 	
 	public void buildGoogleCalendar(){
 		calendar = new Calendar();

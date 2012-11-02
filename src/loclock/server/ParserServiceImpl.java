@@ -28,6 +28,7 @@ public class ParserServiceImpl extends RemoteServiceServlet implements ParserSer
 	private String startDate="";
 	private String startTime="";
 	private String classEndTime="";
+	private String courseFinish="";
 	private List<ArrayList<Object>> calendarAsList = new ArrayList<ArrayList<Object>>();
 	Date endDate = new Date();
 	Date classStartDate = new Date();
@@ -53,7 +54,7 @@ public class ParserServiceImpl extends RemoteServiceServlet implements ParserSer
 			if(str1.contains("UNTIL")){
 				one = true;
 				int index = str1.indexOf("UNTIL");
-				String endDateStr = str1.substring(index+6, index+14);
+				courseFinish = str1.substring(index+6, index+14);
 				String endTime = "235959";
 				
 				/**
@@ -131,6 +132,7 @@ public class ParserServiceImpl extends RemoteServiceServlet implements ParserSer
 								  calendarAttributes.add(startDate+startTime);
 								 // System.out.println(calendarAttributes.get(2));
 								  calendarAttributes.add(startDate+classEndTime);
+								  calendarAttributes.add(courseFinish);
 								  
 								  calendarAsList.add(calendarAttributes);
 								//  
