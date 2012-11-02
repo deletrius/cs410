@@ -75,7 +75,7 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	public List<String> getNotificationsByUsername(String userName)
 			throws NotLoggedInException 
 	{
-		List<Notification> notificationList;
+		List<Notification> notificationList = new ArrayList<Notification>();
 		PersistenceManager pm = getPersistenceManager();
 		Query q = pm.newQuery(Notification.class);
 		q.declareParameters("String toUserParam");

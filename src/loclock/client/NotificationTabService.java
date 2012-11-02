@@ -30,39 +30,56 @@ import com.smartgwt.client.widgets.layout.VLayout;
 public class NotificationTabService extends Service{
 	
 	private final NotificationServiceAsync notificationService = GWT.create(NotificationService.class);
+	//private final NotificationPushServiceAsync notificationPushService = GWT.create(NotificationPushService.class);
 	private String notificationContents;
 	private HTMLFlow notificationHtmlFlow;
 	private VLayout notificationVLayout;
 	private SectionStackSection notificationSection;
 	private SectionStack sectionStack;
 	
+//	private static final Domain DOMAIN = DomainFactory.getDomain("my_domain");
+	
 	public NotificationTabService()
 	{
 		super("Notifications", "http://cdn1.iconfinder.com/data/icons/Project_Icons___Version_1_1_9_by_bogo_d/PNG/Notification.png");
 		
 		// test add notification into system
-		notificationService.addNotification(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), "I see you.", new AsyncCallback<Void>() {
-			
-			@Override
-			public void onSuccess(Void result) {
-				// TODO Auto-generated method stub
-				System.out.println("Successful notification added.");
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				System.out.println("Failed failed failed notification added.");
-			}
-		});
+//		notificationService.addNotification(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), "I see you.", new AsyncCallback<Void>() {
+//			
+//			@Override
+//			public void onSuccess(Void result) {
+//				// TODO Auto-generated method stub
+//				System.out.println("Successful notification added.");
+//			}
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				// TODO Auto-generated method stub
+//				System.out.println("Failed failed failed notification added.");
+//				System.out.println(caught.getMessage());
+//			}
+//		});
+		
+		// Used for notification listening and auto pushing to client
+//		RemoteEventServiceFactory theEventServiceFactory = RemoteEventServiceFactory.getInstance();
+//		RemoteEventService theEventService = theEventServiceFactory.getRemoteEventService();
+//		
+//		theEventService.addListener(DOMAIN, new NotificationListener(){
+//			public void onMyEvent(NotificationEvent event)
+//			{
+//				System.out.println("The message is from: "
+//						+ event.getFromUser() + " to: " + event.getToUser()
+//						+ " with the contents: " + event.getContent());
+//			}
+//		});
 		
 		VLayout layout = new VLayout();  
         layout.setMembersMargin(10);  
         
 		// ====================Code used to show notifications in an accordian manner====================            
         HTMLFlow htmlFlow = new HTMLFlow();  
-        htmlFlow.setOverflow(Overflow.AUTO);  
-        htmlFlow.setPadding(10);  
+        //htmlFlow.setOverflow(Overflow.AUTO);  
+        //htmlFlow.setPadding(10);  
   
         String contents = "<b>Severity 1</b><br> Vote for me!";  
   
@@ -72,16 +89,16 @@ public class NotificationTabService extends Service{
         obamaNotifications.addMember(htmlFlow);
         
         HTMLFlow htmlFlow2 = new HTMLFlow();  
-        htmlFlow2.setOverflow(Overflow.AUTO);  
-        htmlFlow2.setPadding(10);  
+        //htmlFlow2.setOverflow(Overflow.AUTO);  
+        //htmlFlow2.setPadding(10);  
   
         String contents2 = "<b>New Friend</b><br> You are friends with Neil Ernst!";  
   
         htmlFlow2.setContents(contents2); 
         
         HTMLFlow htmlFlow3 = new HTMLFlow();  
-        htmlFlow3.setOverflow(Overflow.AUTO);  
-        htmlFlow3.setPadding(10);  
+        //htmlFlow3.setOverflow(Overflow.AUTO);  
+        //htmlFlow3.setPadding(10);  
   
         String contents3 = "<b>Away</b><br> I am away this week!";  
   
@@ -168,7 +185,25 @@ public class NotificationTabService extends Service{
         moveInButton.addClickHandler(new ClickHandler() {  
             public void onClick(ClickEvent event) {  
                 label.animateMove(10, 50);  
-  
+                
+//				// Test code to send notification to server
+//				notificationPushService.sendNotificationToServer(
+//						MainServices.account.getEmailAddress(),
+//						MainServices.account.getEmailAddress(), "Hihi",
+//						new AsyncCallback<Void>() {
+//
+//							@Override
+//							public void onSuccess(Void result) {
+//								// TODO Auto-generated method stub
+//
+//							}
+//
+//							@Override
+//							public void onFailure(Throwable caught) {
+//								// TODO Auto-generated method stub
+//
+//							}
+//						});
             }  
         });  
   
@@ -206,7 +241,7 @@ public class NotificationTabService extends Service{
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				
+				System.out.println(caught.getMessage());
 			}
 		});
 	}
@@ -216,8 +251,8 @@ public class NotificationTabService extends Service{
 		notificationContents = content;
 		
 		notificationHtmlFlow = new HTMLFlow();
-		notificationHtmlFlow.setOverflow(Overflow.AUTO);  
-		notificationHtmlFlow.setPadding(10);
+		//notificationHtmlFlow.setOverflow(Overflow.AUTO);  
+		//notificationHtmlFlow.setPadding(10);
 		
 		notificationHtmlFlow.setContents(notificationContents);
 		
@@ -229,6 +264,30 @@ public class NotificationTabService extends Service{
 		notificationSection.setExpanded(true);
 		
 		return notificationSection;
+	}
+	
+	public void updateNotificationsStack()
+	{
+		System.out.println("The updateNotificationStack was called from server!");
+		notificationService.getNotificationsByUsername(
+				MainServices.account.getEmailAddress(),
+				new AsyncCallback<List<String>>() {
+
+					@Override
+					public void onSuccess(List<String> result) {
+						// TODO Auto-generated method stub
+						for (String aString : result) {
+							sectionStack
+									.addSection(produceNewNotification(aString));
+						}
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						System.out.println(caught.getMessage());
+					}
+				});
 	}
 }
 

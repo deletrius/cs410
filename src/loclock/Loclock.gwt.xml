@@ -12,6 +12,7 @@
   
   <!-- Other module inherits                                      -->
 	<inherits name='com.google.gwt.maps.Maps'/>
+	<inherits name="com.google.api.gwt.services.Plus" />
   <inherits name="com.google.gwt.resources.Resources" />
   <inherits name='com.google.gwt.gdata.GData' />
   <inherits name="com.smartgwt.SmartGwt"/>

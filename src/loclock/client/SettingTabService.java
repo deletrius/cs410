@@ -32,8 +32,8 @@ public class SettingTabService extends Service{
         HLayout horizLayout = new HLayout();
         
         HTMLFlow htmlFlow = new HTMLFlow();  
-        htmlFlow.setOverflow(Overflow.AUTO);  
-        //htmlFlow.setPadding(10);  
+        //htmlFlow.setOverflow(Overflow.AUTO);  
+        htmlFlow.setPadding(10);  
   
         String contents = "<b>Privacy Setting</b><br> Share my location with everyone";  
   

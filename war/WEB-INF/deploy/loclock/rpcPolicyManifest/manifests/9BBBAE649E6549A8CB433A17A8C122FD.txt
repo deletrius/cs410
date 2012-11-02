@@ -1,0 +1,2 @@
+serviceClass: de.novanic.eventservice.client.event.service.EventService
+path: 6EBC9F18D5FB947CAC96169452090647.gwt.rpc
