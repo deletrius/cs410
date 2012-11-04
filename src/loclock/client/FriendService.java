@@ -1,5 +1,6 @@
 package loclock.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +22,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.util.BooleanCallback;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.IButton;
 
@@ -46,6 +49,7 @@ public class FriendService extends Service{
 	private DynamicForm requestForm;
 	private String user;
 	private LocationServiceAsync locationService = GWT.create(LocationService.class);
+	private SubscriptionServiceAsync requestService=GWT.create(SubscriptionService.class);
 	
 	TextAreaItem searchBox = new TextAreaItem();
 	ButtonItem searchButton = new ButtonItem("Search");
@@ -68,9 +72,61 @@ public class FriendService extends Service{
 		this.setPane(friendsPanel);
 		
 	}
-	
+	public void checkInvitations()
+	{
+		requestService.getInvitations(user,new AsyncCallback<List<String>> (){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(user+caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				for (final String i : result)
+				{			
+					SC.confirm(i+" wants to add you as a friend\nAccept?", new BooleanCallback() {
+				          public void execute(Boolean value) {
+				            if (value != null && value) {
+				              requestService.acceptInvitation(user, i, new AsyncCallback<Void>(){
+
+								@Override
+								public void onFailure(Throwable caught) {
+									Window.alert(caught.getMessage());
+									
+								}
+
+								@Override
+								public void onSuccess(Void result) {
+									// TODO Auto-generated method stub
+									Window.alert(i+" is added to your friend list!");
+									checkInvitations();
+								}});
+				            } else {
+				            	requestService.rejectInvitation(user,i , new AsyncCallback<Void>(){
+
+									@Override
+									public void onFailure(Throwable caught) {
+										// TODO Auto-generated method stub
+										Window.alert(caught.getMessage());
+									}
+
+									@Override
+									public void onSuccess(Void result) {
+										// TODO Auto-generated method stub
+										Window.alert("You have rejected friend request from "+i);
+										checkInvitations();
+									}});
+				            	
+				            }
+				          }
+				        });
+				}
+			}});
+
+	}
 	public void buildFriendList(){
-		TileGrid tileGrid = new TileGrid();  
+		final TileGrid tileGrid = new TileGrid();  
 		tileGrid.setWidth("100%");  
 		tileGrid.setHeight("70%");
 		tileGrid.setTileHeight(150);
@@ -78,8 +134,36 @@ public class FriendService extends Service{
 		tileGrid.setCanReorderTiles(true);  
 		tileGrid.setShowAllRecords(true); 
 		//  Record rec = new StudentRecord("name",picture,"Profile");
-		Record[] record = new StudentRecord[]{new StudentRecord("ubc Student", "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile")};
-		tileGrid.setData(record); 
+		
+		checkInvitations();		
+		
+		requestService.getFriends(user, new AsyncCallback<List<String>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Window.alert(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				// TODO Auto-generated method stub
+				ArrayList<StudentRecord> friends=new ArrayList<StudentRecord>();
+				for (String i:result)
+				{
+					friends.add(new StudentRecord(i, "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile"));
+				}
+				StudentRecord[] friendsRecord=new StudentRecord[friends.size()];
+				for (int i=0;i<friends.size();i++)
+				{
+					friendsRecord[i]=friends.get(i);
+				}
+				Record[] record =friendsRecord; //new StudentRecord[]{new StudentRecord("ubc Student", "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile")};
+				tileGrid.setData(record);
+			}});
+		
+	    //Record[] record = new StudentRecord[]{new StudentRecord("ubc Student", "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile")};
+		//tileGrid.setData(record); 
 
 		DetailViewerField pictureField = new DetailViewerField("picture"); 
 
@@ -96,7 +180,7 @@ public class FriendService extends Service{
 				
 				String to=event.getRecord().getAttribute("name").toString();
 				//TODO chatManager.openChat(user,to);
-				chatManager.openChat(user,"yunyuntester@gmail.com");
+				chatManager.openChat(user,to);
 			}});
 		tileGrid.draw(); 
 		friendsPanel.addMember(tileGrid);
@@ -138,7 +222,7 @@ public class FriendService extends Service{
 								@Override
 								public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
 									// TODO Auto-generated method stub
-									RequestServiceAsync requestService = GWT.create(RequestService.class);
+									SubscriptionServiceAsync requestService = GWT.create(SubscriptionService.class);
 									System.out.println(MainServices.account.getEmailAddress());
 									System.out.println(result);
 									requestService.sendInvitation(MainServices.account.getEmailAddress(), result, new AsyncCallback<Void>(){
