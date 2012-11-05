@@ -127,6 +127,7 @@ public class FileUploadService extends Service{
 					@Override
 					public void onSuccess(List<ArrayList<Object>> result) {
 						System.out.println("parserService succeed");
+						CalendarEvent[] calEvents = TimeTableService.events;
 						
 						CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 						for(int i=1;i<result.size();i++){
@@ -157,29 +158,82 @@ public class FileUploadService extends Service{
 							//cal2.set(d2.getYear(), d2.getMonth(), d2.getDay(), d2.getHours(), d2.getMinutes(), d2.getSeconds());
 							for(int j=0; j<weekDiff;j++){
 								
-							
+							boolean contains = false;
 							if(d1.before(dateTermEnd)){
-						calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
+								if(calEvents.length!=0){
+								for(int k = 0; k<calEvents.length;k++){
+									//check duplication if event consider to be duplicated if this event has same startDate, endDate, name, and description
+									//else add the calendar
+									//System.out.println(calEvents[k].getName());
+									if(calEvents[k].getStartDate().equals(d1)){
+										
+										//System.out.println("different startDate");
+										if(calEvents[k].getEndDate().equals(d2)){
+											
+											//System.out.println("different endDate");
+											if(calEvents[k].getName()==result.get(i).get(0).toString()){
+												
+												//System.out.println("different eventName");
+											if(calEvents[k].getDescription()== result.get(i).get(1).toString()){
+												//System.out.println("different description");
+												contains = true;
+												
+												
+											}
+											else{
+												contains = false;
+											}
+											}
+										}
+									}
+								}			
+								}
+								else if(!contains){
+									System.out.println("contains == false");
+									calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
 
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-								Window.alert("Problem");
-							}
+										@Override
+										public void onFailure(Throwable caught) {
+											// TODO Auto-generated method stub
+											Window.alert("Upload Failed");
+										}
 
-							@Override
-							public void onSuccess(Void result) {
-								// TODO Auto-generated method stub
-								//timeTableService.calendarDraw();
-								
-								
-								
-							}});}
+										@Override
+										public void onSuccess(Void result) {
+											// TODO Auto-generated method stub
+											Window.alert("Event Saved");
+											//timeTableService.calendarDraw();
+											
+											
+											
+										}});
+								}
+								else{
+									System.out.println("Empty Calendar -> importing .ics file");
+									calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
+
+										@Override
+										public void onFailure(Throwable caught) {
+											// TODO Auto-generated method stub
+											Window.alert("Upload Failed");
+										}
+
+										@Override
+										public void onSuccess(Void result) {
+											// TODO Auto-generated method stub
+											Window.alert("Event Saved");
+											//timeTableService.calendarDraw();
+											
+											
+											
+										}});
+								}
+						}
 							CalendarUtil.addDaysToDate(d1, 7);
-							System.out.println("d1 is:" + d1);
-							System.out.println(" ");
-							System.out.println(" ");
-							System.out.println(" ");
+							//System.out.println("d1 is:" + d1);
+							//System.out.println(" ");
+							//System.out.println(" ");
+							//System.out.println(" ");
 							CalendarUtil.addDaysToDate(d2, 7);
 						
 							

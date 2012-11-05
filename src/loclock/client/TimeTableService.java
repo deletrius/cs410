@@ -22,7 +22,7 @@ public class TimeTableService extends Service{
 	private Frame googleCalendar = new Frame(CAL_PUBLIC_URL);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 	public static Calendar calendar;
-	
+	public static CalendarEvent[] events;
 	public TimeTableService()
 	{	
 		super();
@@ -79,12 +79,14 @@ public class TimeTableService extends Service{
 							System.out.println(result.get(i).get(2).toString());
 							System.out.println(result.get(i).get(3).toString());
 							}
-							CalendarEvent[] events=new CalendarEvent[calEvent.size()];
+							events=new CalendarEvent[calEvent.size()];
+							//CalendarEvent[] events=new CalendarEvent[calEvent.size()];
 							for (int i=0; i<calEvent.size();i++)
 							{
 								events[i]=calEvent.get(i);
 							}
 							calendar.setData(events);
+							
 						}
 						
 						
