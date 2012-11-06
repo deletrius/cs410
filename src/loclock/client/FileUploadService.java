@@ -112,7 +112,7 @@ public class FileUploadService extends Service{
 				Window.alert(event.getResults().toString());
 				String str = event.getResults().toString();
 				ParserServiceAsync parser = GWT.create(ParserService.class);
-				
+
 
 				parser.parse(str,MainServices.account.getEmailAddress(),new AsyncCallback<List<ArrayList<Object>>>(){
 
@@ -122,7 +122,7 @@ public class FileUploadService extends Service{
 						System.out.println("Failed");
 					}
 
-					
+
 
 					@Override
 					public void onSuccess(List<ArrayList<Object>> result) {
@@ -130,10 +130,10 @@ public class FileUploadService extends Service{
 						CalendarEvent[] calEvents = TimeTableService.events;
 						
 						CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
-						for(int i=1;i<result.size();i++){
+						for(int i=0;i<result.size();i++){
 							//dateTimeStart = (Long) Long.parseLong(result.get(i).get(2).toString());
 							//dateTimeEnd = (Long) Long.parseLong(result.get(i).get(3).toString());
-							
+
 							String str1 = result.get(i).get(2).toString();
 							String str2 = result.get(i).get(3).toString();
 							String str3 = result.get(i).get(4).toString();
@@ -144,51 +144,44 @@ public class FileUploadService extends Service{
 							d1 = dateTimeFormat.parse(str1);
 							d2 = dateTimeFormat.parse(str2);
 							dateTermEnd  = dateTimeFormat.parse(str3+"235959");
-							//System.out.println(d1);
-							//System.out.println("Size is: "+ str1.length());
-							//System.out.println(d2);
-							//System.out.println("Size is: "+ str2.length());
-							//System.out.println("i is: "+ i);
-							//String str1 = result.get(i).get(2).toString();
-							//String str2 = result.get(i).get(3).toString();
+							
 							int weekDiff =(int) ((dateTermEnd.getTime()-d1.getTime())/WEEKS_IN_MILLIS);
 
 							System.out.println("WEEKS_IN_MILLIS is:"+ weekDiff);
-							//cal1.set(d1.getYear(), d1.getMonth(), d1.getDay(), d1.getHours(), d1.getMinutes(), d1.getSeconds());
-							//cal2.set(d2.getYear(), d2.getMonth(), d2.getDay(), d2.getHours(), d2.getMinutes(), d2.getSeconds());
+							
 							for(int j=0; j<weekDiff;j++){
-								
+
 							boolean contains = false;
 							if(d1.before(dateTermEnd)){
 								if(calEvents.length!=0){
+									System.out.println("Size of calEvent is: "+ calEvents.length);
 								for(int k = 0; k<calEvents.length;k++){
 									//check duplication if event consider to be duplicated if this event has same startDate, endDate, name, and description
 									//else add the calendar
 									//System.out.println(calEvents[k].getName());
+									
 									if(calEvents[k].getStartDate().equals(d1)){
 										
 										//System.out.println("different startDate");
 										if(calEvents[k].getEndDate().equals(d2)){
-											
+											contains = true;
 											//System.out.println("different endDate");
 											if(calEvents[k].getName()==result.get(i).get(0).toString()){
-												
+												System.out.println("same name");
 												//System.out.println("different eventName");
 											if(calEvents[k].getDescription()== result.get(i).get(1).toString()){
 												//System.out.println("different description");
-												contains = true;
 												
-												
+
+
 											}
-											else{
-												contains = false;
-											}
+											
 											}
 										}
 									}
 								}			
 								}
-								else if(!contains){
+								if(contains == false){
 									System.out.println("contains == false");
 									calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
 
@@ -203,74 +196,28 @@ public class FileUploadService extends Service{
 											// TODO Auto-generated method stub
 											Window.alert("Event Saved");
 											//timeTableService.calendarDraw();
-											
-											
-											
+
+
+
 										}});
 								}
-								else{
-									System.out.println("Empty Calendar -> importing .ics file");
-									calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
-
-										@Override
-										public void onFailure(Throwable caught) {
-											// TODO Auto-generated method stub
-											Window.alert("Upload Failed");
-										}
-
-										@Override
-										public void onSuccess(Void result) {
-											// TODO Auto-generated method stub
-											Window.alert("Event Saved");
-											//timeTableService.calendarDraw();
-											
-											
-											
-										}});
-								}
+								
 						}
 							CalendarUtil.addDaysToDate(d1, 7);
-							//System.out.println("d1 is:" + d1);
-							//System.out.println(" ");
-							//System.out.println(" ");
-							//System.out.println(" ");
 							CalendarUtil.addDaysToDate(d2, 7);
-						
-							
+
+
 							}
 							TimeTableService.calendar.redraw();
 						}
-						/**
-						for(int i =0; i<result.size();i++){
-							//System.out.println(result.get(i).get(0).toString());
-							//System.out.println(result.get(i).get(1).toString());
-							//String str1 = result.get(i).get(2).toString();
-							//String str2 = result.get(i).get(3).toString();
-							
-							//Date startDate = new Date();
-							//Date endDate = new Date();
-							//startDate = dateTimeFormat.parse(result.get(i).get(2).toString());
-						//	System.out.println(result.get(i).get(0));
-							//System.out.println(result.get(i).get(1));
-							//System.out.println(startDate);
-							//System.out.println(result.get(i).get(3));
-							//try {
-								//calendarService.saveEvent("1234567890@example.com", result.get(i).get(0).toString(), result.get(i).get(1).toString(), startDate, endDate);
-							//} catch (NotLoggedInException e) {
-								// TODO Auto-generated catch block
-							//	Window.alert("fileupload.calendarService failed");
-							//}
 						
-						}
-						//timeTableService.buildGoogleCalendar();
-						 * **/
-						 
+
 					}
-					
-					
+
+
 				});
 				TimeTableService.calendar.redraw();
-				
+
 }
 		});
 		//FormItem lol;
