@@ -74,10 +74,12 @@ public class TimeTableService extends Service{
 							for(int i=0; i < result.size();i++){
 								calEvent.add( new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString())));
 							//System.out.println(i+result.get(i).get(2).toString()+ result.get(i).get(3).toString()+new Date(result.get(i).get(4).toString())+new Date(result.get(i).get(5).toString()));
-							System.out.println("1:"+ i);
+							//System.out.println("1:"+ i);
+							System.out.println("");
 							System.out.println(result.get(i).get(1).toString());
 							System.out.println(result.get(i).get(2).toString());
 							System.out.println(result.get(i).get(3).toString());
+							System.out.println("");
 							}
 							events=new CalendarEvent[calEvent.size()];
 							//CalendarEvent[] events=new CalendarEvent[calEvent.size()];
