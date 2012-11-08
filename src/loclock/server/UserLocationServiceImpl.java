@@ -15,7 +15,7 @@ import javax.jdo.Query;
 
 import org.datanucleus.exceptions.NucleusObjectNotFoundException;
 
-import loclock.client.LocationService;
+import loclock.client.UserLocationService;
 import loclock.client.NotLoggedInException;
 
 import com.google.appengine.api.users.UserService;
@@ -23,10 +23,10 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class LocationServiceImpl extends RemoteServiceServlet implements LocationService 
+public class UserLocationServiceImpl extends RemoteServiceServlet implements UserLocationService 
 {
 	
-	private static final Logger LOG = Logger.getLogger(LocationServiceImpl.class.getName());
+	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
 	public void addUser(String username) throws NotLoggedInException 
@@ -64,7 +64,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 			List<User> users = (List<User>) q.execute(getCurrentUser()
 					.getEmail());
 			for (User user : users) {
-				if (username.equals(user.getUser())) {
+				if (username.equals(user.getUserName())) {
 					deleteCount++;
 					pm.deletePersistent(user);
 				}
@@ -77,6 +77,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 			pm.close();
 		}
 	}
+	
 	public String[] getUsers() throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -88,7 +89,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 			q.setOrdering("userName");
 			List<User> users = (List<User>) q.execute();
 			for (User user : users) {
-				usersList.add(user.getUser());
+				usersList.add(user.getUserName());
 			}
 		} 
 		
@@ -112,12 +113,12 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 	    }
 	}
 	
-	public String getUserByID (String username) throws NotLoggedInException {
+	public String getUserNameByID (String username) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try{
 			User user = pm.getObjectById(User.class, username);
-			return user.getUser();
+			return user.getUserName();
 		}
 		catch (JDOObjectNotFoundException e)
 		{
@@ -142,7 +143,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 
 			for (User userObj : userList) {
 				ArrayList<Object> userAttributes = new ArrayList<Object>();
-				userAttributes.add(userObj.getUser());
+				userAttributes.add(userObj.getUserName());
 				userAttributes.add(userObj.getLatitude());
 				userAttributes.add(userObj.getLongitude());
 				userAsList.add(userAttributes);
@@ -196,7 +197,8 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 //		      pm.close();
 //		    }
 //	}
-	public double getUserLatitude(String userName) {
+	
+	public Double getUserLatitude(String userName) {
 		PersistenceManager pm = getPersistenceManager();
 		double lat = 0;
 		
@@ -216,7 +218,8 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 	    }
 		return lat;
 	}
-	public double getUserLongitude(String userName) {
+
+	public Double getUserLongitude(String userName) {
 		PersistenceManager pm = getPersistenceManager();
 		double log = 0;
 		
@@ -227,7 +230,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 	    	System.out.println("log is");
 			  List<User> users = (List<User>) q.execute(userName);
 			  for(User user : users){
-				  log = (Double) Double.parseDouble(user.getLatitude());
+				  log = (Double)Double.parseDouble(user.getLatitude());
 				 
 			  }
 	    } finally {
@@ -236,7 +239,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 	    }
 		return log;
 	}
-//
+
 //	public List<List<String>> getAllUserInfo(){
 //		PersistenceManager pm = PMF.get().getPersistenceManager();
 //		List<List<String>> userInfos;

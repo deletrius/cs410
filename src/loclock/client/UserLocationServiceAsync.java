@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public interface LocationServiceAsync {
+public interface UserLocationServiceAsync {
 
 	void addUser(String name, AsyncCallback<Void> callback);
 
@@ -18,5 +18,10 @@ public interface LocationServiceAsync {
 	
 	void getUsersAsArrayList(AsyncCallback<List<ArrayList<Object>>> callback);
 
-	void getUserByID(String username, AsyncCallback<String> callback);
+	void getUserNameByID(String username, AsyncCallback<String> callback);
+	
+	void getUserLatitude(String userName, AsyncCallback<Double> callback);
+
+	void getUserLongitude(String userName, AsyncCallback<Double> callback);
+
 }

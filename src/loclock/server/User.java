@@ -1,6 +1,8 @@
 package loclock.server;
 
 
+import java.util.Date;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -27,6 +29,9 @@ public class User {
 	@Persistent
 	private String longitude;
 
+	@Persistent
+	private Date lastupdate;
+	
 	public User() 
 	{
 		
@@ -45,7 +50,7 @@ public class User {
 //		return this.id;
 //	}
 	
-	public String getUser() 
+	public String getUserName() 
 	{
 		return this.userName;
 	}

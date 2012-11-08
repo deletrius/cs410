@@ -31,7 +31,7 @@ public class MapService {
 	private String height;
 	private Marker currentLocation;
 	private boolean firstTime = true;
-	private final LocationServiceAsync locationService = GWT.create(LocationService.class);
+	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private AccountServiceAsync accountService = GWT.create(AccountService.class);
 	private double currentUserLat = -1;
 	private double currentUserLng = -1;

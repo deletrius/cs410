@@ -10,7 +10,7 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
-import loclock.client.LocationService;
+import loclock.client.UserLocationService;
 import loclock.client.NotLoggedInException;
 import loclock.client.NotificationService;
 
@@ -21,7 +21,7 @@ import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 
 public class NotificationServiceImpl extends RemoteServiceServlet implements NotificationService {
 
-	private static final Logger LOG = Logger.getLogger(LocationServiceImpl.class.getName());
+	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
 	@Override

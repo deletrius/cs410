@@ -3,7 +3,9 @@ package loclock.client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.cell.client.TextCell;
@@ -14,6 +16,12 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.gdata.client.impl.Map;
+import com.google.gwt.geolocation.client.Geolocation;
+import com.google.gwt.maps.client.base.HasLatLng;
+import com.google.gwt.maps.client.base.LatLng;
+
+
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -40,10 +48,13 @@ import com.smartgwt.client.widgets.layout.HLayout;
 //import com.smartgwt.client.widgets.drawing.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tile.TileGrid;
+import com.smartgwt.client.widgets.tile.TileRecord;
 import com.smartgwt.client.widgets.tile.events.RecordClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordClickHandler;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickEvent;
 import com.smartgwt.client.widgets.tile.events.RecordDoubleClickHandler;
+import com.smartgwt.client.widgets.tile.events.SelectionChangedEvent;
+import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 public class FriendService extends Service{
@@ -51,13 +62,13 @@ public class FriendService extends Service{
 	private VLayout friendsPanel;
 	private DynamicForm requestForm;
 	private String user;
-	private LocationServiceAsync locationService = GWT.create(LocationService.class);
+	private UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private SubscriptionServiceAsync requestService=GWT.create(SubscriptionService.class);
 	
 	TextAreaItem searchBox = new TextAreaItem();
 	ButtonItem searchButton = new ButtonItem("Search");
 	IButton requestButton = new IButton("Add Friend");
-	
+	DynamicForm profileForm=new DynamicForm();
 //	private static final List<String> DAYS = Arrays.asList("Sunday", "Monday",
 //			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 	public FriendService(String user)
@@ -70,7 +81,10 @@ public class FriendService extends Service{
 		chatManager=new ChatPanelManager(user);
 		
 		buildFriendList();
+		profileForm.setBorder("2px solid grey");		
+		profileForm.setSize("100%", "20%");
 		updateProfilePanel(user,"0",new Date().toString());
+		friendsPanel.addMember(profileForm);
 		friendsPanel.addMember(chatManager);
 		buildRequest();
 		this.setPane(friendsPanel);
@@ -140,7 +154,42 @@ public class FriendService extends Service{
 		//  Record rec = new StudentRecord("name",picture,"Profile");
 		
 		checkInvitations();		
-		
+		tileGrid.addSelectionChangedHandler(new SelectionChangedHandler(){
+
+			@Override
+			public void onSelectionChanged(SelectionChangedEvent event) {
+					// TODO Auto-generated method stub
+				double profileLat;
+				double profileLon;
+				final String profileName=event.getRecord().getAttribute("name").toString();
+				locationService.getUserLatitude(profileName, new AsyncCallback<Double>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert(caught.getMessage());
+					}
+
+					@Override
+					public void onSuccess(Double result) {
+						Window.alert("Lat: "+result);
+						final double lat=result;
+						locationService.getUserLongitude(profileName, new AsyncCallback<Double>(){
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert(caught.getMessage());
+							}
+
+							@Override
+							public void onSuccess(Double result) {
+								final double lon=result;
+								Window.alert("Lon: "+result);
+								LatLng profilePosition=new LatLng(lat,lon);
+								
+							}
+						});
+					}} );
+				updateProfilePanel(profileName,"","");
+			}});
 		requestService.getFriends(user, new AsyncCallback<List<String>>(){
 
 			@Override
@@ -191,12 +240,12 @@ public class FriendService extends Service{
 	} 
 	
 	public void updateProfilePanel(String name,String distance,String lastUpdate)
-	{
-		DynamicForm profileForm=new DynamicForm();
-		profileForm.setBorder("2px solid grey");		
-		profileForm.setSize("100%", "20%");
+	{			
+		
+		profileForm.clearValues();
 		StaticTextItem profileName=new StaticTextItem("ProfileName","Profile Name");
 		profileName.setValue(name);
+		
 		StaticTextItem profileDistance=new StaticTextItem("ProfileDistance","Distance To");
 		profileDistance.setValue(distance+" km");
 		StaticTextItem profileLastUpdate=new StaticTextItem("ProfileLastUpdate","Last Updated");
@@ -220,9 +269,8 @@ public class FriendService extends Service{
 			}});
 		
 		
-		profileForm.setItems(profileName,profileDistance,profileLastUpdate,showCalendar,showMap);
+		profileForm.setItems(profileName,profileDistance,profileLastUpdate,showCalendar,showMap);		
 		
-		friendsPanel.addMember(profileForm);
 	}
 	
 	
@@ -244,7 +292,7 @@ public class FriendService extends Service{
 			
 				String userName = searchBox.getValueAsString();
 				searchBox.clearValue();
-				locationService.getUserByID(userName, new AsyncCallback<String>(){
+				locationService.getUserNameByID(userName, new AsyncCallback<String>(){
 
 					public void onFailure(Throwable caught) {
 						Window.alert(caught.getMessage());
@@ -253,7 +301,7 @@ public class FriendService extends Service{
 					public void onSuccess(final String result) {
 						label0.setText("The Searching Result: " + result);
 						if(result==null)
-							Window.alert("Player does not exist in ");
+							Window.alert("User does not exist in ");
 						else
 						{
 							final HLayout requestPanel = new HLayout();

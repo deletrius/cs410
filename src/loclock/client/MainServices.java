@@ -31,7 +31,7 @@ import com.smartgwt.client.widgets.tab.TabSet;
 public class MainServices extends TabSet{
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
-	private final LocationServiceAsync locationService = GWT.create(LocationService.class);
+	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private HLayout rootLayout;
 	private LoginService loginService;
 	
