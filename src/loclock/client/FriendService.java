@@ -171,6 +171,7 @@ public class FriendService extends Service{
 
 					@Override
 					public void onSuccess(Double result) {
+						Window.alert("Lat: "+result);
 						final double lat=result;
 						locationService.getUserLongitude(profileName, new AsyncCallback<Double>(){
 							@Override
@@ -181,8 +182,7 @@ public class FriendService extends Service{
 							@Override
 							public void onSuccess(Double result) {
 								final double lon=result;
-								
-								
+								Window.alert("Lon: "+result);
 								LatLng profilePosition=new LatLng(lat,lon);
 								
 							}

@@ -6,7 +6,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-@RemoteServiceRelativePath("user")
+@RemoteServiceRelativePath("userlocation")
 public interface UserLocationService extends RemoteService {
 	public void addUser(String name) throws NotLoggedInException;
 	public void removeUser(String name) throws NotLoggedInException;
