@@ -48,6 +48,14 @@ public class MapService {
 		buildMapUI();
 	}
 	
+	public double getUserLat()
+	{
+		return currentUserLat;
+	}
+	public double getUserLng()
+	{
+		return currentUserLng;
+	}
 	private void buildMapUI()
 	{
 		final MapOptions options = new MapOptions();

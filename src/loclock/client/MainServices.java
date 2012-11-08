@@ -40,6 +40,8 @@ public class MainServices extends TabSet{
 	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
 	private static final String APPLICATION_NAME = "PlusSample/1.0";
 	
+	private MapService mapService;
+	
 	public static Account account = null;
 	private static volatile MainServices mainServicesInstance;
 	private MainServices()
@@ -73,9 +75,13 @@ public class MainServices extends TabSet{
 	{
 		String mapWidth=(rootLayout.getRight()-rootLayout.getLeft())/2+"px";
 		String mapHeight=(rootLayout.getBottom()-rootLayout.getTop())+"px";
-		MapService mapService=new MapService(mapWidth,mapHeight);
+		mapService=new MapService(mapWidth,mapHeight);
 		rootLayout.addMember(mapService.toWidget());
 		rootLayout.redraw();
+	}
+	public MapService getMapService()
+	{
+		return mapService;
 	}
 	
 	public Account  getAccount()

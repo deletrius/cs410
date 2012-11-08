@@ -1,5 +1,6 @@
 package loclock.client;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -171,8 +172,8 @@ public class FriendService extends Service{
 
 					@Override
 					public void onSuccess(Double result) {
-						Window.alert("Lat: "+result);
-						final double lat=result;
+						//Window.alert("Profile Lat: "+result);
+						final double lat1=result;
 						locationService.getUserLongitude(profileName, new AsyncCallback<Double>(){
 							@Override
 							public void onFailure(Throwable caught) {
@@ -181,14 +182,30 @@ public class FriendService extends Service{
 
 							@Override
 							public void onSuccess(Double result) {
-								final double lon=result;
-								Window.alert("Lon: "+result);
-								LatLng profilePosition=new LatLng(lat,lon);
+								final double lon1=result;
+								//Window.alert("Profile Lon: "+result);
+								double lat2=MainServices.getInstance().getMapService().getUserLat();
+								double lon2=MainServices.getInstance().getMapService().getUserLng();
+								//Window.alert("User lat:"+lat2+"  User Long: "+lon2);
+								int R = 6371; // km
+								double dLat = Math.toRadians(lat2-lat1);
+								double dLon = Math.toRadians(lon2-lon1);
+								double lati1 = Math.toRadians(lat1);
+								double lati2 = Math.toRadians(lat2);
+
+								double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+								        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lati1) * Math.cos(lati2); 
+								double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+								double d = R * c;
 								
+								//Window.alert(Double.toString(d));
+								//LatLng profilePosition=new LatLng(lat,ln);
+								
+								updateProfilePanel(profileName,Double.toString((int)(d*1000)/1000.),"");
 							}
 						});
 					}} );
-				updateProfilePanel(profileName,"","");
+				
 			}});
 		requestService.getFriends(user, new AsyncCallback<List<String>>(){
 
