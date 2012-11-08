@@ -77,7 +77,6 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 			pm.close();
 		}
 	}
-	
 	public String[] getUsers() throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -197,47 +196,46 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 //		      pm.close();
 //		    }
 //	}
-//	public double getUserLatitude(String userName) {
-//		PersistenceManager pm = PMF.get().getPersistenceManager();
-//		double lat = 0;
-//		
-//		 Query q = pm.newQuery(User.class);
-//		  q.setFilter("userName == u");
-//		  q.declareParameters("String u");
-//	    try {
-//	    	System.out.println("lat is");
-//			  List<User> users = (List<User>) q.execute(userName);
-//			  for(User user : users){
-//				  lat = user.getLatitude();
-//				 
-//			  }
-//	    } finally {
-//	    	q.closeAll();
-//	      pm.close();
-//	    }
-//		return lat;
-//	}
-//
-//	public double getUserLongitude(String userName) {
-//		PersistenceManager pm = PMF.get().getPersistenceManager();
-//		double log = 0;
-//		
-//		 Query q = pm.newQuery(User.class);
-//		  q.setFilter("userName == u");
-//		  q.declareParameters("String u");
-//	    try {
-//	    	System.out.println("log is");
-//			  List<User> users = (List<User>) q.execute(userName);
-//			  for(User user : users){
-//				  log = user.getLatitude();
-//				 
-//			  }
-//	    } finally {
-//	    	q.closeAll();
-//	      pm.close();
-//	    }
-//		return log;
-//	}
+	public double getUserLatitude(String userName) {
+		PersistenceManager pm = getPersistenceManager();
+		double lat = 0;
+		
+		 Query q = pm.newQuery(User.class);
+		  q.setFilter("userName == u");
+		  q.declareParameters("String u");
+	    try {
+	    	System.out.println("lat is");
+			  List<User> users = (List<User>) q.execute(userName);
+			  for(User user : users){
+				  lat = (Double)Double.parseDouble(user.getLatitude());
+				 
+			  }
+	    } finally {
+	    	q.closeAll();
+	      pm.close();
+	    }
+		return lat;
+	}
+	public double getUserLongitude(String userName) {
+		PersistenceManager pm = getPersistenceManager();
+		double log = 0;
+		
+		 Query q = pm.newQuery(User.class);
+		  q.setFilter("userName == u");
+		  q.declareParameters("String u");
+	    try {
+	    	System.out.println("log is");
+			  List<User> users = (List<User>) q.execute(userName);
+			  for(User user : users){
+				  log = (Double) Double.parseDouble(user.getLatitude());
+				 
+			  }
+	    } finally {
+	    	q.closeAll();
+	      pm.close();
+	    }
+		return log;
+	}
 //
 //	public List<List<String>> getAllUserInfo(){
 //		PersistenceManager pm = PMF.get().getPersistenceManager();

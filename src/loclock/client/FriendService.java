@@ -2,6 +2,7 @@ package loclock.client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.Label;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 //import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.ibm.icu.util.Calendar;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
@@ -29,6 +31,7 @@ import com.smartgwt.client.widgets.IButton;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.StaticTextItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
@@ -67,8 +70,9 @@ public class FriendService extends Service{
 		chatManager=new ChatPanelManager(user);
 		
 		buildFriendList();
-		buildRequest();
+		updateProfilePanel(user,"0",new Date().toString());
 		friendsPanel.addMember(chatManager);
+		buildRequest();
 		this.setPane(friendsPanel);
 		
 	}
@@ -186,9 +190,47 @@ public class FriendService extends Service{
 		friendsPanel.addMember(tileGrid);
 	} 
 	
+	public void updateProfilePanel(String name,String distance,String lastUpdate)
+	{
+		DynamicForm profileForm=new DynamicForm();
+		profileForm.setBorder("2px solid grey");		
+		profileForm.setSize("100%", "20%");
+		StaticTextItem profileName=new StaticTextItem("ProfileName","Profile Name");
+		profileName.setValue(name);
+		StaticTextItem profileDistance=new StaticTextItem("ProfileDistance","Distance To");
+		profileDistance.setValue(distance+" km");
+		StaticTextItem profileLastUpdate=new StaticTextItem("ProfileLastUpdate","Last Updated");
+		profileLastUpdate.setValue(lastUpdate);
+		ButtonItem showCalendar=new ButtonItem("ShowCalendar","Show User Calendar");
+		showCalendar.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+			}});
+		
+		ButtonItem showMap=new ButtonItem("ShowMap","Indicate On Map");
+		showMap.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+			}});
+		
+		
+		profileForm.setItems(profileName,profileDistance,profileLastUpdate,showCalendar,showMap);
+		
+		friendsPanel.addMember(profileForm);
+	}
+	
+	
 	public void buildRequest(){
 		requestForm=new DynamicForm();
 		requestForm.setSize("100%", "20%");
+		searchBox.setShowTitle(false);
+		
 		requestForm.setItems(searchBox, searchButton);
 		//friendsPanel.addMember(searchButton);
 		final Label label0 = new Label();
@@ -201,6 +243,7 @@ public class FriendService extends Service{
 				// TODO Auto-generated method stub
 			
 				String userName = searchBox.getValueAsString();
+				searchBox.clearValue();
 				locationService.getUserByID(userName, new AsyncCallback<String>(){
 
 					public void onFailure(Throwable caught) {

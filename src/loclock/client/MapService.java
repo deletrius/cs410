@@ -144,13 +144,13 @@ public class MapService {
 								@Override
 								public void onSuccess(Void result) {
 									// TODO Auto-generated method stub
-									System.out.println("Diff Success user update");
+									//System.out.println("Diff Success user update");
 								}
 								
 								@Override
 								public void onFailure(Throwable caught) {
 									// TODO Auto-generated method stub
-									System.out.println("Diff User update failure.");
+									//System.out.println("Diff User update failure.");
 								}
 							});
 						}
