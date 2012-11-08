@@ -15,7 +15,7 @@ import javax.jdo.Query;
 
 import org.datanucleus.exceptions.NucleusObjectNotFoundException;
 
-import loclock.client.LocationService;
+import loclock.client.UserLocationService;
 import loclock.client.NotLoggedInException;
 
 import com.google.appengine.api.users.UserService;
@@ -23,10 +23,10 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-public class LocationServiceImpl extends RemoteServiceServlet implements LocationService 
+public class UserLocationServiceImpl extends RemoteServiceServlet implements UserLocationService 
 {
 	
-	private static final Logger LOG = Logger.getLogger(LocationServiceImpl.class.getName());
+	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
 	public void addUser(String username) throws NotLoggedInException 
@@ -64,7 +64,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 			List<User> users = (List<User>) q.execute(getCurrentUser()
 					.getEmail());
 			for (User user : users) {
-				if (username.equals(user.getUser())) {
+				if (username.equals(user.getUserName())) {
 					deleteCount++;
 					pm.deletePersistent(user);
 				}
@@ -89,7 +89,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 			q.setOrdering("userName");
 			List<User> users = (List<User>) q.execute();
 			for (User user : users) {
-				usersList.add(user.getUser());
+				usersList.add(user.getUserName());
 			}
 		} 
 		
@@ -113,12 +113,12 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 	    }
 	}
 	
-	public String getUserByID (String username) throws NotLoggedInException {
+	public String getUserNameByID (String username) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try{
 			User user = pm.getObjectById(User.class, username);
-			return user.getUser();
+			return user.getUserName();
 		}
 		catch (JDOObjectNotFoundException e)
 		{
@@ -143,7 +143,7 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 
 			for (User userObj : userList) {
 				ArrayList<Object> userAttributes = new ArrayList<Object>();
-				userAttributes.add(userObj.getUser());
+				userAttributes.add(userObj.getUserName());
 				userAttributes.add(userObj.getLatitude());
 				userAttributes.add(userObj.getLongitude());
 				userAsList.add(userAttributes);
@@ -197,48 +197,49 @@ public class LocationServiceImpl extends RemoteServiceServlet implements Locatio
 //		      pm.close();
 //		    }
 //	}
-//	public double getUserLatitude(String userName) {
-//		PersistenceManager pm = PMF.get().getPersistenceManager();
-//		double lat = 0;
-//		
-//		 Query q = pm.newQuery(User.class);
-//		  q.setFilter("userName == u");
-//		  q.declareParameters("String u");
-//	    try {
-//	    	System.out.println("lat is");
-//			  List<User> users = (List<User>) q.execute(userName);
-//			  for(User user : users){
-//				  lat = user.getLatitude();
-//				 
-//			  }
-//	    } finally {
-//	    	q.closeAll();
-//	      pm.close();
-//	    }
-//		return lat;
-//	}
-//
-//	public double getUserLongitude(String userName) {
-//		PersistenceManager pm = PMF.get().getPersistenceManager();
-//		double log = 0;
-//		
-//		 Query q = pm.newQuery(User.class);
-//		  q.setFilter("userName == u");
-//		  q.declareParameters("String u");
-//	    try {
-//	    	System.out.println("log is");
-//			  List<User> users = (List<User>) q.execute(userName);
-//			  for(User user : users){
-//				  log = user.getLatitude();
-//				 
-//			  }
-//	    } finally {
-//	    	q.closeAll();
-//	      pm.close();
-//	    }
-//		return log;
-//	}
-//
+	
+	public Double getUserLatitude(String userName) {
+		PersistenceManager pm = getPersistenceManager();
+		double lat = 0;
+		
+		 Query q = pm.newQuery(User.class);
+		  q.setFilter("userName == u");
+		  q.declareParameters("String u");
+	    try {
+	    	System.out.println("lat is");
+			  List<User> users = (List<User>) q.execute(userName);
+			  for(User user : users){
+				  lat = (Double)Double.parseDouble(user.getLatitude());
+				 
+			  }
+	    } finally {
+	    	q.closeAll();
+	      pm.close();
+	    }
+		return lat;
+	}
+
+	public Double getUserLongitude(String userName) {
+		PersistenceManager pm = getPersistenceManager();
+		double log = 0;
+		
+		 Query q = pm.newQuery(User.class);
+		  q.setFilter("userName == u");
+		  q.declareParameters("String u");
+	    try {
+	    	System.out.println("log is");
+			  List<User> users = (List<User>) q.execute(userName);
+			  for(User user : users){
+				  log = (Double)Double.parseDouble(user.getLatitude());
+				 
+			  }
+	    } finally {
+	    	q.closeAll();
+	      pm.close();
+	    }
+		return log;
+	}
+
 //	public List<List<String>> getAllUserInfo(){
 //		PersistenceManager pm = PMF.get().getPersistenceManager();
 //		List<List<String>> userInfos;

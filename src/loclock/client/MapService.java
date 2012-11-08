@@ -31,7 +31,7 @@ public class MapService {
 	private String height;
 	private Marker currentLocation;
 	private boolean firstTime = true;
-	private final LocationServiceAsync locationService = GWT.create(LocationService.class);
+	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private AccountServiceAsync accountService = GWT.create(AccountService.class);
 	private double currentUserLat = -1;
 	private double currentUserLng = -1;
@@ -144,13 +144,13 @@ public class MapService {
 								@Override
 								public void onSuccess(Void result) {
 									// TODO Auto-generated method stub
-									System.out.println("Diff Success user update");
+									//System.out.println("Diff Success user update");
 								}
 								
 								@Override
 								public void onFailure(Throwable caught) {
 									// TODO Auto-generated method stub
-									System.out.println("Diff User update failure.");
+									//System.out.println("Diff User update failure.");
 								}
 							});
 						}
