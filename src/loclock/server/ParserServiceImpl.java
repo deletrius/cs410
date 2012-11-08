@@ -160,7 +160,7 @@ public class ParserServiceImpl extends RemoteServiceServlet implements ParserSer
 			
 			 
 		}
-		/**
+		
 		for(int i=0; i<calendarAsList.size();i++){
 			System.out.println("ParserServiceImpl");
 			System.out.println(calendarAsList.get(i).get(0));
@@ -170,7 +170,7 @@ public class ParserServiceImpl extends RemoteServiceServlet implements ParserSer
 			System.out.println(calendarAsList.get(i).get(4));
 			System.out.println("calendarAsList size is:"+calendarAsList.size());
 		}
-		**/
+		
 		return calendarAsList;
 		
 	}
