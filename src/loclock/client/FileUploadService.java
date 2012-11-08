@@ -109,7 +109,7 @@ public class FileUploadService extends Service{
 				// documentation for further explanation).
 
 				//Window.alert("THE RESULT IS: " + event.getResults());
-				Window.alert(event.getResults().toString());
+				//Window.alert(event.getResults().toString());
 				String str = event.getResults().toString();
 				ParserServiceAsync parser = GWT.create(ParserService.class);
 
@@ -147,14 +147,19 @@ public class FileUploadService extends Service{
 							
 							int weekDiff =(int) ((dateTermEnd.getTime()-d1.getTime())/WEEKS_IN_MILLIS);
 
-							System.out.println("WEEKS_IN_MILLIS is:"+ weekDiff);
+							//System.out.println("WEEKS_IN_MILLIS is:"+ weekDiff);
 							
-							for(int j=0; j<weekDiff;j++){
+							for(int j=0; j<weekDiff+1;j++){
 
 							boolean contains = false;
-							if(d1.before(dateTermEnd)){
+							//if(d1.before(dateTermEnd)){
+							//System.out.println("Date end is: "+ dateTermEnd);
+							//System.out.println("d1 is: " + d1.toString());
+							if(!(d1.after(dateTermEnd))){
+								//System.out.println("Date end is: "+ dateTermEnd);
+								//System.out.println("d1 is: " + d1.toString());
 								if(calEvents.length!=0){
-									System.out.println("Size of calEvent is: "+ calEvents.length);
+									//System.out.println("Size of calEvent is: "+ calEvents.length);
 								for(int k = 0; k<calEvents.length;k++){
 									//check duplication if event consider to be duplicated if this event has same startDate, endDate, name, and description
 									//else add the calendar
@@ -166,10 +171,10 @@ public class FileUploadService extends Service{
 										if(calEvents[k].getEndDate().equals(d2)){
 											contains = true;
 											//System.out.println("different endDate");
-											if(calEvents[k].getName()==result.get(i).get(0).toString()){
+											if(calEvents[k].getName() == result.get(i).get(0).toString()){
 												System.out.println("same name");
 												//System.out.println("different eventName");
-											if(calEvents[k].getDescription()== result.get(i).get(1).toString()){
+											if(calEvents[k].getDescription() == result.get(i).get(1).toString()){
 												//System.out.println("different description");
 												
 
@@ -183,8 +188,10 @@ public class FileUploadService extends Service{
 								}
 								if(contains == false){
 									System.out.println("contains == false");
+									System.out.println("Event "+ result.get(i).get(2).toString());
+									
 									calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
-
+										
 										@Override
 										public void onFailure(Throwable caught) {
 											// TODO Auto-generated method stub
@@ -208,7 +215,7 @@ public class FileUploadService extends Service{
 
 
 							}
-							TimeTableService.calendar.redraw();
+							//TimeTableService.calendar.redraw();
 						}
 						
 
