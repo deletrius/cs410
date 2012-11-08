@@ -230,7 +230,7 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    	System.out.println("log is");
 			  List<User> users = (List<User>) q.execute(userName);
 			  for(User user : users){
-				  log = (Double)Double.parseDouble(user.getLatitude());
+				  log = (Double)Double.parseDouble(user.getLongitude());
 				 
 			  }
 	    } finally {
