@@ -168,7 +168,7 @@ public class TimeTableService extends Service{
 			//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate
 						@Override
 						public void onSuccess(List<ArrayList<Object>> result) {
-							Window.alert("WOW, TimeTable Service is up!!!!");
+							//Window.alert("WOW, TimeTable Service is up!!!!");
 							//for(int i =0; i<result.length;i++)
 							ArrayList<CalendarEvent> calEvent=new ArrayList<CalendarEvent>();
 							
