@@ -40,7 +40,7 @@ public class FileUploadService extends Service{
 	private VLayout fileUploadForm;
 	private long dateTimeStart;
 	private long dateTimeEnd;
-	TimeTableService timeTableService;
+	private TimeTableService timeTableService;
 	final long WEEKS_IN_MILLIS = 1000 * 60 * 60 * 24*7;
 	private DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyyMMddHHmmss");
 	//new SimpleDateFormat("yyyyMMddHHmmss");
