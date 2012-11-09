@@ -1,2 +1,11 @@
 # Module loclock
 # RPC service class, partial path of RPC policy file
+loclock.client.SubscriptionService, 78846D84D5B4A4E459B42EF7358A89BB.gwt.rpc
+loclock.client.NotificationService, B4D7AFB93D72882C6816B774422C38FB.gwt.rpc
+loclock.client.UserLocationService, 7ABB56D47E5350CC2A29CE95B11C6074.gwt.rpc
+com.google.gwt.logging.shared.RemoteLoggingService, A88B105F77635C6F651DAE68D003084C.gwt.rpc
+loclock.client.CalendarService, A3C93C5530A1BDA8CB77948DCE9F3C2A.gwt.rpc
+loclock.client.MessageService, C0C8667C4BB49DB95F84152D97447178.gwt.rpc
+loclock.client.AccountService, E0395437FF65179301CA8E450DF705E0.gwt.rpc
+loclock.client.GreetingService, B8A0FD1D5EBF42C743CBFC936BEF3902.gwt.rpc
+loclock.client.ParserService, 8BBB1F64DED09209DB79897A009BC208.gwt.rpc

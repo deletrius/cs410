@@ -63,12 +63,15 @@ public class FriendService extends Service{
 	private VLayout friendsPanel;
 	private DynamicForm requestForm;
 	private String user;
+	private String friendUserName;
 	private UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private SubscriptionServiceAsync requestService=GWT.create(SubscriptionService.class);
-	
+	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
+	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
 	TextAreaItem searchBox = new TextAreaItem();
 	ButtonItem searchButton = new ButtonItem("Search");
 	IButton requestButton = new IButton("Add Friend");
+	
 	DynamicForm profileForm=new DynamicForm();
 //	private static final List<String> DAYS = Arrays.asList("Sunday", "Monday",
 //			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
@@ -152,6 +155,7 @@ public class FriendService extends Service{
 		tileGrid.setTileWidth(100);
 		tileGrid.setCanReorderTiles(true);  
 		tileGrid.setShowAllRecords(true); 
+		
 		//  Record rec = new StudentRecord("name",picture,"Profile");
 		
 		checkInvitations();		
@@ -163,8 +167,12 @@ public class FriendService extends Service{
 				double profileLat;
 				double profileLon;
 				final String profileName=event.getRecord().getAttribute("name").toString();
+				friendUserName = profileName;
+				//Window.alert("test1");
+				//timeTableService.buildGoogleCalendar(friendUserName);
+				//Window.alert("test2");
 				locationService.getUserLatitude(profileName, new AsyncCallback<Double>(){
-
+				
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert(caught.getMessage());
@@ -249,6 +257,9 @@ public class FriendService extends Service{
 			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
 				
 				String to=event.getRecord().getAttribute("name").toString();
+				System.out.println("");
+				System.out.println("user Name is: "+ to);
+				System.out.println("");
 				//TODO chatManager.openChat(user,to);
 				chatManager.openChat(user,to);
 			}});
@@ -267,12 +278,16 @@ public class FriendService extends Service{
 		profileDistance.setValue(distance+" km");
 		StaticTextItem profileLastUpdate=new StaticTextItem("ProfileLastUpdate","Last Updated");
 		profileLastUpdate.setValue(lastUpdate);
-		ButtonItem showCalendar=new ButtonItem("ShowCalendar","Show User Calendar");
+		ButtonItem showCalendar=new ButtonItem("showCalendar","Show User Calendar");
 		showCalendar.addClickHandler(new ClickHandler(){
 
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
+				//Window.alert("1friendName is: "+ friendUserName);
+				timeTableService.buildGoogleCalendar(friendUserName);
+				//Window.alert("2friendName is: "+ friendUserName);
+				//calendarService.getEventByUserName(name, async)
 				
 			}});
 		
