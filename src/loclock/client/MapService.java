@@ -2,6 +2,7 @@ package loclock.client;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.core.client.Callback;
@@ -14,6 +15,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapTypeId;
 import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.maps.client.base.InfoWindow;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.maps.client.event.Event;
@@ -29,9 +31,10 @@ public class MapService {
 	private MapWidget mapwidget;
 	private String width;
 	private String height;
-	private Marker currentLocation;
+	private HashMap<String,UserMarker> userMarkers;
+	//	private InfoWindow userMarkerInfoWindow;
 	private boolean firstTime = true;
-	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
+	private final UserLocationServiceAsync userLocationService = GWT.create(UserLocationService.class);
 	private AccountServiceAsync accountService = GWT.create(AccountService.class);
 	private double currentUserLat = -1;
 	private double currentUserLng = -1;
@@ -39,15 +42,75 @@ public class MapService {
 	private Marker friendMarker;
 	private InfoWindow iw;
 	private String email;
-	
+
+	private class UserMarker
+	{
+		Marker marker;
+		InfoWindow infoWindow;
+		String username;
+		Date lastupdate=new Date();
+		public UserMarker(final String username, LatLng latlng, Date date, Boolean panTo)
+		{
+			this.username=username;
+			this.lastupdate=date;
+			MarkerOptions mo = new MarkerOptions();
+			mo.setMap(mapwidget.getMap());
+			mo.setClickable(true);
+			mo.setPosition(latlng);
+			marker = new Marker(mo);		
+			
+
+			if (infoWindow==null)
+				infoWindow = new InfoWindow();
+			Event.addListener(marker, "click", new EventCallback() {
+				@Override
+				public void callback() {
+					infoWindow.close();
+					
+					DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
+					infoWindow.setContent("Your " + username + " location at: " + dtf.format(lastupdate));
+
+					infoWindow.bindTo("", marker);
+					infoWindow.open(mapwidget.getMap(), marker);
+
+				}
+			});
+			
+			show();
+
+			if (panTo)
+			{
+				mapwidget.getMap().setZoom(16);
+				mapwidget.getMap().panTo(latlng);
+			}
+		}
+
+		public void updateUserMarker(LatLng latlng,Date lastupdate,boolean panTo)
+		{
+			this.lastupdate=lastupdate;
+			DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
+			infoWindow.setContent("Your " + username + " location at: " + dtf.format(this.lastupdate));
+			marker.setPosition(latlng);
+			if (panTo)
+				mapwidget.getMap().panTo(latlng);
+
+		}
+
+		public void show()
+		{
+			marker.setVisible(true);
+		}
+	}
+
 	public MapService(String width,String height)
 	{
 		this.width=width;
 		this.height=height;
-		
+		userMarkers=new HashMap<String,UserMarker>();
+
 		buildMapUI();
 	}
-	
+
 	public double getUserLat()
 	{
 		return currentUserLat;
@@ -65,10 +128,10 @@ public class MapService {
 		// Open a map centered on Cawker City, KS USA. Required
 		options.setCenter(new LatLng(39.509, -98.434));
 		final PositionOptions po=new PositionOptions();
-		final Geolocation gps=Geolocation.getIfSupported();
 
 
-		System.out.println(Geolocation.getIfSupported());
+
+		
 
 		po.setHighAccuracyEnabled(true);
 
@@ -87,190 +150,90 @@ public class MapService {
 
 
 		mapwidget = new MapWidget(options);
-		
-		
+
+
 		mapwidget.setSize(width,height);
 
+		updateUserCurrentLocation(true);
 		Timer refreshTimer = new Timer() {
 			public void run() {
-				gps.getCurrentPosition(new Callback<Position, PositionError>() {
-					@Override
-					public void onFailure(PositionError reason) {
-						// TODO Auto-generated method stub
-						System.out.println(reason.getLocalizedMessage());
-						System.out.println(reason.getMessage());
-						//Window.alert("Failed to get current location.");
-					}
-
-					@Override
-					public void onSuccess(Position result) {
-						//System.out.println("Lat: " + result.getCoordinates().getLatitude() + " Long: " + result.getCoordinates().getLongitude());
-						if (currentUserLat == -1 || currentUserLng == -1)
-						{
-							currentUserLat = result.getCoordinates().getLatitude();
-							currentUserLng = result.getCoordinates().getLongitude();
-							// Update the current user's geolocation upon success
-							//locationService.updateUserLatLng(MainServices.account.getEmailAddress(), Double.toString(88.0), Double.toString(88.0), new AsyncCallback<Void>() {
-							locationService.updateUserLatLng(MainServices.account.getEmailAddress(), Double.toString(result.getCoordinates().getLatitude()), Double.toString(result.getCoordinates().getLongitude()), new AsyncCallback<Void>() {
-								
-								@Override
-								public void onSuccess(Void result) {
-									// TODO Auto-generated method stub
-									System.out.println("First Success user update");
-								}
-								
-								@Override
-								public void onFailure(Throwable caught) {
-									// TODO Auto-generated method stub
-									System.out.println("First User update failure.");
-								}
-							});
-							
-//							locationService.updateUserLatLng(MainServices.account.getEmailAddress(), result.getCoordinates().getLatitude(), result.getCoordinates().getLongitude(), new AsyncCallback<Void>() {
-//								
-//								@Override
-//								public void onSuccess(Void result) {
-//									// TODO Auto-generated method stub
-//									System.out.println("First Success user update");
-//								}
-//								
-//								@Override
-//								public void onFailure(Throwable caught) {
-//									// TODO Auto-generated method stub
-//									System.out.println("First User update failure.");
-//								}
-//							});
-						}
-						else if (currentUserLat != result.getCoordinates().getLatitude() || currentUserLng != result.getCoordinates().getLongitude() )
-						{
-							currentUserLat = result.getCoordinates().getLatitude();
-							currentUserLng = result.getCoordinates().getLongitude();
-							// Update the current user's geolocation upon success
-							//locationService.updateUserLatLng(MainServices.account.getEmailAddress(), Double.toString(88.0), Double.toString(88.0), new AsyncCallback<Void>() {
-							locationService.updateUserLatLng(MainServices.account.getEmailAddress(), Double.toString(result.getCoordinates().getLatitude()), Double.toString(result.getCoordinates().getLongitude()), new AsyncCallback<Void>() {
-								
-								@Override
-								public void onSuccess(Void result) {
-									// TODO Auto-generated method stub
-									//System.out.println("Diff Success user update");
-								}
-								
-								@Override
-								public void onFailure(Throwable caught) {
-									// TODO Auto-generated method stub
-									//System.out.println("Diff User update failure.");
-								}
-							});
-						}
-						
-						MarkerOptions mo = new MarkerOptions();
-						mo.setMap(mapwidget.getMap());
-						mo.setClickable(true);
-						mo.setPosition(new LatLng(result.getCoordinates()
-								.getLatitude(), result.getCoordinates()
-								.getLongitude()));
-
-						final Marker marker = new Marker(mo);
-						Event.addListener(marker, "click", new EventCallback() {
-							@Override
-							public void callback() {
-								InfoWindow iw = new InfoWindow();
-
-								Date date = new Date();
-								DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
-								iw.setContent("Your " + MainServices.account.getEmailAddress() + " location at: " + dtf.format(date));
-								
-								iw.bindTo("", marker);
-								iw.open(mapwidget.getMap(), marker);
-							}
-						});
-						
-						// Custom marker image code here
-						// MarkerImage.Builder imageBuilder = new
-						// MarkerImage.Builder("http://mingle2.com/images/new/sex_quiz/person_icon.png");
-						// marker.setIcon(imageBuilder.build());
-						
-						if (currentLocation != null)
-						{
-							currentLocation.setVisible(false);
-						}
-						currentLocation = marker;
-						currentLocation.setVisible(true);
-						
-						if (firstTime)
-						{
-							mapwidget.getMap().setZoom(16);
-							mapwidget.getMap().panTo(
-									new LatLng(result.getCoordinates()
-											.getLatitude(), result.getCoordinates()
-											.getLongitude()));
-							firstTime = false;
-						}
-					}
-				}, po);
+				updateUserCurrentLocation(true);
+				// Custom marker image code here
+				// MarkerImage.Builder imageBuilder = new
+				// MarkerImage.Builder("http://mingle2.com/images/new/sex_quiz/person_icon.png");
+				// marker.setIcon(imageBuilder.build());
 			}
 		};
+
 		refreshTimer.scheduleRepeating(5000);
-		
-		locationService.getUsersAsArrayList( new AsyncCallback<List<ArrayList<Object>>>() {
-		
-		@Override
-		public void onSuccess(List<ArrayList<Object>> result) {
-			// TODO Auto-generated method stub
-			System.out.println("The number of users in database is:" + result.size());
-			//MarkerOptions friendsMo;
-			//Marker friendMarker;
-			for (ArrayList<Object> userAttributes : result)
-			{
-				email = (String) userAttributes.get(0);
-				System.out.println("The user email is: " + email);
-				// Do user parsing in server side instead of here
-//				if (!userAttributes.get(1).equals("-1.0") && !userAttributes.get(2).equals("-1.0") && !email.equals(MainServices.account.getEmailAddress()))
-//				{
-				//if ()
-				//{
-					double lat = Double.parseDouble((String) userAttributes.get(1));
-					System.out.println("The user lat is: " + lat);
-					double lng = Double.parseDouble((String) userAttributes.get(2));
-					System.out.println("The user lng is: " + lng);
-					
-					
-					friendsMo = new MarkerOptions();
-					friendsMo.setMap(mapwidget.getMap());
-					friendsMo.setClickable(true);
-					friendsMo.setPosition(new LatLng(lat, lng));
 
-					friendMarker = new Marker(friendsMo);
-					Event.addListener(friendMarker, "click", new EventCallback() {
-						@Override
-						public void callback() {
-							iw = new InfoWindow();
-
-							iw.setContent("Location for: " + email);
-							
-							//iw.bindTo("", friendMarker);
-							iw.open(mapwidget.getMap(), friendMarker);
-						}
-					});
-					
-					friendMarker.setVisible(true);
-				//}
-//				}
-//				else
-//				{
-//					System.out.println("User does not contain lat and lng, therefore skipped: " + email);
-//				}
-			}
-		}
-		
-		@Override
-		public void onFailure(Throwable caught) {
-			// TODO Auto-generated method stub
-			
-		}
-	});
 	}
-	
+
+	public void updateUserCurrentLocation(final boolean panTo)
+	{
+		
+		final Geolocation gps=Geolocation.getIfSupported();
+
+		gps.getCurrentPosition(new Callback<Position, PositionError>() {
+			@Override
+			public void onFailure(PositionError reason) {
+				Window.alert("Failed to get user current location.");
+			}
+
+			@Override
+			public void onSuccess(Position result) {
+				currentUserLat = result.getCoordinates().getLatitude();
+				currentUserLng = result.getCoordinates().getLongitude();
+				userLocationService.updateUserLatLng(MainServices.account.getEmailAddress(), Double.toString(result.getCoordinates().getLatitude()), Double.toString(result.getCoordinates().getLongitude()), new Date(),new AsyncCallback<Void>() {
+					@Override
+					public void onSuccess(Void result) {
+						System.out.println("Success user update");
+						showUserMarker(MainServices.account.getEmailAddress(),panTo);
+					}
+
+					@Override
+					public void onFailure(Throwable caught) {
+						System.out.println("User update failure.");
+					}
+				});
+
+				
+			}		
+		});
+
+	}
+
+	public void showUserMarker(final String userName,final boolean panTo)
+	{
+		
+		userLocationService.getUserLocation(userName, new AsyncCallback<ArrayList<String>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Failed to get user location for "+userName);
+			}
+
+			@Override
+			public void onSuccess(ArrayList<String> result) {		
+//				for(String i:result)
+//					System.out.println(i);
+				LatLng pos=new LatLng(Double.parseDouble(result.get(1)),Double.parseDouble(result.get(2)));
+				Date date=new Date(result.get(3));
+				System.out.println(date);
+				if (!userMarkers.containsKey(userName))
+				{
+					System.out.println("put");
+					userMarkers.put(userName, new UserMarker(userName,pos,date,panTo));
+				}
+				else
+				{
+					System.out.println("get");
+					userMarkers.get(userName).updateUserMarker(pos, date,panTo);
+				}
+			}
+		});
+	}
+
 	public MapWidget toWidget()
 	{
 		return mapwidget;

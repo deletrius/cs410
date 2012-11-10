@@ -49,13 +49,13 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 		// if not, go ahead and add the user to the database.
 		PersistenceManager pm = getPersistenceManager();
 		try{
-			pm.getObjectById(new User(getCurrentUser().getEmail()));
+			pm.getObjectById(new UserLocation(getCurrentUser().getEmail()));
 		}
 		catch (JDOObjectNotFoundException e)
 		{
 			try 
 			{
-				pm.makePersistent(new User(getCurrentUser().getEmail()));
+				pm.makePersistent(new UserLocation(getCurrentUser().getEmail()));
 			} 
 			finally 
 			{
