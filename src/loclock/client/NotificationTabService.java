@@ -29,13 +29,13 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 public class NotificationTabService extends Service{
 	
-	private final NotificationServiceAsync notificationService = GWT.create(NotificationService.class);
+	private final static NotificationServiceAsync notificationService = GWT.create(NotificationService.class);
 	//private final NotificationPushServiceAsync notificationPushService = GWT.create(NotificationPushService.class);
-	private String notificationContents;
-	private HTMLFlow notificationHtmlFlow;
-	private VLayout notificationVLayout;
-	private SectionStackSection notificationSection;
-	private SectionStack sectionStack;
+	private static String notificationContents;
+	private static HTMLFlow notificationHtmlFlow;
+	private static VLayout notificationVLayout;
+	private static SectionStackSection notificationSection;
+	private static SectionStack sectionStack;
 	
 //	private static final Domain DOMAIN = DomainFactory.getDomain("my_domain");
 	
@@ -186,6 +186,22 @@ public class NotificationTabService extends Service{
             public void onClick(ClickEvent event) {  
                 label.animateMove(10, 50);  
                 
+        		notificationService.addNotification(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), "I see you.", new AsyncCallback<Void>() {
+    			
+    			@Override
+    			public void onSuccess(Void result) {
+    				// TODO Auto-generated method stub
+    				System.out.println("Successful notification added.");
+    			}
+    			
+    			@Override
+    			public void onFailure(Throwable caught) {
+    				// TODO Auto-generated method stub
+    				System.out.println("Failed failed failed notification added.");
+    				System.out.println(caught.getMessage());
+    			}
+    		});
+                
 //				// Test code to send notification to server
 //				notificationPushService.sendNotificationToServer(
 //						MainServices.account.getEmailAddress(),
@@ -246,7 +262,7 @@ public class NotificationTabService extends Service{
 		});
 	}
 	
-	private SectionStackSection produceNewNotification(String content)
+	private static SectionStackSection produceNewNotification(String content)
 	{
 		notificationContents = content;
 		
@@ -266,7 +282,7 @@ public class NotificationTabService extends Service{
 		return notificationSection;
 	}
 	
-	public void updateNotificationsStack()
+	public static void updateNotificationsStack()
 	{
 		System.out.println("The updateNotificationStack was called from server!");
 		notificationService.getNotificationsByUsername(
