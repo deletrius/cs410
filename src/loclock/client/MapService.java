@@ -187,7 +187,7 @@ public class MapService {
 				userLocationService.updateUserLatLng(MainServices.account.getEmailAddress(), Double.toString(result.getCoordinates().getLatitude()), Double.toString(result.getCoordinates().getLongitude()), new Date(),new AsyncCallback<Void>() {
 					@Override
 					public void onSuccess(Void result) {
-						System.out.println("Success user update");
+						//System.out.println("Success user update");
 						showUserMarker(MainServices.account.getEmailAddress(),panTo);
 					}
 
@@ -219,15 +219,15 @@ public class MapService {
 //					System.out.println(i);
 				LatLng pos=new LatLng(Double.parseDouble(result.get(1)),Double.parseDouble(result.get(2)));
 				Date date=new Date(result.get(3));
-				System.out.println(date);
+				//System.out.println(date);
 				if (!userMarkers.containsKey(userName))
 				{
-					System.out.println("put");
+					//System.out.println("put");
 					userMarkers.put(userName, new UserMarker(userName,pos,date,panTo));
 				}
 				else
 				{
-					System.out.println("get");
+					//System.out.println("get");
 					userMarkers.get(userName).updateUserMarker(pos, date,panTo);
 				}
 			}

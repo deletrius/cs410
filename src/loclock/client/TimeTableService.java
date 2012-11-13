@@ -10,20 +10,35 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.smartgwt.client.widgets.Button;
+import com.smartgwt.client.widgets.Dialog;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Slider;
 import com.smartgwt.client.widgets.calendar.Calendar;
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventAdded;
+import com.smartgwt.client.widgets.calendar.events.CalendarEventClick;
 import com.smartgwt.client.widgets.calendar.events.DayBodyClickEvent;
 import com.smartgwt.client.widgets.calendar.events.DayBodyClickHandler;
 import com.smartgwt.client.widgets.calendar.events.EventAddedHandler;
+import com.smartgwt.client.widgets.calendar.events.EventClickHandler;
+import com.smartgwt.client.widgets.events.ClickEvent;
+
+
+import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
 
 public class TimeTableService extends Service{
 	
 	private static final String CAL_PUBLIC_URL = "https://www.google.com/calendar/embed?src=phihl3hmbh48lq5ml3ek9cj19o%40group.calendar.google.com&ctz=Australia/Brisbane";
 	private Frame googleCalendar = new Frame(CAL_PUBLIC_URL);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
+	private SubscriptionServiceAsync sub = GWT.create(SubscriptionService.class);
 	public static Calendar calendar;
 	public static CalendarEvent[] events;
+	private ArrayList<String> friendList = new ArrayList();
+	private ButtonItem sendInvitationButton = new ButtonItem("SendInvitation");
 	//private String uName = MainServices.account.getEmailAddress();
 	public TimeTableService()
 	{	
@@ -63,13 +78,6 @@ public class TimeTableService extends Service{
 							
 							for(int i=0; i < result.size();i++){
 								calEvent.add( new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString())));
-							//System.out.println(i+result.get(i).get(2).toString()+ result.get(i).get(3).toString()+new Date(result.get(i).get(4).toString())+new Date(result.get(i).get(5).toString()));
-							//System.out.println("1:"+ i);
-							//System.out.println("");
-							//System.out.println(result.get(i).get(1).toString());
-							//System.out.println(result.get(i).get(2).toString());
-							//System.out.println(result.get(i).get(3).toString());
-							//System.out.println("");
 							}
 							events=new CalendarEvent[calEvent.size()];
 							//CalendarEvent[] events=new CalendarEvent[calEvent.size()];
@@ -88,6 +96,67 @@ public class TimeTableService extends Service{
 
 	
 		calendar.setSize("600px", "600px");
+		
+		
+		sub.getFriends(MainServices.account.getEmailAddress(), new  AsyncCallback<List<String>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				// TODO Auto-generated method stub
+				
+				for(int i=0; i<result.size();i++){
+				System.out.println(result.get(i));
+				friendList.add(result.get(i));
+				}
+			}});
+			
+		calendar.addEventClickHandler(new EventClickHandler(){
+			
+			@Override
+			public void onEventClick(CalendarEventClick event) {
+				// TODO Auto-generated method stub
+				
+				
+				
+				sendInvitationButton.addClickHandler(new ClickHandler(){
+
+					@Override
+					public void onClick(
+							com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+						// TODO Auto-generated method stub
+						for(int i=0; i<friendList.size();i++){
+							sub.sendInvitation(MainServices.account.getEmailAddress(), friendList.get(i), new AsyncCallback<Void>(){
+
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void onSuccess(Void result) {
+									// TODO Auto-generated method stub
+									System.out.println("Calendar Event Invitation Sent");
+								}
+								
+							});
+						}
+					}});
+				
+			
+				
+				//Window.alert("Clicked");
+				
+			}
+			
+			
+		});
 		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
 
 			@Override
@@ -135,10 +204,12 @@ public class TimeTableService extends Service{
 			}
 
 		});
-		calendar.draw();
+		calendar.setEventDialogFields(sendInvitationButton);
 		googleCalendar.setWidth("600px");
 		googleCalendar.setHeight("600px");
-
+		calendar.setCanEditEvents(true);//CAL_PUBLIC_URL;
+		
+		calendar.draw();
 	}
 	
 	
@@ -199,6 +270,7 @@ public class TimeTableService extends Service{
 
 	
 		calendar.setSize("600px", "600px");
+		/**
 		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
 
 			@Override
@@ -210,7 +282,9 @@ public class TimeTableService extends Service{
 
 
 		});
+		**/
 		calendar.draw();
+		calendar.setCanEditEvents(false);
 		popUp.add(calendar);
 		popUp.setGlassEnabled(true);
 		popUp.setPixelSize(calendar.getWidth(), calendar.getHeight());
