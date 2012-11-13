@@ -5,6 +5,7 @@ package loclock.client;
 import java.text.ParseException;
 import com.google.gwt.i18n.client.DateTimeFormat; 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.widgets.Label;
 
@@ -38,9 +40,8 @@ public class FileUploadService extends Service{
 	private VLayout fileUploadForm;
 	private long dateTimeStart;
 	private long dateTimeEnd;
-	TimeTableService timeTableService;
-	
-	
+	private TimeTableService timeTableService;
+	final long WEEKS_IN_MILLIS = 1000 * 60 * 60 * 24*7;
 	private DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyyMMddHHmmss");
 	//new SimpleDateFormat("yyyyMMddHHmmss");
 	public FileUploadService()
@@ -108,10 +109,10 @@ public class FileUploadService extends Service{
 				// documentation for further explanation).
 
 				//Window.alert("THE RESULT IS: " + event.getResults());
-				Window.alert(event.getResults().toString());
+				//Window.alert(event.getResults().toString());
 				String str = event.getResults().toString();
 				ParserServiceAsync parser = GWT.create(ParserService.class);
-				
+
 
 				parser.parse(str,MainServices.account.getEmailAddress(),new AsyncCallback<List<ArrayList<Object>>>(){
 
@@ -121,74 +122,109 @@ public class FileUploadService extends Service{
 						System.out.println("Failed");
 					}
 
-					
+
 
 					@Override
 					public void onSuccess(List<ArrayList<Object>> result) {
 						System.out.println("parserService succeed");
+						CalendarEvent[] calEvents = TimeTableService.events;
 						
 						CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
-						for(int i=1;i<result.size();i++){
+						for(int i=0;i<result.size();i++){
 							//dateTimeStart = (Long) Long.parseLong(result.get(i).get(2).toString());
 							//dateTimeEnd = (Long) Long.parseLong(result.get(i).get(3).toString());
-							
+
 							String str1 = result.get(i).get(2).toString();
 							String str2 = result.get(i).get(3).toString();
+							String str3 = result.get(i).get(4).toString();
+							//System.out.println("str3 is: "+ str3);
 							Date d1 = new Date();
 							Date d2 = new Date();
+							Date dateTermEnd = new Date();
 							d1 = dateTimeFormat.parse(str1);
 							d2 = dateTimeFormat.parse(str2);
-							System.out.println(d1);
-							System.out.println("Size is: "+ str1.length());
-							System.out.println(d2);
-							System.out.println("Size is: "+ str2.length());
-							System.out.println("i is: "+ i);
-							//String str1 = result.get(i).get(2).toString();
-							//String str2 = result.get(i).get(3).toString();
+							dateTermEnd  = dateTimeFormat.parse(str3+"235959");
 							
-						calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
+							int weekDiff =(int) ((dateTermEnd.getTime()-d1.getTime())/WEEKS_IN_MILLIS);
 
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-								Window.alert("Problem");
+							//System.out.println("WEEKS_IN_MILLIS is:"+ weekDiff);
+							
+							for(int j=0; j<weekDiff+1;j++){
+
+							boolean contains = false;
+							//if(d1.before(dateTermEnd)){
+							//System.out.println("Date end is: "+ dateTermEnd);
+							//System.out.println("d1 is: " + d1.toString());
+							if(!(d1.after(dateTermEnd))){
+								//System.out.println("Date end is: "+ dateTermEnd);
+								//System.out.println("d1 is: " + d1.toString());
+								if(calEvents.length!=0){
+									//System.out.println("Size of calEvent is: "+ calEvents.length);
+								for(int k = 0; k<calEvents.length;k++){
+									//check duplication if event consider to be duplicated if this event has same startDate, endDate, name, and description
+									//else add the calendar
+									//System.out.println(calEvents[k].getName());
+									
+									if(calEvents[k].getStartDate().equals(d1)){
+										
+										//System.out.println("different startDate");
+										if(calEvents[k].getEndDate().equals(d2)){
+											contains = true;
+											//System.out.println("different endDate");
+											if(calEvents[k].getName() == result.get(i).get(0).toString()){
+												System.out.println("same name");
+												//System.out.println("different eventName");
+											if(calEvents[k].getDescription() == result.get(i).get(1).toString()){
+												//System.out.println("different description");
+												
+
+
+											}
+											
+											}
+										}
+									}
+								}			
+								}
+								if(contains == false){
+									System.out.println("contains == false");
+									System.out.println("Event "+ result.get(i).get(2).toString());
+									
+									calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
+										
+										@Override
+										public void onFailure(Throwable caught) {
+											// TODO Auto-generated method stub
+											Window.alert("Upload Failed");
+										}
+
+										@Override
+										public void onSuccess(Void result) {
+											// TODO Auto-generated method stub
+											Window.alert("Event Saved");
+											//timeTableService.calendarDraw();
+
+
+
+										}});
+								}
+								
+						}
+							CalendarUtil.addDaysToDate(d1, 7);
+							CalendarUtil.addDaysToDate(d2, 7);
+
+
 							}
-
-							@Override
-							public void onSuccess(Void result) {
-								// TODO Auto-generated method stub
-								//timeTableService.buildGoogleCalendar();
-							}});
+							//TimeTableService.calendar.redraw();
 						}
-						/**
-						for(int i =0; i<result.size();i++){
-							//System.out.println(result.get(i).get(0).toString());
-							//System.out.println(result.get(i).get(1).toString());
-							//String str1 = result.get(i).get(2).toString();
-							//String str2 = result.get(i).get(3).toString();
-							
-							//Date startDate = new Date();
-							//Date endDate = new Date();
-							//startDate = dateTimeFormat.parse(result.get(i).get(2).toString());
-						//	System.out.println(result.get(i).get(0));
-							//System.out.println(result.get(i).get(1));
-							//System.out.println(startDate);
-							//System.out.println(result.get(i).get(3));
-							//try {
-								//calendarService.saveEvent("1234567890@example.com", result.get(i).get(0).toString(), result.get(i).get(1).toString(), startDate, endDate);
-							//} catch (NotLoggedInException e) {
-								// TODO Auto-generated catch block
-							//	Window.alert("fileupload.calendarService failed");
-							//}
 						
-						}
-						//timeTableService.buildGoogleCalendar();
-						 * **/
-						 
+
 					}
-					
-					
+
+
 				});
+				TimeTableService.calendar.redraw();
+
 }
 		});
 		//FormItem lol;

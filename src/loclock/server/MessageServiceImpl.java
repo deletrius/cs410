@@ -18,7 +18,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class MessageServiceImpl extends RemoteServiceServlet implements MessageService{
 
-	private static final Logger LOG = Logger.getLogger(LocationServiceImpl.class.getName());
+	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	private static PersistenceManager pm=PMF.getPersistenceManager();
 	@Override

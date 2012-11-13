@@ -22,7 +22,10 @@
     <servlet-name>AccountServlet</servlet-name>
     <servlet-class>loclock.server.AccountServiceImpl</servlet-class>
   </servlet>
-  
+  <servlet>
+    <servlet-name>subscriptionService</servlet-name>
+    <servlet-class>loclock.server.SubscriptionServiceImpl</servlet-class>
+  </servlet>
   <servlet>
     <servlet-name>messageService</servlet-name>
     <servlet-class>loclock.server.MessageServiceImpl</servlet-class>
@@ -30,8 +33,8 @@
   
   
   <servlet>
-    <servlet-name>locationService</servlet-name>
-    <servlet-class>loclock.server.LocationServiceImpl</servlet-class>
+    <servlet-name>userLocationService</servlet-name>
+    <servlet-class>loclock.server.UserLocationServiceImpl</servlet-class>
   </servlet>
   
   <servlet>
@@ -63,15 +66,18 @@
     <servlet-name>messageService</servlet-name>
     <url-pattern>/loclock/message</url-pattern>
   </servlet-mapping>
-  
+   <servlet-mapping>
+    <servlet-name>subscriptionService</servlet-name>
+    <url-pattern>/loclock/request</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>uploadServlet</servlet-name>
     <url-pattern>/loclock/upload</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
-    <servlet-name>locationService</servlet-name>
-    <url-pattern>/loclock/user</url-pattern>
+    <servlet-name>userLocationService</servlet-name>
+    <url-pattern>/loclock/userlocation</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
