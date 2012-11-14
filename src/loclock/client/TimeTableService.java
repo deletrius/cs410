@@ -35,14 +35,10 @@ public class TimeTableService extends Service{
 	private Frame googleCalendar = new Frame(CAL_PUBLIC_URL);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 	private SubscriptionServiceAsync sub = GWT.create(SubscriptionService.class);
-	private NotificationServiceAsync notificationService = GWT.create(NotificationService.class);
 	public static Calendar calendar;
 	public static CalendarEvent[] events;
 	private ArrayList<String> friendList = new ArrayList();
 	private ButtonItem sendInvitationButton = new ButtonItem("SendInvitation");
-	
-	private CalendarEventClick clickedOnEvent;
-	
 	//private String uName = MainServices.account.getEmailAddress();
 	public TimeTableService()
 	{	
@@ -52,22 +48,6 @@ public class TimeTableService extends Service{
 		
 		buildGoogleCalendar();
 		this.setPane(calendar);
-		
-		sendInvitationButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(
-					com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-				Window.alert("Button was successfully clicked on.");
-				// TODO Auto-generated method stub
-				sendOutCalendarUpdateToFriend(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), clickedOnEvent.getEvent().getDescription(),
-						clickedOnEvent.getEvent().getName(), clickedOnEvent.getEvent().getStartDate(), clickedOnEvent.getEvent().getEndDate());
-				Window.alert(MainServices.account.getEmailAddress() + " " +
-						MainServices.account.getEmailAddress() + " " + clickedOnEvent.getEvent().getDescription() + " " + 
-						clickedOnEvent.getEvent().getName() + " " + clickedOnEvent.getEvent().getStartDate().toString() + " " + 
-						clickedOnEvent.getEvent().getEndDate().toString());
-			}
-		});
 	}
 	
 	
@@ -139,49 +119,40 @@ public class TimeTableService extends Service{
 		calendar.addEventClickHandler(new EventClickHandler(){
 			
 			@Override
-			public void onEventClick(CalendarEventClick clickedEvent) {
+			public void onEventClick(CalendarEventClick event) {
 				// TODO Auto-generated method stub
-				clickedOnEvent = clickedEvent;
 				
 				
-//				sendInvitationButton.addClickHandler(new ClickHandler(){
-//
-//					@Override
-//					public void onClick(
-//							com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-//						sendOutCalendarUpdateToFriend(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), clickedOnEvent.getEvent().getDescription(),
-//								clickedOnEvent.getEvent().getName(), clickedOnEvent.getEvent().getStartDate(), clickedOnEvent.getEvent().getEndDate());
-//						Window.alert(MainServices.account.getEmailAddress() + " " +
-//								MainServices.account.getEmailAddress() + " " + clickedOnEvent.getEvent().getDescription() + " " + 
-//								clickedOnEvent.getEvent().getName() + " " + clickedOnEvent.getEvent().getStartDate().toString() + " " + 
-//								clickedOnEvent.getEvent().getEndDate().toString());
-//						
-//						// TODO Auto-generated method stub
-//						for(int i=0; i<friendList.size();i++){
-////							notificationService.addNotificationCalendar(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), 
-////									clickedOnEvent.getEvent().getDescription(), clickedOnEvent.getEvent().getName(), 
-////									clickedOnEvent.getEvent().getStartDate(), clickedOnEvent.getEvent().getEndDate(), new AsyncCallback<Void>(){
-////								
-////								@Override
-////								public void onFailure(Throwable caught) {
-////									// TODO Auto-generated method stub
-////									System.out.println("Calendar Event Invitation FAILED!");
-////								}
-////
-////								@Override
-////								public void onSuccess(Void result) {
-////									// TODO Auto-generated method stub
-////									System.out.println("Calendar Event Invitation Sent");
-////								}
-////								
-////							});
-//							
-//							// Send out calendar change update to all friends
-//							// TODO: loop through friends in server instead, this will improve speed
-//							sendOutCalendarUpdateToFriend(MainServices.account.getEmailAddress(), friendList.get(i), clickedOnEvent.getEvent().getDescription(),
-//									clickedOnEvent.getEvent().getName(), clickedOnEvent.getEvent().getStartDate(), clickedOnEvent.getEvent().getEndDate());
-//						}
-//					}});				
+				
+				sendInvitationButton.addClickHandler(new ClickHandler(){
+
+					@Override
+					public void onClick(
+							com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
+						// TODO Auto-generated method stub
+						for(int i=0; i<friendList.size();i++){
+							sub.sendInvitation(MainServices.account.getEmailAddress(), friendList.get(i), new AsyncCallback<Void>(){
+
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void onSuccess(Void result) {
+									// TODO Auto-generated method stub
+									System.out.println("Calendar Event Invitation Sent");
+								}
+								
+							});
+						}
+					}});
+				
+			
+				
+				//Window.alert("Clicked");
+				
 			}
 			
 			
@@ -324,28 +295,6 @@ public class TimeTableService extends Service{
 		popUp.show();
 		
 
-	}
-	
-	// Send out calendar update to friends
-	public void sendOutCalendarUpdateToFriend(String fromUser, String toUser, String contentDesc, String eventName, Date newStart, Date newEnd)
-	{
-		notificationService.addNotificationCalendar(fromUser, toUser, 
-				contentDesc, eventName, 
-				newStart, newEnd, new AsyncCallback<Void>(){
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				System.out.println("Calendar Event Invitation FAILED!");
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				// TODO Auto-generated method stub
-				System.out.println("Calendar Event Invitation Sent " + result.toString());
-			}
-			
-		});
 	}
 	
 

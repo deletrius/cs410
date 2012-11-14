@@ -72,49 +72,27 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	}
 
 	@Override
-	public List<ArrayList<Object>> getNotificationsByUsername(String userName)
+	public List<String> getNotificationsByUsername(String userName)
 			throws NotLoggedInException 
 	{
-		List<NotificationCalendar> notificationList = new ArrayList<NotificationCalendar>();
+		List<Notification> notificationList = new ArrayList<Notification>();
 		PersistenceManager pm = getPersistenceManager();
-		Query q = pm.newQuery(NotificationCalendar.class);
+		Query q = pm.newQuery(Notification.class);
 		q.declareParameters("String toUserParam");
 		q.setFilter("toUser == toUserParam");
 		q.setOrdering("content");
 		try 
 		{
-			notificationList = (List<NotificationCalendar>) q.execute(userName);
+			notificationList = (List<Notification>) q.execute(userName);
 
-//			List<String> notificationContents = new ArrayList<String>();
-//
-//			for (Notification notificationObj : notificationList) 
-//			{
-//				notificationContents.add(notificationObj.getContent());
-//			}
-//
-//			return notificationContents;
-			
-			List<ArrayList<Object>> notificationAsList = new ArrayList<ArrayList<Object>>();
-			
-			for (NotificationCalendar notifiyObj : notificationList)
+			List<String> notificationContents = new ArrayList<String>();
+
+			for (Notification notificationObj : notificationList) 
 			{
-				ArrayList<Object> calendarAttributes = new ArrayList<Object>();
-				calendarAttributes.add(notifiyObj.getId().toString());
-				calendarAttributes.add(notifiyObj.getEventName());
-				calendarAttributes.add(notifiyObj.getContent());
-				calendarAttributes.add(notifiyObj.getNewStartDate().toString());
-				calendarAttributes.add(notifiyObj.getNewendDate().toString());
-				calendarAttributes.add(notifiyObj.getFromUser());
-				calendarAttributes.add(notifiyObj.getNotificationCreationDateAsReadable());				
-				notificationAsList.add(calendarAttributes);
-				
-				
+				notificationContents.add(notificationObj.getContent());
 			}
-			
-			return notificationAsList;
-			
-			
-			
+
+			return notificationContents;
 		} finally {
 			pm.close();
 		}
