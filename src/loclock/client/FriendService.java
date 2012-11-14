@@ -282,9 +282,9 @@ public void updateProfilePanel(final String name,String distance,String lastUpda
 		@Override
 		public void onClick(ClickEvent event) {
 			// TODO Auto-generated method stub
-			//Window.alert("1friendName is: "+ friendUserName);
-			timeTableService.buildGoogleCalendar(friendUserName);
-			//Window.alert("2friendName is: "+ friendUserName);
+			Window.alert("1friendName is: "+ friendUserName);
+			timeTableService.buildGoogleCalendarWithUserName(friendUserName);
+			Window.alert("2friendName is: "+ friendUserName);
 			//calendarService.getEventByUserName(name, async)
 
 		}});
