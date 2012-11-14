@@ -1,6 +1,7 @@
 package loclock.server;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -24,15 +25,14 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
-	@Override
-	public void addNotification(String fromName, String toName, String content)
+	public void addNotification(String fromName, String toName, String content, String eventName)
 			throws NotLoggedInException 
 	{
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try 
 		{
-			pm.makePersistent(new Notification(fromName, toName, content));
+			pm.makePersistent(new Notification(fromName, toName, content, eventName));
 		} 
 		finally 
 		{
@@ -114,6 +114,18 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	private PersistenceManager getPersistenceManager() 
 	{
 		return PMF.getPersistenceManager();
+	}
+
+	@Override
+	public void addNotificationCalendar(String fromName, String toName,
+			String content, String eventName, Date newStart, Date newEnd) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try {
+			pm.makePersistent(new NotificationCalendar(fromName,  toName, content, eventName, newStart, newEnd));
+		} finally {
+			pm.close();
+		}
 	}
 
 }

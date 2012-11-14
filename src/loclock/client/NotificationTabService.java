@@ -186,7 +186,7 @@ public class NotificationTabService extends Service{
             public void onClick(ClickEvent event) {  
                 label.animateMove(10, 50);  
                 
-        		notificationService.addNotification(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), "I see you.", new AsyncCallback<Void>() {
+        		notificationService.addNotification(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), "I see you.", "New friend", new AsyncCallback<Void>() {
     			
     			@Override
     			public void onSuccess(Void result) {

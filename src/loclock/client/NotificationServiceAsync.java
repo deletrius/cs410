@@ -1,12 +1,13 @@
 package loclock.client;
 
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface NotificationServiceAsync {
 
-	void addNotification(String fromName, String toName, String content,
+	void addNotification(String fromName, String toName, String content, String eventName,
 			AsyncCallback<Void> callback);
 
 	void getNotificationsByUsername(String userName,
@@ -14,5 +15,9 @@ public interface NotificationServiceAsync {
 
 	void removeNotification(String fromName, String toName,
 			AsyncCallback<Void> callback);
+
+	void addNotificationCalendar(String fromName, String toName,
+			String content, String eventName, Date newStart,
+			Date newEnd, AsyncCallback<Void> callback);
 
 }
