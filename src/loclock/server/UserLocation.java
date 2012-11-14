@@ -1,6 +1,8 @@
 package loclock.server;
 
 
+import java.util.Date;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -9,7 +11,7 @@ import javax.jdo.annotations.IdentityType;
 
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
-public class User {
+public class UserLocation {
 
 //	@PrimaryKey
 //	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -27,17 +29,21 @@ public class User {
 	@Persistent
 	private String longitude;
 
-	public User() 
+	@Persistent(defaultFetchGroup="true")
+	private Date lastupdate;
+	
+	public UserLocation() 
 	{
 		
 	}
 	
-	public User(String username)
+	public UserLocation(String username)
 	{
 		this();
 		this.userName = username;
 		this.latitude = "-1.0";
 		this.longitude = "-1.0";
+		this.lastupdate=new Date();
 	}
 
 //	public Long getId() 
@@ -45,7 +51,7 @@ public class User {
 //		return this.id;
 //	}
 	
-	public String getUser() 
+	public String getUserName() 
 	{
 		return this.userName;
 	}
@@ -61,6 +67,14 @@ public class User {
 
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
+	}
+	
+	public Date getLastUpdate() {
+		return lastupdate;
+	}
+	
+	public void setLastUpdate(Date lastupdate) {
+		this.lastupdate = lastupdate;
 	}
 
 	public String getLongitude() {

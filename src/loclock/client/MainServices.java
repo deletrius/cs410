@@ -31,7 +31,7 @@ import com.smartgwt.client.widgets.tab.TabSet;
 public class MainServices extends TabSet{
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
-	private final LocationServiceAsync locationService = GWT.create(LocationService.class);
+	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private HLayout rootLayout;
 	private LoginService loginService;
 	
@@ -39,6 +39,8 @@ public class MainServices extends TabSet{
 	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
 	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
 	private static final String APPLICATION_NAME = "PlusSample/1.0";
+	
+	private MapService mapService;
 	
 	public static Account account = null;
 	private static volatile MainServices mainServicesInstance;
@@ -73,9 +75,13 @@ public class MainServices extends TabSet{
 	{
 		String mapWidth=(rootLayout.getRight()-rootLayout.getLeft())/2+"px";
 		String mapHeight=(rootLayout.getBottom()-rootLayout.getTop())+"px";
-		MapService mapService=new MapService(mapWidth,mapHeight);
+		mapService=new MapService(mapWidth,mapHeight);
 		rootLayout.addMember(mapService.toWidget());
 		rootLayout.redraw();
+	}
+	public MapService getMapService()
+	{
+		return mapService;
 	}
 	
 	public Account  getAccount()

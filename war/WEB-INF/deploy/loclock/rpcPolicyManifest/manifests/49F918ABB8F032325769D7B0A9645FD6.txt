@@ -1,2 +1,0 @@
-serviceClass: loclock.client.NotificationPushService
-path: 0739549B78D3BB8BAFEF884F37C0E474.gwt.rpc
