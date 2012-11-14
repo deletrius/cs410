@@ -68,7 +68,7 @@ public class FriendService extends Service{
 	private UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private SubscriptionServiceAsync requestService=GWT.create(SubscriptionService.class);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
-	private TimeTableService timeTableService;
+	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
 	TextAreaItem searchBox = new TextAreaItem();
 	ButtonItem searchButton = new ButtonItem("Search");
 	IButton requestButton = new IButton("Add Friend");
@@ -282,9 +282,9 @@ public void updateProfilePanel(final String name,String distance,String lastUpda
 		@Override
 		public void onClick(ClickEvent event) {
 			// TODO Auto-generated method stub
-			//Window.alert("1friendName is: "+ friendUserName);
-			timeTableService.buildGoogleCalendar(friendUserName);
-			//Window.alert("2friendName is: "+ friendUserName);
+			Window.alert("1friendName is: "+ friendUserName);
+			timeTableService.buildGoogleCalendarWithUserName(friendUserName);
+			Window.alert("2friendName is: "+ friendUserName);
 			//calendarService.getEventByUserName(name, async)
 
 		}});

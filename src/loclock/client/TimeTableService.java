@@ -221,7 +221,7 @@ public class TimeTableService extends Service{
 	
 	
 	
-	public void buildGoogleCalendar(String userName){
+	public void buildGoogleCalendarWithUserName(String userName){
 		calendar = new Calendar();
 		PopupPanel popUp = new PopupPanel();
 		if(userName != null)
