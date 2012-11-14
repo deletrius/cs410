@@ -1,5 +1,6 @@
 package loclock.client;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface NotificationServiceAsync {
 			AsyncCallback<Void> callback);
 
 	void getNotificationsByUsername(String userName,
-			AsyncCallback<List<String>> callback);
+			AsyncCallback<List<ArrayList<Object>>> callback);
 
 	void removeNotification(String fromName, String toName,
 			AsyncCallback<Void> callback);

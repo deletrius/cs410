@@ -9,8 +9,11 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+import javax.jdo.annotations.Inheritance;
+import javax.jdo.annotations.InheritanceStrategy;
 
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
+@Inheritance(strategy=InheritanceStrategy.SUBCLASS_TABLE)
 public class Notification {
 
 	@PrimaryKey
@@ -32,12 +35,16 @@ public class Notification {
 	@Persistent
 	private Date notificationCreationDate;
 	
+	@Persistent
+	private Integer hasBeenPublishedToUser;
+	
 	/**
 	 * 
 	 */
 	public Notification() {
 		Date date = new Date();
 		notificationCreationDate = date;
+		hasBeenPublishedToUser = 0;
 	}
 	
 	/**

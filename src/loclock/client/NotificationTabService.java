@@ -1,8 +1,11 @@
 package loclock.client;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridEditEvent;
@@ -26,6 +29,7 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.SectionStack;
 import com.smartgwt.client.widgets.layout.SectionStackSection;
 import com.smartgwt.client.widgets.layout.VLayout;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 
 public class NotificationTabService extends Service{
 	
@@ -36,6 +40,7 @@ public class NotificationTabService extends Service{
 	private static VLayout notificationVLayout;
 	private static SectionStackSection notificationSection;
 	private static SectionStack sectionStack;
+	private static List<String> currentlyShownNotifications;
 	
 //	private static final Domain DOMAIN = DomainFactory.getDomain("my_domain");
 	
@@ -72,6 +77,8 @@ public class NotificationTabService extends Service{
 //						+ " with the contents: " + event.getContent());
 //			}
 //		});
+		
+		currentlyShownNotifications = new ArrayList<String>();
 		
 		VLayout layout = new VLayout();  
         layout.setMembersMargin(10);  
@@ -228,6 +235,8 @@ public class NotificationTabService extends Service{
         moveOutButton.addClickHandler(new ClickHandler() {  
             public void onClick(ClickEvent event) {  
                 label.animateMove(-220, 50);  
+                sendOutInvites();
+                
             }  
         });  
   
@@ -241,28 +250,19 @@ public class NotificationTabService extends Service{
         
         // ====================Code used to show notifications to user with animated 'fly onscreen'====================
         
-        this.setPane(layout);
+        this.setPane(layout);        
         
-        notificationService.getNotificationsByUsername(MainServices.account.getEmailAddress(), new AsyncCallback<List<String>>() {
-			
-			@Override
-			public void onSuccess(List<String> result) {
-				// TODO Auto-generated method stub
-				for (String aString : result)
-				{
-					sectionStack.addSection(produceNewNotification(aString));
-				}
+        // Timer object used to poll server for new user notifications
+        // every x seconds
+        Timer refreshTimer = new Timer() {
+			public void run() {
+				updateCurrentUserNotifications();
 			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				System.out.println(caught.getMessage());
-			}
-		});
+		};
+		refreshTimer.scheduleRepeating(5000);
 	}
 	
-	private static SectionStackSection produceNewNotification(String content)
+	private static SectionStackSection produceNewNotification(String fromUser, String content)
 	{
 		notificationContents = content;
 		
@@ -282,19 +282,27 @@ public class NotificationTabService extends Service{
 		return notificationSection;
 	}
 	
-	public static void updateNotificationsStack()
-	{
-		System.out.println("The updateNotificationStack was called from server!");
+	
+	private void updateCurrentUserNotifications() {
+		//sectionStack.clear();
 		notificationService.getNotificationsByUsername(
 				MainServices.account.getEmailAddress(),
-				new AsyncCallback<List<String>>() {
+				new AsyncCallback<List<ArrayList<Object>>>() {
 
 					@Override
-					public void onSuccess(List<String> result) {
-						// TODO Auto-generated method stub
-						for (String aString : result) {
+					public void onSuccess(List<ArrayList<Object>> result) {
+						for (ArrayList<Object> notificationObj : result) {
+							if (!currentlyShownNotifications.contains((String)notificationObj.get(0)))
+							{
 							sectionStack
-									.addSection(produceNewNotification(aString));
+									.addSection(produceNewNotification((String)notificationObj.get(5), (String)notificationObj.get(2)));
+								currentlyShownNotifications.add((String)notificationObj.get(0));
+								//System.out.println("new notification, added to view " + notificationObj.get(0));
+							}
+							else
+							{
+								//System.out.println("notification already shown, skipped " + notificationObj.get(0));
+							}
 						}
 					}
 
@@ -304,6 +312,27 @@ public class NotificationTabService extends Service{
 						System.out.println(caught.getMessage());
 					}
 				});
+	}
+	
+	public void sendOutInvites()
+	{
+		notificationService.addNotificationCalendar(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), 
+				"this is the description", "this is the name", 
+				new Date(), new Date(), new AsyncCallback<Void>(){
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				System.out.println("Calendar Event Invitation FAILED!");
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				// TODO Auto-generated method stub
+				System.out.println("Calendar Event Invitation Sent");
+			}
+			
+		});
 	}
 }
 
