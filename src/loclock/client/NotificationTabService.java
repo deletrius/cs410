@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.ListGridEditEvent;
@@ -34,6 +35,7 @@ import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 public class NotificationTabService extends Service{
 	
 	private final static NotificationServiceAsync notificationService = GWT.create(NotificationService.class);
+	private static CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 	//private final NotificationPushServiceAsync notificationPushService = GWT.create(NotificationPushService.class);
 	private static String notificationContents;
 	private static HTMLFlow notificationHtmlFlow;
@@ -41,6 +43,9 @@ public class NotificationTabService extends Service{
 	private static SectionStackSection notificationSection;
 	private static SectionStack sectionStack;
 	private static List<String> currentlyShownNotifications;
+	private static ImgButton removeButton;
+	
+	private static String currentStackId;
 	
 //	private static final Domain DOMAIN = DomainFactory.getDomain("my_domain");
 	
@@ -48,35 +53,7 @@ public class NotificationTabService extends Service{
 	{
 		super("Notifications", "http://cdn1.iconfinder.com/data/icons/Project_Icons___Version_1_1_9_by_bogo_d/PNG/Notification.png");
 		
-		// test add notification into system
-//		notificationService.addNotification(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), "I see you.", new AsyncCallback<Void>() {
-//			
-//			@Override
-//			public void onSuccess(Void result) {
-//				// TODO Auto-generated method stub
-//				System.out.println("Successful notification added.");
-//			}
-//			
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				// TODO Auto-generated method stub
-//				System.out.println("Failed failed failed notification added.");
-//				System.out.println(caught.getMessage());
-//			}
-//		});
 		
-		// Used for notification listening and auto pushing to client
-//		RemoteEventServiceFactory theEventServiceFactory = RemoteEventServiceFactory.getInstance();
-//		RemoteEventService theEventService = theEventServiceFactory.getRemoteEventService();
-//		
-//		theEventService.addListener(DOMAIN, new NotificationListener(){
-//			public void onMyEvent(NotificationEvent event)
-//			{
-//				System.out.println("The message is from: "
-//						+ event.getFromUser() + " to: " + event.getToUser()
-//						+ " with the contents: " + event.getContent());
-//			}
-//		});
 		
 		currentlyShownNotifications = new ArrayList<String>();
 		
@@ -209,24 +186,7 @@ public class NotificationTabService extends Service{
     			}
     		});
                 
-//				// Test code to send notification to server
-//				notificationPushService.sendNotificationToServer(
-//						MainServices.account.getEmailAddress(),
-//						MainServices.account.getEmailAddress(), "Hihi",
-//						new AsyncCallback<Void>() {
-//
-//							@Override
-//							public void onSuccess(Void result) {
-//								// TODO Auto-generated method stub
-//
-//							}
-//
-//							@Override
-//							public void onFailure(Throwable caught) {
-//								// TODO Auto-generated method stub
-//
-//							}
-//						});
+
             }  
         });  
   
@@ -235,7 +195,7 @@ public class NotificationTabService extends Service{
         moveOutButton.addClickHandler(new ClickHandler() {  
             public void onClick(ClickEvent event) {  
                 label.animateMove(-220, 50);  
-                sendOutInvites();
+                //sendOutInvites();
                 
             }  
         });  
@@ -262,22 +222,66 @@ public class NotificationTabService extends Service{
 		refreshTimer.scheduleRepeating(5000);
 	}
 	
-	private static SectionStackSection produceNewNotification(String fromUser, String content)
+	private static SectionStackSection produceNewNotification(String id, String fromUser, String eventName, String description, String startDate, String endDate)
 	{
-		notificationContents = content;
+		final String stackId = id;
+		
+		notificationContents="Event Name: "+eventName+"<br>Description: "+ description+"<br>StartTime:"+ startDate+"<br>EndTime: "+endDate;
+		
 		
 		notificationHtmlFlow = new HTMLFlow();
 		//notificationHtmlFlow.setOverflow(Overflow.AUTO);  
 		//notificationHtmlFlow.setPadding(10);
+		final String eventName2 = eventName;
+		final String description2 = description;
+		final Date startDate2 = new Date(startDate);
+		final Date endDate2 = new Date(endDate);
 		
 		notificationHtmlFlow.setContents(notificationContents);
-		
 		notificationVLayout = new VLayout();
 		notificationVLayout.addMember(notificationHtmlFlow);
-		
+		HLayout hLayout = new HLayout();
+		IButton cancelEventButton = new IButton("Cancel Event");
+		IButton addToCalendarButton = new IButton("Add to Calendar");
+		addToCalendarButton.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				calendarService.saveEvent(MainServices.account.getEmailAddress(), eventName2, description2, startDate2, endDate2, new AsyncCallback<Void>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						Window.alert("Notification Event Saved!");
+						
+					}});
+			}});
+		hLayout.addMember(addToCalendarButton);
+		hLayout.addMember(cancelEventButton);
+		notificationVLayout.addMember(hLayout);
 		notificationSection = new SectionStackSection(MainServices.account.getEmailAddress());
 		notificationSection.addItem(notificationVLayout);
 		notificationSection.setExpanded(true);
+		notificationSection.setID(stackId);
+		
+		removeButton = new ImgButton();  
+        removeButton.setSrc("[SKIN]actions/remove.png");  
+        removeButton.setSize(16);  
+        removeButton.setShowFocused(false);  
+        removeButton.setShowRollOver(false);  
+        removeButton.setShowDown(false);  
+        removeButton.addClickHandler(new ClickHandler() {  
+            public void onClick(ClickEvent event) {  
+            	sectionStack.removeSection(stackId);
+            }  
+        });
+		
+		notificationSection.setControls(removeButton);
 		
 		return notificationSection;
 	}
@@ -294,8 +298,9 @@ public class NotificationTabService extends Service{
 						for (ArrayList<Object> notificationObj : result) {
 							if (!currentlyShownNotifications.contains((String)notificationObj.get(0)))
 							{
+								currentStackId = (String)notificationObj.get(0);
 							sectionStack
-									.addSection(produceNewNotification((String)notificationObj.get(5), (String)notificationObj.get(2)));
+							.addSection(produceNewNotification((String)notificationObj.get(0), (String)notificationObj.get(5), (String)notificationObj.get(1),(String)notificationObj.get(2),(String)notificationObj.get(3),(String)notificationObj.get(4)));
 								currentlyShownNotifications.add((String)notificationObj.get(0));
 								//System.out.println("new notification, added to view " + notificationObj.get(0));
 							}
@@ -314,26 +319,26 @@ public class NotificationTabService extends Service{
 				});
 	}
 	
-	public void sendOutInvites()
-	{
-		notificationService.addNotificationCalendar(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), 
-				"this is the description", "this is the name", 
-				new Date(), new Date(), new AsyncCallback<Void>(){
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				System.out.println("Calendar Event Invitation FAILED!");
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				// TODO Auto-generated method stub
-				System.out.println("Calendar Event Invitation Sent");
-			}
-			
-		});
-	}
+//	public void sendOutInvites()
+//	{
+//		notificationService.addNotificationCalendar(MainServices.account.getEmailAddress(), "broadcast", 
+//				"this is the description", "this is the name", 
+//				new Date(), new Date(), new AsyncCallback<Void>(){
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				// TODO Auto-generated method stub
+//				System.out.println("Calendar Event Invitation FAILED!");
+//			}
+//
+//			@Override
+//			public void onSuccess(Void result) {
+//				// TODO Auto-generated method stub
+//				System.out.println("Calendar Event Invitation Sent");
+//			}
+//			
+//		});
+//	}
 }
 
 
