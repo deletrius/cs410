@@ -10,10 +10,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.smartgwt.client.widgets.Button;
-import com.smartgwt.client.widgets.Dialog;
-import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.Slider;
 import com.smartgwt.client.widgets.calendar.Calendar;
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventAdded;
@@ -22,12 +18,11 @@ import com.smartgwt.client.widgets.calendar.events.DayBodyClickEvent;
 import com.smartgwt.client.widgets.calendar.events.DayBodyClickHandler;
 import com.smartgwt.client.widgets.calendar.events.EventAddedHandler;
 import com.smartgwt.client.widgets.calendar.events.EventClickHandler;
-import com.smartgwt.client.widgets.events.ClickEvent;
 
 
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
-import com.smartgwt.client.widgets.layout.HLayout;
 
 public class TimeTableService extends Service{
 	
@@ -39,6 +34,9 @@ public class TimeTableService extends Service{
 	public static CalendarEvent[] events;
 	private ArrayList<String> friendList = new ArrayList();
 	private ButtonItem sendInvitationButton = new ButtonItem("SendInvitation");
+	private NotificationServiceAsync notification = GWT.create(NotificationService.class);
+	private CalendarEventClick event1;
+	private ClickHandler clickHandler1;
 	//private String uName = MainServices.account.getEmailAddress();
 	public TimeTableService()
 	{	
@@ -100,13 +98,13 @@ public class TimeTableService extends Service{
 		
 		sub.getFriends(MainServices.account.getEmailAddress(), new  AsyncCallback<List<String>>(){
 
-			@Override
+			
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
 				
 			}
 
-			@Override
+			
 			public void onSuccess(List<String> result) {
 				// TODO Auto-generated method stub
 				
@@ -118,36 +116,16 @@ public class TimeTableService extends Service{
 			
 		calendar.addEventClickHandler(new EventClickHandler(){
 			
-			@Override
+			
 			public void onEventClick(CalendarEventClick event) {
-				// TODO Auto-generated method stub
 				
 				
+				event1 = event;
 				
-				sendInvitationButton.addClickHandler(new ClickHandler(){
-
-					@Override
-					public void onClick(
-							com.smartgwt.client.widgets.form.fields.events.ClickEvent event) {
-						// TODO Auto-generated method stub
-						for(int i=0; i<friendList.size();i++){
-							sub.sendInvitation(MainServices.account.getEmailAddress(), friendList.get(i), new AsyncCallback<Void>(){
-
-								@Override
-								public void onFailure(Throwable caught) {
-									// TODO Auto-generated method stub
-									
-								}
-
-								@Override
-								public void onSuccess(Void result) {
-									// TODO Auto-generated method stub
-									System.out.println("Calendar Event Invitation Sent");
-								}
-								
-							});
-						}
-					}});
+				
+				System.out.println("Event is: "+ event1.getEvent().getName().toString());
+				
+				
 				
 			
 				
@@ -157,6 +135,31 @@ public class TimeTableService extends Service{
 			
 			
 		});
+		
+		sendInvitationButton.addClickHandler(new ClickHandler(){
+			
+			
+			public void onClick(ClickEvent event2) {
+				
+				for(int i=0; i<friendList.size();i++){
+					
+					notification.addNotificationCalendar(MainServices.account.getEmailAddress(),
+							friendList.get(i),event1.getEvent().getDescription() , event1.getEvent().getName(),
+							event1.getEvent().getStartDate(), event1.getEvent().getEndDate(), new AsyncCallback<Void>(){
+
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void onSuccess(Void result) {
+									
+								}});
+				}
+			}});
+		
 		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
 
 			@Override
@@ -204,6 +207,7 @@ public class TimeTableService extends Service{
 			}
 
 		});
+		
 		calendar.setEventDialogFields(sendInvitationButton);
 		googleCalendar.setWidth("600px");
 		googleCalendar.setHeight("600px");

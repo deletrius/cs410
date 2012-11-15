@@ -1,6 +1,7 @@
 package loclock.server;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -24,15 +25,14 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
-	@Override
-	public void addNotification(String fromName, String toName, String content)
+	public void addNotification(String fromName, String toName, String content, String eventName)
 			throws NotLoggedInException 
 	{
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try 
 		{
-			pm.makePersistent(new Notification(fromName, toName, content));
+			pm.makePersistent(new Notification(fromName, toName, content, eventName));
 		} 
 		finally 
 		{
@@ -72,27 +72,49 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	}
 
 	@Override
-	public List<String> getNotificationsByUsername(String userName)
+	public List<ArrayList<Object>> getNotificationsByUsername(String userName)
 			throws NotLoggedInException 
 	{
-		List<Notification> notificationList = new ArrayList<Notification>();
+		List<NotificationCalendar> notificationList = new ArrayList<NotificationCalendar>();
 		PersistenceManager pm = getPersistenceManager();
-		Query q = pm.newQuery(Notification.class);
+		Query q = pm.newQuery(NotificationCalendar.class);
 		q.declareParameters("String toUserParam");
 		q.setFilter("toUser == toUserParam");
 		q.setOrdering("content");
 		try 
 		{
-			notificationList = (List<Notification>) q.execute(userName);
+			notificationList = (List<NotificationCalendar>) q.execute(userName);
 
-			List<String> notificationContents = new ArrayList<String>();
-
-			for (Notification notificationObj : notificationList) 
+//			List<String> notificationContents = new ArrayList<String>();
+//
+//			for (Notification notificationObj : notificationList) 
+//			{
+//				notificationContents.add(notificationObj.getContent());
+//			}
+//
+//			return notificationContents;
+			
+			List<ArrayList<Object>> notificationAsList = new ArrayList<ArrayList<Object>>();
+			
+			for (NotificationCalendar notifiyObj : notificationList)
 			{
-				notificationContents.add(notificationObj.getContent());
+				ArrayList<Object> calendarAttributes = new ArrayList<Object>();
+				calendarAttributes.add(notifiyObj.getId().toString());
+				calendarAttributes.add(notifiyObj.getEventName());
+				calendarAttributes.add(notifiyObj.getContent());
+				calendarAttributes.add(notifiyObj.getNewStartDate().toString());
+				calendarAttributes.add(notifiyObj.getNewendDate().toString());
+				calendarAttributes.add(notifiyObj.getFromUser());
+				calendarAttributes.add(notifiyObj.getNotificationCreationDateAsReadable());				
+				notificationAsList.add(calendarAttributes);
+				
+				
 			}
-
-			return notificationContents;
+			
+			return notificationAsList;
+			
+			
+			
 		} finally {
 			pm.close();
 		}
@@ -115,5 +137,18 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	{
 		return PMF.getPersistenceManager();
 	}
+
+	@Override
+	public void addNotificationCalendar(String fromName, String toName,
+			String content, String eventName, Date newStart, Date newEnd) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try {
+			pm.makePersistent(new NotificationCalendar(fromName,  toName, content, eventName, newStart, newEnd));
+		} finally {
+			pm.close();
+		}
+	}
+	
 
 }

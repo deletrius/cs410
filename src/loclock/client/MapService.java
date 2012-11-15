@@ -3,7 +3,9 @@ package loclock.client;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
@@ -25,6 +27,12 @@ import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.layout.Layout;
+import com.smartgwt.client.widgets.layout.VLayout;
 
 public class MapService {
 
@@ -42,6 +50,9 @@ public class MapService {
 	private Marker friendMarker;
 	private InfoWindow iw;
 	private String email;
+	private VLayout panel=new VLayout(5);
+	private String selectedUserName;
+	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
 
 	private class UserMarker
 	{
@@ -62,11 +73,27 @@ public class MapService {
 
 			if (infoWindow==null)
 				infoWindow = new InfoWindow();
-			Event.addListener(marker, "click", new EventCallback() {
+		
+			Event.addListener(infoWindow,"closeclick",new EventCallback() {
 				@Override
 				public void callback() {
 					infoWindow.close();
+					interactPanelMoveOut();
+				}});
+			
+			Event.addListener(marker, "click", new EventCallback() {
+				@Override
+				public void callback() {
+					selectedUserName=username;
+					Set<String> keys=userMarkers.keySet();
+					for (String i:keys)
+					{
+						UserMarker um=userMarkers.get(i);
+						um.infoWindow.close();
+					}
 					
+//					infoWindow.close();
+					interactPanelMoveIn();
 					DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
 					infoWindow.setContent("Your " + username + " location at: " + dtf.format(lastupdate));
 
@@ -109,6 +136,7 @@ public class MapService {
 		userMarkers=new HashMap<String,UserMarker>();
 
 		buildMapUI();
+		initMapOverlayPanel();
 	}
 
 	public double getUserLat()
@@ -127,11 +155,8 @@ public class MapService {
 		options.setZoom(3);
 		// Open a map centered on Cawker City, KS USA. Required
 		options.setCenter(new LatLng(39.509, -98.434));
-		final PositionOptions po=new PositionOptions();
-
-
-
 		
+		final PositionOptions po=new PositionOptions();		
 
 		po.setHighAccuracyEnabled(true);
 
@@ -157,7 +182,7 @@ public class MapService {
 		updateUserCurrentLocation(true);
 		Timer refreshTimer = new Timer() {
 			public void run() {
-				updateUserCurrentLocation(true);
+				updateUserCurrentLocation(false);
 				// Custom marker image code here
 				// MarkerImage.Builder imageBuilder = new
 				// MarkerImage.Builder("http://mingle2.com/images/new/sex_quiz/person_icon.png");
@@ -166,9 +191,67 @@ public class MapService {
 		};
 
 		refreshTimer.scheduleRepeating(5000);
-
+		
 	}
 
+	private VLayout initMapOverlayPanel()
+	{
+		
+		panel.setSize("100px","100px");
+		//panel.setBackgroundColor("WHITE");
+		IButton chatBtn=new IButton("Chat");
+		chatBtn.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				FriendService.chatManager.openChat(MainServices.account.getEmailAddress(), selectedUserName);
+				
+			}});
+		
+		IButton directionBtn=new IButton("Direction");
+		directionBtn.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.alert("lol");
+				
+			}});
+		
+		IButton calendarBtn=new IButton("Calendar");
+		calendarBtn.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				timeTableService.buildGoogleCalendarWithUserName(selectedUserName);
+				
+			}});
+		panel.addMember(chatBtn);
+		panel.addMember(directionBtn);
+		panel.addMember(calendarBtn);
+		panel.setTop(Integer.parseInt(width.substring(0,width.length()-2))-200);
+		panel.setLeft(-120);
+		
+		
+		//panel.setShowEdges(true);
+		return panel;
+	}
+	
+	private void interactPanelMoveIn()
+	{
+		panel.animateMove(10, Integer.parseInt(width.substring(0,width.length()-2))-200);
+	}
+	
+	private void interactPanelMoveOut()
+	{
+		panel.animateMove(-120, Integer.parseInt(width.substring(0,width.length()-2))-200);
+	}
+	
+	public void bindTo(Layout layout)
+	{
+		panel.setParentElement(layout);
+	}
+	
 	public void updateUserCurrentLocation(final boolean panTo)
 	{
 		

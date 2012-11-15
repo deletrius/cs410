@@ -60,7 +60,7 @@ import com.smartgwt.client.widgets.tile.events.SelectionChangedHandler;
 import com.smartgwt.client.widgets.viewer.DetailViewerField;
 
 public class FriendService extends Service{
-	private ChatPanelManager chatManager;
+	public static ChatPanelManager chatManager;
 	private VLayout friendsPanel;
 	private DynamicForm requestForm;
 	private String user;
@@ -148,6 +148,7 @@ public class FriendService extends Service{
 			}});
 
 	}
+	
 	public void buildFriendList(){
 		final TileGrid tileGrid = new TileGrid();  
 		tileGrid.setWidth("100%");  
@@ -167,9 +168,7 @@ public class FriendService extends Service{
 			@Override
 			public void onRecordClick(RecordClickEvent event) {
 				// TODO Auto-generated method stub
-				
-				double profileLat;
-				double profileLon;				
+								
 				final String profileName=event.getRecord().getAttribute("name").toString();
 				friendUserName = profileName;
 				//Window.alert("test1");
@@ -228,6 +227,7 @@ public class FriendService extends Service{
 			for (String i:result)
 			{
 				friends.add(new StudentRecord(i, "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile"));
+				MainServices.getInstance().getMapService().showUserMarker(i, false);
 			}
 			StudentRecord[] friendsRecord=new StudentRecord[friends.size()];
 			for (int i=0;i<friends.size();i++)
@@ -294,7 +294,6 @@ public void updateProfilePanel(final String name,String distance,String lastUpda
 
 		@Override
 		public void onClick(ClickEvent event) {
-			// TODO Auto-generated method stub
 			MainServices.getInstance().getMapService().showUserMarker(name, false);
 		}});
 
