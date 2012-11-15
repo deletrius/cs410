@@ -149,5 +149,6 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 			pm.close();
 		}
 	}
+	
 
 }
