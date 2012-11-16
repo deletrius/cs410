@@ -53,7 +53,8 @@ public class TimeTableService extends Service{
 	
 	
 	public void buildGoogleCalendar(){
-		calendar = new Calendar();
+		final Calendar cal = new Calendar();
+		//calendar = new Calendar();
 		
 		
 		
@@ -83,7 +84,7 @@ public class TimeTableService extends Service{
 							{
 								events[i]=calEvent.get(i);
 							}
-							calendar.setData(events);
+							cal.setData(events);
 							
 						}
 						
@@ -93,7 +94,7 @@ public class TimeTableService extends Service{
 			
 
 	
-		calendar.setSize("600px", "600px");
+		cal.setSize("600px", "600px");
 		
 		
 		sub.getFriends(MainServices.account.getEmailAddress(), new  AsyncCallback<List<String>>(){
@@ -114,7 +115,7 @@ public class TimeTableService extends Service{
 				}
 			}});
 			
-		calendar.addEventClickHandler(new EventClickHandler(){
+		cal.addEventClickHandler(new EventClickHandler(){
 			
 			
 			public void onEventClick(CalendarEventClick event) {
@@ -160,7 +161,7 @@ public class TimeTableService extends Service{
 				}
 			}});
 		
-		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
+		cal.addDayBodyClickHandler(new DayBodyClickHandler(){
 
 			@Override
 			public void onDayBodyClick(DayBodyClickEvent event) {
@@ -171,7 +172,7 @@ public class TimeTableService extends Service{
 
 
 		});
-		calendar.addEventAddedHandler(new EventAddedHandler(){
+		cal.addEventAddedHandler(new EventAddedHandler(){
 				
 			@Override
 			public void onEventAdded(CalendarEventAdded event) {
@@ -208,11 +209,11 @@ public class TimeTableService extends Service{
 
 		});
 		
-		calendar.setEventDialogFields(sendInvitationButton);
+		cal.setEventDialogFields(sendInvitationButton);
 		googleCalendar.setWidth("600px");
 		googleCalendar.setHeight("600px");
-		calendar.setCanEditEvents(true);//CAL_PUBLIC_URL;
-		
+		cal.setCanEditEvents(true);//CAL_PUBLIC_URL;
+		calendar = cal;
 		calendar.draw();
 	}
 	
@@ -226,7 +227,8 @@ public class TimeTableService extends Service{
 	
 	
 	public void buildGoogleCalendarWithUserName(String userName){
-		calendar = new Calendar();
+		final Calendar cal = new Calendar();
+		//calendar = new Calendar();
 		PopupPanel popUp = new PopupPanel();
 		if(userName != null)
 		//if(MainServices.account != null)
@@ -263,7 +265,7 @@ public class TimeTableService extends Service{
 							{
 								events[i]=calEvent.get(i);
 							}
-							calendar.setData(events);
+							cal.setData(events);
 							
 						}
 						
@@ -273,7 +275,7 @@ public class TimeTableService extends Service{
 			
 
 	
-		calendar.setSize("600px", "600px");
+		cal.setSize("600px", "600px");
 		/**
 		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
 
@@ -287,8 +289,9 @@ public class TimeTableService extends Service{
 
 		});
 		**/
+		cal.setCanEditEvents(false);
+		calendar = cal;
 		calendar.draw();
-		calendar.setCanEditEvents(false);
 		popUp.add(calendar);
 		popUp.setGlassEnabled(true);
 		popUp.setPixelSize(calendar.getWidth(), calendar.getHeight());
