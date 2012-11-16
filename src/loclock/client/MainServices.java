@@ -23,6 +23,7 @@ import com.google.web.bindery.requestfactory.shared.Receiver;
  
 
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -73,10 +74,23 @@ public class MainServices extends TabSet{
 	
 	private void addMapService()
 	{
+		VLayout mapPanel=new VLayout();
+		
+		
 		String mapWidth=(rootLayout.getRight()-rootLayout.getLeft())/2+"px";
 		String mapHeight=(rootLayout.getBottom()-rootLayout.getTop())+"px";
 		mapService=new MapService(mapWidth,mapHeight);
-		rootLayout.addMember(mapService.toWidget());
+		
+		//mapPanel.setSize("50%", "100%");
+		//mapPanel.setAlign(Alignment.RIGHT);
+		//mapPanel.setAlign(VerticalAlignment.BOTTOM);
+		mapPanel.setMemberOverlap(200);
+		
+		mapPanel.addMember(mapService.toWidget());	
+		mapService.bindTo(rootLayout);
+		//mapPanel.addMember(mapService.getMapOverlayPanel(),10);
+		
+		rootLayout.addMember(mapPanel);		
 		rootLayout.redraw();
 	}
 	public MapService getMapService()

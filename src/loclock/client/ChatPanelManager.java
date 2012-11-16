@@ -88,6 +88,7 @@ public class ChatPanelManager extends TabSet{
 public void openChat(String from, String to)
 {
 	// TODO check for subscription
+	MainServices.getInstance().selectTab(1);
 	ChatPanel i=findChat(to);
 	if (i!=null)
 	{			
