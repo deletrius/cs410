@@ -30,7 +30,7 @@ public interface NotificationServiceAsync {
 	 * @param toName
 	 * @param callback
 	 */
-	void removeNotification(String fromName, String toName,
+	void removeNotification(String notificationId,
 			AsyncCallback<Void> callback);
 
 	/**

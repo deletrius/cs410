@@ -35,7 +35,7 @@ public interface NotificationService extends RemoteService {
 	 * @param toName
 	 * @throws NotLoggedInException
 	 */
-	public void removeNotification(String fromName, String toName) throws NotLoggedInException;
+	public void removeNotification(String notificationId) throws NotLoggedInException;
 	/**
 	 * @param userName
 	 * @return

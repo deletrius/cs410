@@ -75,10 +75,20 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	 * @see loclock.client.NotificationService#removeNotification(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void removeNotification(String fromName, String toName)
-			throws NotLoggedInException {
-		// TODO Auto-generated method stub
-		
+	public void removeNotification(String notificationId)
+			throws NotLoggedInException 
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try
+		{
+			NotificationCalendar toBeDeleted = pm.getObjectById(NotificationCalendar.class, Long.valueOf(notificationId));
+			pm.deletePersistent(toBeDeleted);
+		}
+		finally
+		{			
+			pm.close();
+		}
 	}
 
 	/* (non-Javadoc)
