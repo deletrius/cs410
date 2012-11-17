@@ -14,10 +14,12 @@ import com.smartgwt.client.widgets.calendar.Calendar;
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventAdded;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventClick;
+import com.smartgwt.client.widgets.calendar.events.CalendarEventRemoved;
 import com.smartgwt.client.widgets.calendar.events.DayBodyClickEvent;
 import com.smartgwt.client.widgets.calendar.events.DayBodyClickHandler;
 import com.smartgwt.client.widgets.calendar.events.EventAddedHandler;
 import com.smartgwt.client.widgets.calendar.events.EventClickHandler;
+import com.smartgwt.client.widgets.calendar.events.EventRemovedHandler;
 
 
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
@@ -171,6 +173,29 @@ public class TimeTableService extends Service{
 			}
 
 
+		});
+calendar.addEventRemovedHandler(new EventRemovedHandler() {
+			
+			@Override
+			public void onEventRemoved(CalendarEventRemoved event) {
+				// TODO Auto-generated method stub
+				calendarService.deleteEvent(MainServices.account.getEmailAddress(),
+						event.getEvent().getName(), event.getEvent().getDescription(), event.getEvent().getStartDate(),
+						event.getEvent().getEndDate(), new AsyncCallback<Void>() {
+							
+							@Override
+							public void onSuccess(Void result) {
+								// TODO Auto-generated method stub
+								System.out.println("1111 Failed");
+							}
+							
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
+								System.out.println("2222 Succeed");
+							}
+						});
+			}
 		});
 		cal.addEventAddedHandler(new EventAddedHandler(){
 				

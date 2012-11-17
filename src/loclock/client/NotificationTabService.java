@@ -279,6 +279,30 @@ public class NotificationTabService extends Service{
 						
 					}});
 			}});
+		cancelEventButton.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				sectionStack.removeSection(stackId);
+            	notificationService.removeNotification(stackId, new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void result) {
+						// TODO Auto-generated method stub
+						currentlyShownNotifications.remove(stackId);
+						//refreshTimer.scheduleRepeating(5000);
+						lock = 0;
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						lock = 0;
+						
+					}
+				});
+			}});
 		hLayout.addMember(addToCalendarButton);
 		hLayout.addMember(cancelEventButton);
 		notificationVLayout.addMember(hLayout);
