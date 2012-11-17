@@ -25,6 +25,9 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.NotificationService#addNotification(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public void addNotification(String fromName, String toName, String content, String eventName)
 			throws NotLoggedInException 
 	{
@@ -40,6 +43,10 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 		}
 	}
 	
+	/**
+	 * @param username
+	 * @throws NotLoggedInException
+	 */
 	public void addUser(String username) throws NotLoggedInException 
 	{
 		
@@ -64,13 +71,29 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.NotificationService#removeNotification(java.lang.String, java.lang.String)
+	 */
 	@Override
-	public void removeNotification(String fromName, String toName)
-			throws NotLoggedInException {
-		// TODO Auto-generated method stub
-		
+	public void removeNotification(String notificationId)
+			throws NotLoggedInException 
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try
+		{
+			NotificationCalendar toBeDeleted = pm.getObjectById(NotificationCalendar.class, Long.valueOf(notificationId));
+			pm.deletePersistent(toBeDeleted);
+		}
+		finally
+		{			
+			pm.close();
+		}
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.NotificationService#getNotificationsByUsername(java.lang.String)
+	 */
 	@Override
 	public List<ArrayList<Object>> getNotificationsByUsername(String userName)
 			throws NotLoggedInException 
@@ -120,6 +143,9 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 		}
 	}
 	
+	/**
+	 * @throws NotLoggedInException
+	 */
 	private void checkLoggedIn() throws NotLoggedInException 
 	{
 		if (getCurrentUser() == null) {
@@ -127,24 +153,61 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	private com.google.appengine.api.users.User getCurrentUser() 
 	{
 		UserService userService = UserServiceFactory.getUserService();
 		return userService.getCurrentUser();
 	}
 
+	/**
+	 * @return
+	 */
 	private PersistenceManager getPersistenceManager() 
 	{
 		return PMF.getPersistenceManager();
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.NotificationService#addNotificationCalendar(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
+	 */
 	@Override
 	public void addNotificationCalendar(String fromName, String toName,
-			String content, String eventName, Date newStart, Date newEnd) throws NotLoggedInException {
+			String content, String eventName, Date newStart, Date newEnd)
+			throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
+		ArrayList<String> friendList;
+		ArrayList<String> types;
+		ArrayList<String> usernames = new ArrayList<String>();
+		Subscription subscription;
+
 		try {
-			pm.makePersistent(new NotificationCalendar(fromName,  toName, content, eventName, newStart, newEnd));
+			if (toName.equalsIgnoreCase("broadcast")) {
+				subscription = pm.getObjectById(Subscription.class, fromName);
+				friendList = subscription.getFriends();
+				types = subscription.getTypes();
+				int i = 0;
+				while (i < friendList.size()) {
+					if (types.get(i).compareTo("friend") == 0) {
+						usernames.add(friendList.get(i));
+					}
+					i++;
+				}
+
+				for (String friendEmail : usernames) {
+					pm.makePersistent(new NotificationCalendar(fromName,
+							friendEmail, content, eventName, newStart, newEnd));
+				}
+
+			} 
+			else {
+				pm.makePersistent(new NotificationCalendar(fromName, toName,
+						content, eventName, newStart, newEnd));
+			}
+			// try {
 		} finally {
 			pm.close();
 		}

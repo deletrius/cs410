@@ -35,6 +35,7 @@ import com.sun.xml.internal.bind.v2.schemagen.xmlschema.NoFixedFacet;
 public class NotificationTabService extends Service{
 	
 	private final static NotificationServiceAsync notificationService = GWT.create(NotificationService.class);
+	private static CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 	//private final NotificationPushServiceAsync notificationPushService = GWT.create(NotificationPushService.class);
 	private static String notificationContents;
 	private static HTMLFlow notificationHtmlFlow;
@@ -42,7 +43,15 @@ public class NotificationTabService extends Service{
 	private static SectionStackSection notificationSection;
 	private static SectionStack sectionStack;
 	private static List<String> currentlyShownNotifications;
-	private static CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
+	private static ImgButton removeButton;
+	
+	private static Timer refreshTimer;
+	private static Timer refreshTimer2;
+	
+	private static String currentStackId;
+	
+	private static int lock;
+	
 //	private static final Domain DOMAIN = DomainFactory.getDomain("my_domain");
 	
 	public NotificationTabService()
@@ -61,9 +70,9 @@ public class NotificationTabService extends Service{
         //htmlFlow.setOverflow(Overflow.AUTO);  
         //htmlFlow.setPadding(10);  
   
-        String contents = "<b>Severity 1</b><br> Vote for me!";  
+        //String contents = "<b>Severity 1</b><br> Vote for me!";  
   
-        htmlFlow.setContents(contents); 
+        //htmlFlow.setContents(contents); 
         
         VLayout obamaNotifications = new VLayout();
         obamaNotifications.addMember(htmlFlow);
@@ -72,17 +81,17 @@ public class NotificationTabService extends Service{
         //htmlFlow2.setOverflow(Overflow.AUTO);  
         //htmlFlow2.setPadding(10);  
   
-        String contents2 = "<b>New Friend</b><br> You are friends with Neil Ernst!";  
+        //String contents2 = "<b>New Friend</b><br> You are friends with Neil Ernst!";  
   
-        htmlFlow2.setContents(contents2); 
+        //htmlFlow2.setContents(contents2); 
         
         HTMLFlow htmlFlow3 = new HTMLFlow();  
         //htmlFlow3.setOverflow(Overflow.AUTO);  
         //htmlFlow3.setPadding(10);  
   
-        String contents3 = "<b>Away</b><br> I am away this week!";  
+        //String contents3 = "<b>Away</b><br> I am away this week!";  
   
-        htmlFlow3.setContents(contents3); 
+        //htmlFlow3.setContents(contents3); 
         
         VLayout ernstNotifications = new VLayout();
         ernstNotifications.addMember(htmlFlow2);
@@ -134,7 +143,7 @@ public class NotificationTabService extends Service{
         section2.setControls(removeButton);
         section2.setExpanded(true);  
   
-        sectionStack.setSections(section1, section2);  
+        //sectionStack.setSections(section1, section2);  
         sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);  
         sectionStack.setAnimateSections(true);  
         sectionStack.setWidth(300);  
@@ -210,16 +219,30 @@ public class NotificationTabService extends Service{
         
         // Timer object used to poll server for new user notifications
         // every x seconds
-        Timer refreshTimer = new Timer() {
+        refreshTimer = new Timer() {
 			public void run() {
-				updateCurrentUserNotifications();
+				//if (lock == 0)
+				//{
+					//lock = 1;
+					updateCurrentUserNotifications();
+				//}
+//				else
+//				{
+//					try {
+//						//refreshTimer.wait();
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
 			}
 		};
 		refreshTimer.scheduleRepeating(5000);
 	}
 	
-	private static SectionStackSection produceNewNotification(String fromUser, String eventName, String description, String startDate, String endDate)
+	private static SectionStackSection produceNewNotification(String id, String fromUser, String eventName, String description, String startDate, String endDate)
 	{
+		final String stackId = id;
 		
 		notificationContents="Event Name: "+eventName+"<br>Description: "+ description+"<br>StartTime:"+ startDate+"<br>EndTime: "+endDate;
 		
@@ -262,6 +285,106 @@ public class NotificationTabService extends Service{
 		notificationSection = new SectionStackSection(MainServices.account.getEmailAddress());
 		notificationSection.addItem(notificationVLayout);
 		notificationSection.setExpanded(true);
+		notificationSection.setID(stackId);
+		
+		removeButton = new ImgButton();  
+        removeButton.setSrc("[SKIN]actions/remove.png");  
+        removeButton.setSize(16);  
+        removeButton.setShowFocused(false);  
+        removeButton.setShowRollOver(false);  
+        removeButton.setShowDown(false);  
+        removeButton.addClickHandler(new ClickHandler() {  
+            public void onClick(ClickEvent event) {
+            	sectionStack.removeSection(stackId);
+            	notificationService.removeNotification(stackId, new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void result) {
+						// TODO Auto-generated method stub
+						currentlyShownNotifications.remove(stackId);
+						//refreshTimer.scheduleRepeating(5000);
+						lock = 0;
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						lock = 0;
+						
+					}
+				});
+            	
+            	// 
+//            	if (lock == 0)
+//            	{
+//            	lock = 1;
+////            	refreshTimer.cancel();
+//            	sectionStack.removeSection(stackId);
+//            	notificationService.removeNotification(stackId, new AsyncCallback<Void>() {
+//					
+//					@Override
+//					public void onSuccess(Void result) {
+//						// TODO Auto-generated method stub
+//						currentlyShownNotifications.remove(stackId);
+//						//refreshTimer.scheduleRepeating(5000);
+//						lock = 0;
+//					}
+//					
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						// TODO Auto-generated method stub
+//						lock = 0;
+//						
+//					}
+//				});
+//            	}
+//            	else
+//            	{
+//            		refreshTimer2 = new Timer() {
+//            			public void run() {
+//            				if (lock == 0)
+//            				{
+//            					lock = 1;
+//            				sectionStack.removeSection(stackId);
+//                        	notificationService.removeNotification(stackId, new AsyncCallback<Void>() {
+//            					
+//            					@Override
+//            					public void onSuccess(Void result) {
+//            						// TODO Auto-generated method stub
+//            						currentlyShownNotifications.remove(stackId);
+//            						//refreshTimer.scheduleRepeating(5000);
+//            						
+//            						refreshTimer2.cancel();
+//            						lock = 0;
+//            					}
+//            					
+//            					@Override
+//            					public void onFailure(Throwable caught) {
+//            						// TODO Auto-generated method stub
+//            						refreshTimer2.cancel();
+//            						lock = 0;
+//            						
+//            					}
+//            				});
+//            				}
+//            				else
+//            				{
+//            					try {
+//									refreshTimer2.wait(2000);
+//								} catch (InterruptedException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//            				}
+//            			}
+//            		};
+//            		refreshTimer2.scheduleRepeating(1000);
+//            		
+//            	}
+            }  
+        });
+		
+		notificationSection.setControls(removeButton);
 		
 		return notificationSection;
 	}
@@ -278,8 +401,9 @@ public class NotificationTabService extends Service{
 						for (ArrayList<Object> notificationObj : result) {
 							if (!currentlyShownNotifications.contains((String)notificationObj.get(0)))
 							{
+								currentStackId = (String)notificationObj.get(0);
 							sectionStack
-									.addSection(produceNewNotification((String)notificationObj.get(5), (String)notificationObj.get(1),(String)notificationObj.get(2),(String)notificationObj.get(3),(String)notificationObj.get(4)));
+							.addSection(produceNewNotification((String)notificationObj.get(0), (String)notificationObj.get(5), (String)notificationObj.get(1),(String)notificationObj.get(2),(String)notificationObj.get(3),(String)notificationObj.get(4)));
 								currentlyShownNotifications.add((String)notificationObj.get(0));
 								//System.out.println("new notification, added to view " + notificationObj.get(0));
 							}
@@ -288,19 +412,22 @@ public class NotificationTabService extends Service{
 								//System.out.println("notification already shown, skipped " + notificationObj.get(0));
 							}
 						}
+						
+						lock = 0;
 					}
 
 					@Override
 					public void onFailure(Throwable caught) {
 						// TODO Auto-generated method stub
 						System.out.println(caught.getMessage());
+						lock = 0;
 					}
 				});
 	}
 	
 	public void sendOutInvites()
 	{
-		notificationService.addNotificationCalendar(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(), 
+		notificationService.addNotificationCalendar(MainServices.account.getEmailAddress(), "broadcast", 
 				"this is the description", "this is the name", 
 				new Date(), new Date(), new AsyncCallback<Void>(){
 			
