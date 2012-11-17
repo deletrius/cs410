@@ -24,6 +24,25 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 			  pm.close();
 		  }
 	}
+	public void deleteEvent(String userName,String eventName,String description,Date startDate,Date endDate){
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = pm.newQuery(Calendar.class);
+		
+		q.setFilter("userName == u && eventName == e && description == d && startDate == s && endDate == end");
+		q.declareParameters("String u, String e, String d, java.util.Date s, java.util.Date end");
+		try{
+			Object[] obj = {userName, eventName, description,startDate,endDate};
+			List<Calendar> list = (List<Calendar>)q.executeWithArray(obj);
+			pm.deletePersistent(list.get(0));
+		}
+		finally{
+			q.closeAll();
+			pm.close();
+		}
+		
+		
+		
+	}
 
 	public List<ArrayList<Object>> getEventByUserName(String userName){
 		List<Calendar> calendarList = new ArrayList<Calendar>();
