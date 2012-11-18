@@ -185,13 +185,13 @@ public class TimeTableService extends Service{
 							@Override
 							public void onSuccess(Void result) {
 								// TODO Auto-generated method stub
-								System.out.println("1111 Failed");
+								//System.out.println("1111 Failed");
 							}
 							
 							@Override
 							public void onFailure(Throwable caught) {
 								// TODO Auto-generated method stub
-								System.out.println("2222 Succeed");
+								//System.out.println("2222 Succeed");
 							}
 						});
 			}
@@ -312,8 +312,8 @@ public class TimeTableService extends Service{
 
 		});
 		**/
-		calendar.draw();
 		calendar.setCanEditEvents(false);
+		calendar.draw();
 		popUp.add(calendar);
 		popUp.setGlassEnabled(true);
 		popUp.setPixelSize(calendar.getWidth(), calendar.getHeight());
