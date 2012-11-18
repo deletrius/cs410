@@ -299,7 +299,19 @@ public class TimeTableService extends Service{
 
 
 		calendar.setSize("600px", "600px");
-		
+		/**
+		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
+
+			@Override
+			public void onDayBodyClick(DayBodyClickEvent event) {
+				// TODO Auto-generated method stub
+				System.out.println("Date is: " + event.getDate());
+
+			}
+
+
+		});
+		**/
 		calendar.setCanEditEvents(false);
 		calendar.draw();
 		popUp.add(calendar);
