@@ -74,7 +74,7 @@ public class MainServices extends TabSet{
 	
 	private void addMapService()
 	{
-		VLayout mapPanel=new VLayout();
+		HLayout mapPanel=new HLayout();
 		
 		
 		String mapWidth=(rootLayout.getRight()-rootLayout.getLeft())/2+"px";
@@ -84,10 +84,11 @@ public class MainServices extends TabSet{
 		//mapPanel.setSize("50%", "100%");
 		//mapPanel.setAlign(Alignment.RIGHT);
 		//mapPanel.setAlign(VerticalAlignment.BOTTOM);
-		mapPanel.setMemberOverlap(200);
+		//mapPanel.setMemberOverlap(200);
 		
 		mapPanel.addMember(mapService.toWidget());	
-		mapService.bindTo(rootLayout);
+		
+		mapService.bindTo(mapPanel);
 		//mapPanel.addMember(mapService.getMapOverlayPanel(),10);
 		
 		rootLayout.addMember(mapPanel);		
