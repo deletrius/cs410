@@ -69,6 +69,8 @@ public class FriendService extends Service{
 	private SubscriptionServiceAsync requestService=GWT.create(SubscriptionService.class);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
+	private boolean free = true;
+	private String freeOrNot = "Yes";
 	TextAreaItem searchBox = new TextAreaItem();
 	ButtonItem searchButton = new ButtonItem("Search");
 	IButton requestButton = new IButton("Add Friend");
@@ -168,12 +170,38 @@ public class FriendService extends Service{
 			@Override
 			public void onRecordClick(RecordClickEvent event) {
 				// TODO Auto-generated method stub
-								
+				free = true;
 				final String profileName=event.getRecord().getAttribute("name").toString();
 				friendUserName = profileName;
 				//Window.alert("test1");
 				//timeTableService.buildGoogleCalendar(friendUserName);
 				//Window.alert("test2");
+				
+				final Date time = new Date();
+				
+				
+				calendarService.getEventByUserName(profileName, new AsyncCallback<List<ArrayList<Object>>>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(List<ArrayList<Object>> result) {
+						for(int i =0; i< result.size();i++){
+							if(new Date(result.get(i).get(3).toString()).before(time))
+								if(new Date(result.get(i).get(4).toString()).after(time))
+									free = false;
+							freeOrNot = "No";
+						}
+						
+					}});
+				
+				
+				
+				
 				locationService.getUserLocation(profileName, new AsyncCallback<ArrayList<String>>(){
 
 					@Override
@@ -271,7 +299,9 @@ public void updateProfilePanel(final String name,String distance,String lastUpda
 	profileForm.clearValues();
 	StaticTextItem profileName=new StaticTextItem("ProfileName","Profile Name");
 	profileName.setValue(name);
-
+	
+	StaticTextItem freeToMeet = new StaticTextItem("freeOrNot", "Free to meet up:");
+	freeToMeet.setValue(freeOrNot);
 	StaticTextItem profileDistance=new StaticTextItem("ProfileDistance","Distance To");
 	profileDistance.setValue(distance+" km");
 	StaticTextItem profileLastUpdate=new StaticTextItem("ProfileLastUpdate","Last Updated");
@@ -297,7 +327,7 @@ public void updateProfilePanel(final String name,String distance,String lastUpda
 			MainServices.getInstance().getMapService().showUserMarker(name, false);
 		}});
 
-	profileForm.setItems(profileName,profileDistance,profileLastUpdate,showCalendar,showMap);		
+	profileForm.setItems(profileName,freeToMeet,profileDistance,profileLastUpdate,showCalendar,showMap);		
 
 }
 

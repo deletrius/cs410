@@ -94,7 +94,7 @@ public class TimeTableService extends Service{
 	}
 
 
-
+		calendar.setDisableWeekends(false);
 		calendar.setSize("600px", "600px");
 
 
@@ -312,6 +312,7 @@ public class TimeTableService extends Service{
 
 		});
 		**/
+		calendar.setDisableWeekends(false);
 		calendar.setCanEditEvents(false);
 		calendar.draw();
 		popUp.add(calendar);
