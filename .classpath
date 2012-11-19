@@ -14,5 +14,6 @@
 	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER/v2"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/ical4j-1.0.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-plus-v1-0.2-alpha.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
