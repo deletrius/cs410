@@ -16,5 +16,5 @@ public interface CalendarServiceAsync {
 	void deleteEvent(String userName, String eventName, String description,
 			Date startDate, Date endDate, AsyncCallback<Void> callback);
 	//boolean checkFree(String userName, Date time)
-	void checkFree(String userName, Date time, AsyncCallback<Boolean> callback);
+	//void checkFree(String userName, Date time, AsyncCallback<Boolean> callback);
 }

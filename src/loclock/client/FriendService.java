@@ -69,8 +69,8 @@ public class FriendService extends Service{
 	private SubscriptionServiceAsync subscriptionService=GWT.create(SubscriptionService.class);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
-	private boolean free = true;
-	private String freeOrNot = "Yes";
+	private static boolean free = true;
+	private static String freeOrNot = "Yes";
 	private TileGrid tileGrid;
 	TextAreaItem searchBox = new TextAreaItem();
 	ButtonItem searchButton = new ButtonItem("Search");
@@ -203,6 +203,7 @@ public class FriendService extends Service{
 			public void onRecordClick(RecordClickEvent event) {
 				// TODO Auto-generated method stub
 				free = true;
+				freeOrNot = "Yes";
 				final String profileName=event.getRecord().getAttribute("name").toString();
 				checkSubscription(profileName);
 				friendUserName = profileName;

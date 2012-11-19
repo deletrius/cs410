@@ -22,6 +22,10 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 		  try{
 			  List<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>();
 			  list = getEventByUserName(userName);
+			  if(list.size()==0){
+				  pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
+			  }
+			  else{
 			  for(int i=0; i< list.size();i++){
 				
 			 
@@ -45,10 +49,12 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 		  
 			 // pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
 		  }
+		  }
 		  finally{
 			  pm.close();
 		  }
 	}
+	/**
 	public boolean checkFree(String userName, Date time){
 		List<Calendar> calendarList = new ArrayList<Calendar>();
 		boolean free = false;
@@ -70,6 +76,7 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 		}
 		return free;
 	}
+	**/
 	public void deleteEvent(String userName,String eventName,String description,Date startDate,Date endDate){
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = pm.newQuery(Calendar.class);
