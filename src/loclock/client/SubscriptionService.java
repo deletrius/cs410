@@ -11,6 +11,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 		public void sendInvitation(String senderName, String receiverName);
 		public void acceptInvitation(String senderName, String receiverName);
 		public void rejectInvitation(String senderName, String receiverName);
+		public void removeFriend(String senderName, String receiverName);
+		public boolean areFriends(String senderName, String receiverName);
 		public List<String> getInvitations(String senderName);
 		public List<String> getFriends(String senderName);
 	}

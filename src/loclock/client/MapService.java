@@ -17,17 +17,36 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapTypeId;
 import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.base.ElementProvider;
 import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.maps.client.base.InfoWindow;
 import com.google.gwt.maps.client.base.LatLng;
+import com.google.gwt.maps.client.directions.DirectionsCallback;
+import com.google.gwt.maps.client.directions.DirectionsRenderer;
+import com.google.gwt.maps.client.directions.DirectionsRendererOptions;
+import com.google.gwt.maps.client.directions.DirectionsRequest;
+import com.google.gwt.maps.client.directions.DirectionsService;
+import com.google.gwt.maps.client.directions.DirectionsTravelMode;
+import com.google.gwt.maps.client.directions.HasDirectionsRendererOptions;
+import com.google.gwt.maps.client.directions.HasDirectionsRequest;
+import com.google.gwt.maps.client.directions.HasDirectionsResult;
+import com.google.gwt.maps.client.directions.HasDirectionsTravelMode;
 import com.google.gwt.maps.client.event.Event;
 import com.google.gwt.maps.client.event.EventCallback;
+import com.google.gwt.maps.client.geocoder.GeocoderRequest;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
@@ -50,12 +69,15 @@ public class MapService {
 	private Marker friendMarker;
 	private InfoWindow iw;
 	private String email;
-	private VLayout panel=new VLayout(5);
+	private VLayout interactionPanel=new VLayout(5);
+	private VLayout directionPanel=new VLayout(5);
+	private VerticalPanel directionDetailPanel=new VerticalPanel();
 	private String selectedUserName;
 	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
 
 	private class UserMarker
 	{
+		
 		Marker marker;
 		InfoWindow infoWindow;
 		String username;
@@ -78,7 +100,7 @@ public class MapService {
 				@Override
 				public void callback() {
 					infoWindow.close();
-					interactPanelMoveOut();
+					interactionPanelMoveOut();
 				}});
 			
 			Event.addListener(marker, "click", new EventCallback() {
@@ -93,7 +115,7 @@ public class MapService {
 					}
 					
 //					infoWindow.close();
-					interactPanelMoveIn();
+					interactionPanelMoveIn();
 					DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
 					infoWindow.setContent("Your " + username + " location at: " + dtf.format(lastupdate));
 
@@ -159,7 +181,7 @@ public class MapService {
 		final PositionOptions po=new PositionOptions();		
 
 		po.setHighAccuracyEnabled(true);
-
+		
 		// Map type. Required.
 		options.setMapTypeId(new MapTypeId().getRoadmap());
 
@@ -197,7 +219,11 @@ public class MapService {
 	private VLayout initMapOverlayPanel()
 	{
 		
-		panel.setSize("100px","100px");
+		interactionPanel.setSize("100px","100px");
+		directionPanel.setSize("300px","100%");
+		//directionDetailPanel.setSize("100%", "100%");
+		//directionDetailPanel.setBorderWidth(20);
+		
 		//panel.setBackgroundColor("WHITE");
 		IButton chatBtn=new IButton("Chat");
 		chatBtn.addClickHandler(new ClickHandler(){
@@ -210,13 +236,42 @@ public class MapService {
 			}});
 		
 		IButton directionBtn=new IButton("Direction");
+		
+		//HasDirectionsRendererOptions options = new DirectionsRendererOptions();		
+		final DirectionsRenderer directionsDisplay = new DirectionsRenderer();//options);
+		directionsDisplay.setMap(mapwidget.getMap());
+		
+		directionsDisplay.setPanel(new ElementProvider(directionDetailPanel.getElement()));
+
+		final DirectionsRequest dr=new DirectionsRequest();		
+		DirectionsTravelMode dt=new DirectionsTravelMode();		
+		dr.setTravelMode(dt.Driving());
+		
+		final DirectionsService ds=new DirectionsService();
+	
+		
 		directionBtn.addClickHandler(new ClickHandler(){
 
 			@Override
-			public void onClick(ClickEvent event) {
-				Window.alert("lol");
+			public void onClick(ClickEvent event) {		
+				dr.setOriginLatLng(new LatLng(currentUserLat,currentUserLng));
+				System.out.println(new LatLng(currentUserLat,currentUserLng));
+				dr.setDestinationLatLng(userMarkers.get(selectedUserName).marker.getPosition());
+				System.out.println(userMarkers.get(selectedUserName).marker.getPosition());
 				
-			}});
+				ds.route(dr, new DirectionsCallback(){
+
+					@Override
+					public void callback(HasDirectionsResult response,
+							String status) {
+						
+						// TODO Auto-generated method stub
+						directionsDisplay.setDirections(response);						
+						directionPanelMoveIn();
+					}});
+			}
+			}
+		);
 		
 		IButton calendarBtn=new IButton("Calendar");
 		calendarBtn.addClickHandler(new ClickHandler(){
@@ -226,30 +281,57 @@ public class MapService {
 				timeTableService.buildGoogleCalendarWithUserName(selectedUserName);
 				
 			}});
-		panel.addMember(chatBtn);
-		panel.addMember(directionBtn);
-		panel.addMember(calendarBtn);
-		panel.setTop(Integer.parseInt(width.substring(0,width.length()-2))-200);
-		panel.setLeft(-120);
+		interactionPanel.addMember(chatBtn);
+		interactionPanel.addMember(directionBtn);
+		interactionPanel.addMember(calendarBtn);
+		interactionPanel.setTop(Integer.parseInt(height.substring(0,height.length()-2))-200);
+		interactionPanel.setLeft(-120);
+
+		directionPanel.setTop(100);
+		directionPanel.setLeft(-320);
+		IButton directionCloseBtn=new IButton("Close");
+		directionCloseBtn.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				directionPanelMoveOut();
+				
+			}});
+		directionPanel.addMember(directionCloseBtn);
+		directionPanel.addMember(directionDetailPanel);
 		
+		directionPanel.setBackgroundColor("WHITE");
+		//directionPanel.animateMove(10, Integer.parseInt(height.substring(0,height.length()-2))-200);
 		
 		//panel.setShowEdges(true);
-		return panel;
+		return interactionPanel;
 	}
 	
-	private void interactPanelMoveIn()
+	private void interactionPanelMoveIn()
 	{
-		panel.animateMove(10, Integer.parseInt(width.substring(0,width.length()-2))-200);
+		interactionPanel.animateMove(10, Integer.parseInt(height.substring(0,height.length()-2))-200);
 	}
 	
-	private void interactPanelMoveOut()
+	private void interactionPanelMoveOut()
 	{
-		panel.animateMove(-120, Integer.parseInt(width.substring(0,width.length()-2))-200);
+		interactionPanel.animateMove(-120, Integer.parseInt(height.substring(0,height.length()-2))-200);
+	}
+	
+	private void directionPanelMoveIn()
+	{
+		directionPanel.animateMove(Integer.parseInt(width.substring(0,width.length()-2)), 0);
+	}
+	
+	private void directionPanelMoveOut()
+	{
+		directionPanel.animateMove(-320, 100);
 	}
 	
 	public void bindTo(Layout layout)
 	{
-		panel.setParentElement(layout);
+		//layout.addMember(directionPanel);
+		directionPanel.setParentElement(layout);
+		interactionPanel.setParentElement(layout);
 	}
 	
 	public void updateUserCurrentLocation(final boolean panTo)
