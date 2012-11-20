@@ -32,36 +32,31 @@ SubscriptionService {
 			pm.close();
 		}
 	}
-
+	
 	// two way update
 	public void acceptInvitation(String senderName, String receiverName){
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		//Request request = new Request(senderName, receiverName);
-		Subscription subscription;
+		Subscription subscription1;
+		Subscription subscription2;
 		try{
 			try{
 
-				subscription = pm.getObjectById(Subscription.class,senderName);			
-				subscription.acceptRequest(receiverName);			
+				subscription1 = pm.getObjectById(Subscription.class,senderName);			
+				subscription1.acceptRequest(receiverName);			
 
+				subscription2 = pm.getObjectById(Subscription.class,receiverName);
+				
+				if (!subscription2.getEmailAddress().equals(subscription1.getEmailAddress()))
+					subscription2.acceptRequest(senderName);	
+				pm.makePersistent(subscription2);	
 			}
 			catch (JDOObjectNotFoundException e)
 			{
-				//Do nothing not supposed to happen			
-			}
-			// update the other side's friend list
-			try{
-
-				subscription = pm.getObjectById(Subscription.class,receiverName);			
-						
-
-			}
-			catch (JDOObjectNotFoundException e)
-			{
-				subscription= new Subscription(receiverName);
-				subscription.receiveRequest(senderName);
-				subscription.acceptRequest(senderName);	
-				pm.makePersistent(subscription);			
+				subscription2= new Subscription(receiverName);
+				subscription2.receiveRequest(senderName);
+				subscription2.acceptRequest(senderName);	
+				pm.makePersistent(subscription2);			
 			}
 						
 		}
@@ -88,8 +83,47 @@ SubscriptionService {
 		}
 	}
 
-
-
+	public void removeFriend(String senderName, String receiverName){
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		//Request request = new Request(senderName, receiverName);
+		Subscription subscription1;
+		Subscription subscription2;
+		try{
+			subscription1 = pm.getObjectById(Subscription.class,senderName);			
+			subscription1.removeFriend(receiverName);
+			
+			subscription2 = pm.getObjectById(Subscription.class, receiverName);
+			subscription2.removeFriend(senderName);
+			
+		}
+		catch (JDOObjectNotFoundException e)
+		{
+			//Do nothing means already deleted		
+		}
+		finally{			
+			pm.close();
+		}
+	}
+	
+	public boolean areFriends(String senderName, String receiverName)
+	{
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+	    // because it is a two way subscription, its sufficient to just check one subscription list
+		boolean result=false;
+		Subscription subscription1;
+		try{
+			subscription1 = pm.getObjectById(Subscription.class,senderName);			
+			result=(-1!=subscription1.findFriend(receiverName));			
+		}
+		catch (JDOObjectNotFoundException e)
+		{
+			//Do nothing means already deleted		
+		}
+		finally{			
+			pm.close();
+		}
+		return result;
+	}
 
 	public List<String> getInvitations(String user){
 		ArrayList<String> friendList;
@@ -151,5 +185,37 @@ SubscriptionService {
 			pm.close();
 		}
 		return usernames;
+	}
+	
+	public List<String> getFriendsImages(String user){
+		ArrayList<String> friendList;
+		ArrayList<String> types;
+		ArrayList<String> pics=new ArrayList<String>();
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		//Request request = new Request(senderName, receiverName);
+	    Subscription subscription;
+		try{
+			subscription = pm.getObjectById(Subscription.class,user);			
+			friendList=subscription.getFriends();	
+			types=subscription.getTypes();
+			int i=0;
+			while (i<friendList.size())
+			{
+				if (types.get(i).compareTo("friend")==0)
+				{
+					UserLocation userLocation=pm.getObjectById(UserLocation.class,friendList.get(i));
+					pics.add(userLocation.getImage());
+				}
+				i++;
+			}
+		}
+		catch (JDOObjectNotFoundException e)
+		{
+			//Do nothing not supposed to happen			
+		}
+		finally{			
+			pm.close();
+		}
+		return pics;
 	}
 }

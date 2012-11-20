@@ -20,6 +20,7 @@ public class ChatPanelManager extends TabSet{
 	private List<ChatPanel> chats;
 	private MessageServiceAsync messageService = GWT.create(MessageService.class);
 	private String user;
+	private FriendService parent;
 	Timer t=new Timer()
 	{
 
@@ -29,9 +30,10 @@ public class ChatPanelManager extends TabSet{
 			
 		}};
 	
-	public ChatPanelManager(String fromUser)
+	public ChatPanelManager(FriendService parent,String fromUser)
 	{
 		super();
+		this.parent=parent;
 		this.user=fromUser;
 		this.setSize("100%", "30%");
 		chats=new ArrayList<ChatPanel>();
@@ -87,15 +89,17 @@ public class ChatPanelManager extends TabSet{
 
 public void openChat(String from, String to)
 {
+	
 	// TODO check for subscription
 	MainServices.getInstance().selectTab(1);
 	ChatPanel i=findChat(to);
 	if (i!=null)
-	{			
+	{		
 		this.selectTab(i);
 	}
 	else
 	{
+		parent.buildFriendList();
 		ChatPanel chat=new ChatPanel(from, to);
 		chats.add(chat);
 		//			Tab chat1=new Tab();
@@ -114,7 +118,7 @@ public void closeChat(String to)
 		this.removeTab(i);
 }
 
-private ChatPanel findChat(String to)
+public ChatPanel findChat(String to)
 {
 	for(int i=0;i<chats.size();i++)
 	{

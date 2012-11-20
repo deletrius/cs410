@@ -9,21 +9,74 @@ import javax.jdo.Query;
 import loclock.client.CalendarService;
 import loclock.client.NotLoggedInException;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
 
 public class CalendarServiceImpl extends RemoteServiceServlet implements CalendarService{
 
 	
+	
 	public void saveEvent(String userName, String eventName,String description, Date startDate, Date endDate) throws NotLoggedInException{
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		  try{
-			  pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
+			  List<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>();
+			  list = getEventByUserName(userName);
+			  if(list.size()==0){
+				  pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
+			  }
+			  else{
+			  for(int i=0; i< list.size();i++){
+				
+			 
+				  if(!(list.get(i).get(1).equals(eventName))){
+					 
+					  if(!(list.get(i).get(2).equals(description))){
+						  
+						  if(!(list.get(i).get(3).equals(startDate))){
+							  if(!(list.get(i).get(4).equals(endDate))){
+								  System.out.println("NOT Duplicated");
+								  pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
+							  }
+						  }
+					  }
+				  }
+				  else{
+					  Window.alert("Duplicated Event");
+				  }
+				 
+			  }
+		  
+			 // pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
+		  }
 		  }
 		  finally{
 			  pm.close();
 		  }
 	}
+	/**
+	public boolean checkFree(String userName, Date time){
+		List<Calendar> calendarList = new ArrayList<Calendar>();
+		boolean free = false;
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Query q = pm.newQuery(Calendar.class);
+		q.setFilter("userName ==u && startDate  >= s && endDate <= end");
+		q.declareParameters("String u, java.util.Date s");
+		try{
+			calendarList = (List<Calendar>) q.execute(userName, time);
+			if((calendarList.size())==0)
+				free = true;
+			else{
+				free = false;
+			}
+		}
+		finally{
+			q.closeAll();
+			pm.close();
+		}
+		return free;
+	}
+	**/
 	public void deleteEvent(String userName,String eventName,String description,Date startDate,Date endDate){
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = pm.newQuery(Calendar.class);
@@ -43,7 +96,7 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 		
 		
 	}
-
+	
 	public List<ArrayList<Object>> getEventByUserName(String userName){
 		List<Calendar> calendarList = new ArrayList<Calendar>();
 		PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -83,4 +136,5 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 		
 		
 	}
+	
 }

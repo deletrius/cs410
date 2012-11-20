@@ -227,7 +227,7 @@ public class ChatPanel extends Tab{
 	}
 	
 
-	public void sendMessage(String content)
+	public void sendMessage(final String content)
 	{
 
 		try {
@@ -242,7 +242,7 @@ public class ChatPanel extends Tab{
 
 				@Override
 				public void onSuccess(Void result) {
-					updateConvoTextBox(inputTextBox.getValueAsString(),timestamp.toString());
+					updateConvoTextBox(content,timestamp.toString());
 					inputTextBox.clearValue();	
 				}});
 		} catch (NotLoggedInException e) {

@@ -86,7 +86,10 @@ public class Subscription {
 	
 	
 	public void removeFriend(String friendName){
-		friendList.remove(friendName);
+		int index=findFriend(friendName);
+		friendList.remove(index);
+		types.remove(index);	
+		numFriends--;		
 	}
 	
 	public ArrayList<String> getFriends(){

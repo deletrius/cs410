@@ -32,6 +32,9 @@ public class UserLocation {
 	@Persistent(defaultFetchGroup="true")
 	private Date lastupdate;
 	
+	@Persistent
+	private String profileImageURL="http://images.wikia.com/civilization/images/c/cb/Yao-ming-meme.jpg";
+	
 	public UserLocation() 
 	{
 		
@@ -50,6 +53,15 @@ public class UserLocation {
 //	{
 //		return this.id;
 //	}
+	
+	public void setImage(String url)
+	{
+		profileImageURL=url;
+	}
+	public String getImage()
+	{
+		return profileImageURL;
+	}
 	
 	public String getUserName() 
 	{

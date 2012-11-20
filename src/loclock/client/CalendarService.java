@@ -48,5 +48,6 @@ public interface CalendarService extends RemoteService{
 	//public List<CalendarEvent> getEvent(String name);
 	public List<ArrayList<Object>> getEventByUserName(String userName);
 	public void deleteEvent(String userName, String eventName,String description, Date startDate, Date endDate);
+	//public boolean checkFree(String userName, Date time);
 }
 

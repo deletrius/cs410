@@ -37,13 +37,20 @@ public class MainServices extends TabSet{
 	private LoginService loginService;
 	
 	private static final Plus plus = GWT.create(Plus.class);
-	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
-	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
-	private static final String APPLICATION_NAME = "PlusSample/1.0";
+	//Gerry's Key
+//	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
+//	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
+	
+	//Raymond's Key
+	private static final String CLIENT_ID = "118588470471.apps.googleusercontent.com";
+	private static final String API_KEY = "3Nk4zNSGJW8efRAO0Og4jOTJ";
+	
+	private static final String APPLICATION_NAME = "loclock/3.0";
 	
 	private MapService mapService;
 	
 	public static Account account = null;
+	
 	private static volatile MainServices mainServicesInstance;
 	private MainServices()
 	{
@@ -156,24 +163,28 @@ public class MainServices extends TabSet{
 			rootLayout.addMember(loginLayout);
 			rootLayout.draw();
 			
-			plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-			 final IButton b = new IButton("Authenticate to get public activities");
-
-			 b.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-				
-				@Override
-				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-					// TODO Auto-generated method stub
-					login();
-					Window.alert("After login!");
-				}
-			});
 			
-			 loginLayout.addMember(b);
+//     		plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
+//			 final IButton b = new IButton("Authenticate to get public activities");
+//
+//			 b.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+//				
+//				@Override
+//				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+//					// TODO Auto-generated method stub
+//					login();
+//					Window.alert("After login!");
+//				}
+//			});
+			
+//			 loginLayout.addMember(b);
 		}
 		
 		protected void loadLoggedInScreen() {
-			System.out.println("OK");
+			
+			plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
+			login();
+			//System.out.println("OK");
 			//rootLayout.destroy();
 			rootLayout=new HLayout(5);
 			rootLayout.setSize("100%", "100%");
@@ -200,15 +211,17 @@ public class MainServices extends TabSet{
 		
 		private void login() 
 		{
+			println("lol");
 		    OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
 		      @Override
 		      public void onSuccess(Void v) {
-		        getMe();
+		    	  Window.alert("Authorized");
+		    	  getMe();		        
 		      }
 
 		      @Override
 		      public void onFailure(Exception e) {
-		        println(e.getMessage());
+		        println("failed authorize");
 		      }
 		    });
 		  }
@@ -217,28 +230,46 @@ public class MainServices extends TabSet{
 		    plus.people().get("me").to(new Receiver<Person>() {
 		      @Override
 		      public void onSuccess(Person person) {
-		        println("Hello " + person.getDisplayName());
-		        Window.alert("Hello, this is your name: " + person.getDisplayName());
-		        getMyActivities();
+		        println("Welcome back " + person.getDisplayName() +" @GooglePlus");
+//		        Window.alert("Hello, this is your name: " + person.getDisplayName());
+		        if (person.getImage().getUrl()!=null)
+		        {
+		        	locationService.updateUserImage(account.getEmailAddress(), person.getImage().getUrl(), new AsyncCallback<Void>(){
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							// TODO Auto-generated method stub
+							
+						}});
+		        }
+		        //getMyActivities();
 		      }
 		    }).fire();
 		  }
 		
-		private void getMyActivities() {			
-		    plus.activities().list("me", Collection.PUBLIC).to(new Receiver<ActivityFeed>() {
-		      @Override
-		      public void onSuccess(ActivityFeed feed) {
-		        println("===== PUBLIC ACTIVITIES =====");
-		        if (feed.getItems() == null || feed.getItems().isEmpty()) {
-		          println("You have no public activities");
-		        } else {
-		          for (Activity a : feed.getItems()) {
-		            println(a.getTitle());
-		          }
-		        }
-		      }
-		    }).fire();
-		  }
+//		private void getMyActivities() {	
+//			
+//		    plus.activities().list("me", Collection.PUBLIC).to(new Receiver<ActivityFeed>() {
+//		      @Override
+//		      public void onSuccess(ActivityFeed feed) {
+//		        println("===== PUBLIC ACTIVITIES =====");
+//		        if (feed.getItems() == null || feed.getItems().isEmpty()) {
+//		          println("You have no public activities");
+//		        } else {
+//		          for (Activity a : feed.getItems()) {
+//		            println(a.getTitle());
+//		          }
+//		        }
+//		      }
+//		    }).fire();
+//		  }
+		
 		
 		private void println(String msg) {
 			Window.alert(msg);

@@ -54,9 +54,9 @@ public class NotificationTabService extends Service {
 	//private static String currentStackId;
 
 	//private static int lock;
-	
+
 	//private static int refreshTimerIsRunning = 0;
-	
+
 	private static List<String> stackIdsRemoved;
 
 	// private static final Domain DOMAIN =
@@ -298,7 +298,7 @@ public class NotificationTabService extends Service {
 						});
 			}
 		});
-		
+
 		IButton addToCalendarButton = new IButton("Add to Calendar");
 		addToCalendarButton.addClickHandler(new ClickHandler() {
 
