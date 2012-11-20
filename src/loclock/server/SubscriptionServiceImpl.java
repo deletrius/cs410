@@ -193,5 +193,35 @@ SubscriptionService {
 		return usernames;
 	}
 	
-	
+	public List<String> getFriendsImages(String user){
+		ArrayList<String> friendList;
+		ArrayList<String> types;
+		ArrayList<String> pics=new ArrayList<String>();
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		//Request request = new Request(senderName, receiverName);
+	    Subscription subscription;
+		try{
+			subscription = pm.getObjectById(Subscription.class,user);			
+			friendList=subscription.getFriends();	
+			types=subscription.getTypes();
+			int i=0;
+			while (i<friendList.size())
+			{
+				if (types.get(i).compareTo("friend")==0)
+				{
+					UserLocation userLocation=pm.getObjectById(UserLocation.class,friendList.get(i));
+					pics.add(userLocation.getImage());
+				}
+				i++;
+			}
+		}
+		catch (JDOObjectNotFoundException e)
+		{
+			//Do nothing not supposed to happen			
+		}
+		finally{			
+			pm.close();
+		}
+		return pics;
+	}
 }

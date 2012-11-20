@@ -114,6 +114,17 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 	}
 	
+	public void updateUserImage(String username, String url) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+	    try {
+	        UserLocation user = pm.getObjectById(UserLocation.class, username);
+	        user.setImage(url);
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
 	public String getUserNameByID (String username) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -207,7 +218,8 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    	result.add(userloc.getUserName());
 	    	result.add(userloc.getLatitude());
 	    	result.add(userloc.getLongitude());
-	    	result.add(userloc.getLastUpdate().toString());	    			
+	    	result.add(userloc.getLastUpdate().toString());	    
+	    	result.add(userloc.getImage());
 	    } 
 		catch (JDOObjectNotFoundException e)
 		{
@@ -218,6 +230,8 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 		return result;
 	}
+	
+	
 //	public Double getUserLatitude(String userName) {
 //		PersistenceManager pm = getPersistenceManager();
 //		double lat = 0;
