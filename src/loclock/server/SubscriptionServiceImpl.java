@@ -45,16 +45,10 @@ SubscriptionService {
 				subscription1 = pm.getObjectById(Subscription.class,senderName);			
 				subscription1.acceptRequest(receiverName);			
 
-			}
-			catch (JDOObjectNotFoundException e)
-			{
-				//Do nothing not supposed to happen			
-			}
-			
-			// update the other side's friend list
-			try{
 				subscription2 = pm.getObjectById(Subscription.class,receiverName);
-				subscription2.acceptRequest(senderName);	
+				
+				if (!subscription2.getEmailAddress().equals(subscription1.getEmailAddress()))
+					subscription2.acceptRequest(senderName);	
 				pm.makePersistent(subscription2);	
 			}
 			catch (JDOObjectNotFoundException e)
