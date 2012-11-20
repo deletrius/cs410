@@ -32,7 +32,7 @@ SubscriptionService {
 			pm.close();
 		}
 	}
-
+	
 	// two way update
 	public void acceptInvitation(String senderName, String receiverName){
 		PersistenceManager pm = PMF.get().getPersistenceManager();

@@ -13,11 +13,13 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.smartgwt.client.widgets.calendar.Calendar;
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventAdded;
+import com.smartgwt.client.widgets.calendar.events.CalendarEventChangedEvent;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventClick;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventRemoved;
 import com.smartgwt.client.widgets.calendar.events.DayBodyClickEvent;
 import com.smartgwt.client.widgets.calendar.events.DayBodyClickHandler;
 import com.smartgwt.client.widgets.calendar.events.EventAddedHandler;
+import com.smartgwt.client.widgets.calendar.events.EventChangedHandler;
 import com.smartgwt.client.widgets.calendar.events.EventClickHandler;
 import com.smartgwt.client.widgets.calendar.events.EventRemovedHandler;
 
@@ -115,7 +117,30 @@ public class TimeTableService extends Service{
 				friendList.add(result.get(i));
 				}
 			}});
+//friends will be notified on event change
+	
+		calendar.addEventChangedHandler(new EventChangedHandler(){
 
+			@Override
+			public void onEventChanged(CalendarEventChangedEvent event) {
+				//for(int i=0; i<friendList.size();i++){
+				notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "boradcast",
+						event.getEvent().getDescription(), event.getEvent().getName(),
+						event.getEvent().getStartDate(), event.getEvent().getEndDate(), new AsyncCallback<Void>(){
+
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
+								
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								// TODO Auto-generated method stub
+								
+							}});
+				//}
+			}});
 		calendar.addEventClickHandler(new EventClickHandler(){
 
 
@@ -137,16 +162,16 @@ public class TimeTableService extends Service{
 
 
 		});
-
+//invitations of this event will be sent to all friends
 		sendInvitationButton.addClickHandler(new ClickHandler(){
 
 
 			public void onClick(ClickEvent event2) {
 
-				for(int i=0; i<friendList.size();i++){
+				//for(int i=0; i<friendList.size();i++){
 
 					notification.addNotificationCalendar(MainServices.account.getEmailAddress(),
-							friendList.get(i),event1.getEvent().getDescription() , event1.getEvent().getName(),
+							"broadcast",event1.getEvent().getDescription() , event1.getEvent().getName(),
 							event1.getEvent().getStartDate(), event1.getEvent().getEndDate(), new AsyncCallback<Void>(){
 
 								@Override
@@ -159,7 +184,7 @@ public class TimeTableService extends Service{
 								public void onSuccess(Void result) {
 
 								}});
-				}
+			//	}
 			}});
 
 		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
@@ -173,10 +198,11 @@ public class TimeTableService extends Service{
 
 
 		});
+		//event will be removed when clicked on remove on calendar. friends will be notified
 		calendar.addEventRemovedHandler(new EventRemovedHandler() {
 
 			@Override
-			public void onEventRemoved(CalendarEventRemoved event) {
+			public void onEventRemoved(final CalendarEventRemoved event) {
 				// TODO Auto-generated method stub
 				calendarService.deleteEvent(MainServices.account.getEmailAddress(),
 						event.getEvent().getName(), event.getEvent().getDescription(), event.getEvent().getStartDate(),
@@ -184,8 +210,21 @@ public class TimeTableService extends Service{
 
 							@Override
 							public void onSuccess(Void result) {
+								notification.addNotificationCalendar(MainServices.account.getEmailAddress(),"broadcast",
+						event.getEvent().getName(), event.getEvent().getDescription(), event.getEvent().getStartDate(),
+						event.getEvent().getEndDate(), new AsyncCallback<Void>(){
+
+							@Override
+							public void onFailure(Throwable caught) {
 								// TODO Auto-generated method stub
-								//System.out.println("1111 Failed");
+								
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								// TODO Auto-generated method stub
+								
+							}});
 							}
 
 							@Override
@@ -196,6 +235,8 @@ public class TimeTableService extends Service{
 						});
 			}
 		});
+		
+		//event will be saved to datastore when added on Calendar UI
 		calendar.addEventAddedHandler(new EventAddedHandler(){
 
 			@Override
@@ -205,7 +246,7 @@ public class TimeTableService extends Service{
 
 					@Override
 					public void onFailure(Throwable caught) {
-						Window.alert("Go home");
+						
 
 					}
 
@@ -268,22 +309,15 @@ public class TimeTableService extends Service{
 			//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate
 						@Override
 						public void onSuccess(List<ArrayList<Object>> result) {
-							//Window.alert("WOW, TimeTable Service is up!!!!");
-							//for(int i =0; i<result.length;i++)
+							
 							ArrayList<CalendarEvent> calEvent=new ArrayList<CalendarEvent>();
 
 							for(int i=0; i < result.size();i++){
 								calEvent.add( new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString())));
-							//System.out.println(i+result.get(i).get(2).toString()+ result.get(i).get(3).toString()+new Date(result.get(i).get(4).toString())+new Date(result.get(i).get(5).toString()));
-							//System.out.println("1:"+ i);
-							//System.out.println("");
-							//System.out.println(result.get(i).get(1).toString());
-							//System.out.println(result.get(i).get(2).toString());
-							//System.out.println(result.get(i).get(3).toString());
-							//System.out.println("");
+							
 							}
 							events=new CalendarEvent[calEvent.size()];
-							//CalendarEvent[] events=new CalendarEvent[calEvent.size()];
+							
 							for (int i=0; i<calEvent.size();i++)
 							{
 								events[i]=calEvent.get(i);
@@ -299,19 +333,7 @@ public class TimeTableService extends Service{
 
 
 		calendar.setSize("600px", "600px");
-		/**
-		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
-
-			@Override
-			public void onDayBodyClick(DayBodyClickEvent event) {
-				// TODO Auto-generated method stub
-				System.out.println("Date is: " + event.getDate());
-
-			}
-
-
-		});
-		**/
+		
 		calendar.setDisableWeekends(false);
 		calendar.setCanEditEvents(false);
 		calendar.draw();
