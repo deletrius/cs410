@@ -35,6 +35,16 @@ public class UserLocation {
 	@Persistent
 	private String profileImageURL="http://images.wikia.com/civilization/images/c/cb/Yao-ming-meme.jpg";
 	
+	// for now, can only be string value of either 'private' by default, or 'public' if enabled by user
+	@Persistent
+	private String privacy;
+	
+	@Persistent
+	private String firstName;
+	
+	@Persistent
+	private String lastName;
+	
 	public UserLocation() 
 	{
 		
@@ -47,6 +57,9 @@ public class UserLocation {
 		this.latitude = "-1.0";
 		this.longitude = "-1.0";
 		this.lastupdate=new Date();
+//		this.privacy = "";
+		this.firstName = "";
+		this.lastName = "";
 	}
 
 //	public Long getId() 
@@ -95,6 +108,30 @@ public class UserLocation {
 
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
+	}
+
+	public String getPrivacy() {
+		return privacy;
+	}
+
+	public void setPrivacy(String privacy) {
+		this.privacy = privacy;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}	
 	
 	
