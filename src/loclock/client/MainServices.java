@@ -14,13 +14,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.WindowResizeListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 
- 
+
 
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -35,42 +36,46 @@ public class MainServices extends TabSet{
 	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private HLayout rootLayout;
 	private LoginService loginService;
-	
+
 	private static final Plus plus = GWT.create(Plus.class);
 	//Gerry's Key
-//	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
-//	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
-	
-	//Raymond's Key
-	private static final String CLIENT_ID = "118588470471.apps.googleusercontent.com";
-	private static final String API_KEY = "3Nk4zNSGJW8efRAO0Og4jOTJ";
-	
+	//	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
+	//	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
+
+	//Raymond's myloclock Key
+//	private static final String CLIENT_ID = "118588470471.apps.googleusercontent.com";
+//	private static final String API_KEY = "3Nk4zNSGJW8efRAO0Og4jOTJ";
+
+	//Raymond's yunyunloclock Key
+	private static final String CLIENT_ID = "118588470471-pll4trc5hvbj8d808bgpr3s34ljblt9g.apps.googleusercontent.com";
+	private static final String API_KEY = "F897RO-8nnVd_s2AjviDV0bu";
+
 	private static final String APPLICATION_NAME = "loclock/3.0";
-	
+
 	private MapService mapService;
-	
+
 	public static Account account = null;
-	
+
 	private static volatile MainServices mainServicesInstance;
 	private MainServices()
 	{
 		rootLayout=new HLayout(5);
 		rootLayout.setSize("100%", "100%");
-		
+
 		// Check if the user is logged in
 		loginService=new LoginService();	
-		
+
 	}
-	
+
 	public static MainServices getInstance()
 	{
 		if (mainServicesInstance == null)
 		{
 			mainServicesInstance=new MainServices();
 		}
-			return mainServicesInstance;
+		return mainServicesInstance;
 	}
-	
+
 	public void addService(Service service)
 	{
 		this.addTab(service);
@@ -78,40 +83,55 @@ public class MainServices extends TabSet{
 			rootLayout.addMember(this);
 		rootLayout.redraw();
 	}
-	
+
 	private void addMapService()
 	{
-		HLayout mapPanel=new HLayout();
-		
-		
-		String mapWidth=(rootLayout.getRight()-rootLayout.getLeft())/2+"px";
-		String mapHeight=(rootLayout.getBottom()-rootLayout.getTop())+"px";
+		final HLayout mapPanel=new HLayout();
+
+
+		String mapWidth=Window.getClientWidth()/2+"px";
+		String mapHeight=Window.getClientHeight()+"px";
 		mapService=new MapService(mapWidth,mapHeight);
-		
-		//mapPanel.setSize("50%", "100%");
+
+		mapPanel.setSize("50%", "100%");
 		//mapPanel.setAlign(Alignment.RIGHT);
 		//mapPanel.setAlign(VerticalAlignment.BOTTOM);
 		//mapPanel.setMemberOverlap(200);
-		
+
 		mapPanel.addMember(mapService.toWidget());	
-		
+
 		mapService.bindTo(mapPanel);
 		//mapPanel.addMember(mapService.getMapOverlayPanel(),10);
-		
+
 		rootLayout.addMember(mapPanel);		
 		rootLayout.redraw();
+
+		Window.addWindowResizeListener(new WindowResizeListener(){
+
+			@Override
+			@Deprecated
+			public void onWindowResized(int width, int height) {
+				rootLayout.removeMember(mapPanel);
+				mapPanel.destroy();
+				mapService=new MapService(width/2+"px",height+"px");
+				mapPanel.addMember(mapService.toWidget());
+				rootLayout.addMember(mapPanel,0);
+				rootLayout.addMember(mapPanel);		
+				rootLayout.redraw();
+			}});
+
 	}
 	public MapService getMapService()
 	{
 		return mapService;
 	}
-	
+
 	public Account  getAccount()
 	{
 		return account;
 	}
-	
-	
+
+
 	private class LoginService
 	{
 		private AccountServiceAsync accountService = GWT.create(AccountService.class);
@@ -130,7 +150,7 @@ public class MainServices extends TabSet{
 					Window.alert("Error Message: "+caught);
 				}
 				public void onSuccess(Account result) {
-					
+
 					account = result;
 					System.out.println("bbbb "+MainServices.account);
 					if(account.isLoggedIn()){
@@ -150,38 +170,38 @@ public class MainServices extends TabSet{
 			loginLayout.setSize("300px", "100px");
 			signInLink.setHref(account.getLoginUrl());
 			registerLink.setHref("https://www.google.com/accounts/NewAccount");
-			
+
 			loginLayout.setDefaultLayoutAlign(Alignment.CENTER);
-			
-			
+
+
 			loginLayout.addMember(loginLabel);
 			loginLayout.addMember(signInLink);
 			loginLayout.addMember(registerLabel);
 			loginLayout.addMember(registerLink);
-			
+
 			rootLayout.setAlign(Alignment.CENTER);
 			rootLayout.addMember(loginLayout);
 			rootLayout.draw();
-			
-			
-//     		plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-//			 final IButton b = new IButton("Authenticate to get public activities");
-//
-//			 b.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-//				
-//				@Override
-//				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-//					// TODO Auto-generated method stub
-//					login();
-//					Window.alert("After login!");
-//				}
-//			});
-			
-//			 loginLayout.addMember(b);
+
+
+			//     		plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
+			//			 final IButton b = new IButton("Authenticate to get public activities");
+			//
+			//			 b.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			//				
+			//				@Override
+			//				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+			//					// TODO Auto-generated method stub
+			//					login();
+			//					Window.alert("After login!");
+			//				}
+			//			});
+
+			//			 loginLayout.addMember(b);
 		}
-		
+
 		protected void loadLoggedInScreen() {
-			
+
 			plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
 			login();
 			//System.out.println("OK");
@@ -194,89 +214,89 @@ public class MainServices extends TabSet{
 			tabSet.setAutoWidth();
 			//tabSet.setSize("50%", "100%");
 			System.out.println("Good");
-			
-			
+
+
 			addUser(account.getEmailAddress());
+			System.out.println(account.getEmailAddress());
 			addMapService();
-			
+
 			addService(new FileUploadService());
 			addService(new FriendService(account.getEmailAddress())); //@@ TODO stub for usrname
 			addService(new TimeTableService());
 			addService(new NotificationTabService());
 			addService(new SettingTabService());
 			rootLayout.addMember(MainServices.this);
-			
+
 			rootLayout.draw();
 		}
-		
+
 		private void login() 
 		{
-			println("lol");
-		    OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
-		      @Override
-		      public void onSuccess(Void v) {
-		    	  Window.alert("Authorized");
-		    	  getMe();		        
-		      }
+			OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
+				@Override
+				public void onSuccess(Void v) {
+					Window.alert("Authorized");
+					getMe();		        
+				}
 
-		      @Override
-		      public void onFailure(Exception e) {
-		        println("failed authorize");
-		      }
-		    });
-		  }
-		
+				@Override
+				public void onFailure(Exception e) {
+					println("failed authorize");
+				}
+			});
+		}
+
 		private void getMe() {
-		    plus.people().get("me").to(new Receiver<Person>() {
-		      @Override
-		      public void onSuccess(Person person) {
-		        println("Welcome back " + person.getDisplayName() +" @GooglePlus");
-//		        Window.alert("Hello, this is your name: " + person.getDisplayName());
-		        if (person.getImage().getUrl()!=null)
-		        {
-		        	locationService.updateUserImage(account.getEmailAddress(), person.getImage().getUrl(), new AsyncCallback<Void>(){
+			plus.people().get("me").to(new Receiver<Person>() {
+				@Override
+				public void onSuccess(Person person) {
+					println("Welcome back " + person.getDisplayName() +" @GooglePlus");
+					//		        Window.alert("Hello, this is your name: " + person.getDisplayName());
+					if (person.getImage().getUrl()!=null)
+					{
+						locationService.updateUserImage(account.getEmailAddress(), person.getImage().getUrl(), new AsyncCallback<Void>(){
 
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-							
-						}
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
 
-						@Override
-						public void onSuccess(Void result) {
-							// TODO Auto-generated method stub
-							
-						}});
-		        }
-		        //getMyActivities();
-		      }
-		    }).fire();
-		  }
-		
-//		private void getMyActivities() {	
-//			
-//		    plus.activities().list("me", Collection.PUBLIC).to(new Receiver<ActivityFeed>() {
-//		      @Override
-//		      public void onSuccess(ActivityFeed feed) {
-//		        println("===== PUBLIC ACTIVITIES =====");
-//		        if (feed.getItems() == null || feed.getItems().isEmpty()) {
-//		          println("You have no public activities");
-//		        } else {
-//		          for (Activity a : feed.getItems()) {
-//		            println(a.getTitle());
-//		          }
-//		        }
-//		      }
-//		    }).fire();
-//		  }
-		
-		
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								// TODO Auto-generated method stub
+
+							}});
+					}
+					//getMyActivities();
+				}
+			}).fire();
+		}
+
+		//		private void getMyActivities() {	
+		//			
+		//		    plus.activities().list("me", Collection.PUBLIC).to(new Receiver<ActivityFeed>() {
+		//		      @Override
+		//		      public void onSuccess(ActivityFeed feed) {
+		//		        println("===== PUBLIC ACTIVITIES =====");
+		//		        if (feed.getItems() == null || feed.getItems().isEmpty()) {
+		//		          println("You have no public activities");
+		//		        } else {
+		//		          for (Activity a : feed.getItems()) {
+		//		            println(a.getTitle());
+		//		          }
+		//		        }
+		//		      }
+		//		    }).fire();
+		//		  }
+
+
 		private void println(String msg) {
 			Window.alert(msg);
 			//loginLayout.addMember(new Label(msg));
 			//rootLayout.draw();
-		  }
-		
+		}
+
 		private void addUser(final String username)
 		{
 			locationService.addUser(username, new AsyncCallback<Void>() {
@@ -322,7 +342,7 @@ public class MainServices extends TabSet{
 
 			Window.alert(stringOfUsers);
 		}
-		
+
 	}
 }
 
