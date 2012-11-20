@@ -38,7 +38,7 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		// if not, go ahead and add the user to the database.
 		PersistenceManager pm = getPersistenceManager();
 		try{
-			pm.getObjectById(new UserLocation(getCurrentUser().getEmail()));
+			pm.getObjectById(UserLocation.class,username);
 		}
 		catch (JDOObjectNotFoundException e)
 		{
@@ -50,6 +50,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 			{
 				pm.close();
 			}
+		}
+		finally {
+			pm.close();
 		}
 	}
 	
