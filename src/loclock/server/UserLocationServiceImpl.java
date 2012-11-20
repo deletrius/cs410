@@ -51,6 +51,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 				pm.close();
 			}
 		}
+		finally {
+			pm.close();
+		}
 	}
 	
 	public void removeUser(String username) throws NotLoggedInException 

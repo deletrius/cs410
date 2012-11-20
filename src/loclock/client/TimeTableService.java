@@ -279,7 +279,7 @@ public class TimeTableService extends Service{
 		googleCalendar.setHeight("600px");
 		calendar.setCanEditEvents(true);//CAL_PUBLIC_URL;
 
-		calendar.draw();
+		//calendar.draw();
 	}
 
 
