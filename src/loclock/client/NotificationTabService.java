@@ -47,8 +47,9 @@ public class NotificationTabService extends Service {
 	private static SectionStack sectionStack;
 	private static List<String> currentlyShownNotifications;
 	private static ImgButton removeButton;
-
+	private static TimeTableService timeTableService = GWT.create(TimeTableService.class);
 	private static Timer refreshTimer;
+	private static String duplicate;
 	//private static Timer refreshTimer2;
 
 	//private static String currentStackId;
@@ -271,7 +272,21 @@ public class NotificationTabService extends Service {
 		final String description2 = description;
 		final Date startDate2 = new Date(startDate);
 		final Date endDate2 = new Date(endDate);
+		
+		calendarService.checkDuplicate(MainServices.account.getEmailAddress(),
+				eventName2, description2, startDate2, endDate2, new AsyncCallback<String>(){
 
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(String result) {
+						// TODO Auto-generated method stub
+						duplicate = result;
+					}});
 		notificationHtmlFlow.setContents(notificationContents);
 		notificationVLayout = new VLayout();
 		notificationVLayout.addMember(notificationHtmlFlow);
@@ -304,6 +319,7 @@ public class NotificationTabService extends Service {
 
 			@Override
 			public void onClick(ClickEvent event) {
+				if(duplicate == "0"){
 				calendarService.saveEvent(
 						MainServices.account.getEmailAddress(), eventName2,
 						description2, startDate2, endDate2,
@@ -318,9 +334,13 @@ public class NotificationTabService extends Service {
 							@Override
 							public void onSuccess(Void result) {
 								Window.alert("Notification Event Saved!");
+								timeTableService.buildGoogleCalendar();
 
 							}
 						});
+				
+				}
+				Window.alert("Time Table Conflict");
 			}
 		});
 		hLayout.addMember(addToCalendarButton);

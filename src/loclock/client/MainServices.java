@@ -43,8 +43,8 @@ public class MainServices extends TabSet{
 //	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
 	
 	//Raymond's Key
-	private static final String CLIENT_ID = "118588470471.apps.googleusercontent.com";
-	private static final String API_KEY = "3Nk4zNSGJW8efRAO0Og4jOTJ";
+	private static final String CLIENT_ID = "603225197081.apps.googleusercontent.com";
+	private static final String API_KEY = "AIzaSyCRh7dhcjAd9xWPQQTxdX61z_BoYwKcchc";
 	
 	private static final String APPLICATION_NAME = "loclock/3.0";
 	
@@ -198,8 +198,8 @@ public class MainServices extends TabSet{
 		
 		protected void loadLoggedInScreen() {
 			
-			plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-			login();
+			//plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
+			//login();
 			//System.out.println("OK");
 			//rootLayout.destroy();
 			rootLayout=new HLayout(5);
@@ -224,7 +224,7 @@ public class MainServices extends TabSet{
 			
 			rootLayout.draw();
 		}
-		
+		/**
 		private void login() 
 		{
 		    OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
@@ -240,7 +240,7 @@ public class MainServices extends TabSet{
 		      }
 		    });
 		  }
-		
+		**/
 		private void getMe() {
 		    plus.people().get("me").to(new Receiver<Person>() {
 		      @Override

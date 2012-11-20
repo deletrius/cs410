@@ -128,7 +128,7 @@ public class FileUploadService extends Service{
 					public void onSuccess(List<ArrayList<Object>> result) {
 						System.out.println("parserService succeed");
 						CalendarEvent[] calEvents = TimeTableService.events;
-						
+
 						CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 						for(int i=0;i<result.size();i++){
 							//dateTimeStart = (Long) Long.parseLong(result.get(i).get(2).toString());
@@ -144,11 +144,11 @@ public class FileUploadService extends Service{
 							d1 = dateTimeFormat.parse(str1);
 							d2 = dateTimeFormat.parse(str2);
 							dateTermEnd  = dateTimeFormat.parse(str3+"235959");
-							
+
 							int weekDiff =(int) ((dateTermEnd.getTime()-d1.getTime())/WEEKS_IN_MILLIS);
 
 							//System.out.println("WEEKS_IN_MILLIS is:"+ weekDiff);
-							
+
 							for(int j=0; j<weekDiff+1;j++){
 
 							boolean contains = false;
@@ -164,23 +164,25 @@ public class FileUploadService extends Service{
 									//check duplication if event consider to be duplicated if this event has same startDate, endDate, name, and description
 									//else add the calendar
 									//System.out.println(calEvents[k].getName());
-									
+
 									if(calEvents[k].getStartDate().equals(d1)){
-										
+
 										//System.out.println("different startDate");
 										if(calEvents[k].getEndDate().equals(d2)){
+											
 											contains = true;
+											
 											//System.out.println("different endDate");
 											if(calEvents[k].getName() == result.get(i).get(0).toString()){
-												System.out.println("same name");
+												//System.out.println("same name");
 												//System.out.println("different eventName");
 											if(calEvents[k].getDescription() == result.get(i).get(1).toString()){
 												//System.out.println("different description");
-												
+
 
 
 											}
-											
+
 											}
 										}
 									}
@@ -189,9 +191,9 @@ public class FileUploadService extends Service{
 								if(contains == false){
 									System.out.println("contains == false");
 									System.out.println("Event "+ result.get(i).get(2).toString());
-									
+
 									calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
-										
+
 										@Override
 										public void onFailure(Throwable caught) {
 											// TODO Auto-generated method stub
@@ -208,7 +210,7 @@ public class FileUploadService extends Service{
 
 										}});
 								}
-								
+
 						}
 							CalendarUtil.addDaysToDate(d1, 7);
 							CalendarUtil.addDaysToDate(d2, 7);
@@ -217,7 +219,7 @@ public class FileUploadService extends Service{
 							}
 							//TimeTableService.calendar.redraw();
 						}
-						
+
 
 					}
 
