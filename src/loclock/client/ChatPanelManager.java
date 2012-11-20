@@ -35,7 +35,7 @@ public class ChatPanelManager extends TabSet{
 		super();
 		this.parent=parent;
 		this.user=fromUser;
-		this.setSize("100%", "30%");
+		this.setSize("100%", "50%");
 		chats=new ArrayList<ChatPanel>();
 		this.addCloseClickHandler(new CloseClickHandler()
 		{

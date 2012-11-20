@@ -65,7 +65,7 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 public class FriendService extends Service{
 	public static ChatPanelManager chatManager;
 	private VLayout friendsPanel;
-	private DynamicForm requestForm;
+	
 	private String user;
 	private String friendUserName;
 	private UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
@@ -75,11 +75,14 @@ public class FriendService extends Service{
 	private static boolean free = true;
 	private static String freeOrNot = "Yes";
 	private TileGrid tileGrid;
-	TextAreaItem searchBox = new TextAreaItem();
-	ButtonItem searchButton = new ButtonItem("Search");
-	IButton requestButton = new IButton("Add Friend");
-
-	DynamicForm profileForm=new DynamicForm();
+	private HLayout requestPanel;
+	
+//	private DynamicForm requestForm;
+//	TextAreaItem searchBox = new TextAreaItem();
+//	ButtonItem searchButton = new ButtonItem("Search");
+//	IButton requestButton = new IButton("Add Friend");
+//
+	private DynamicForm profileForm=new DynamicForm();
 	//	private static final List<String> DAYS = Arrays.asList("Sunday", "Monday",
 	//			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 	public FriendService(String user)
@@ -165,9 +168,9 @@ public class FriendService extends Service{
 		{
 			tileGrid=new TileGrid();  
 			tileGrid.setWidth("100%");  
-			tileGrid.setHeight("70%");
-			tileGrid.setTileHeight(150);
-			tileGrid.setTileWidth(100);
+			tileGrid.setHeight("30%");
+			tileGrid.setTileHeight(90);
+			tileGrid.setTileWidth(60);
 			tileGrid.setCanReorderTiles(false);  
 			tileGrid.setShowAllRecords(true); 
 			tileGrid.setCanDrag(false);
@@ -180,9 +183,9 @@ public class FriendService extends Service{
 			friendsPanel.removeMember(tileGrid);
 			tileGrid=new TileGrid();  
 			tileGrid.setWidth("100%");  
-			tileGrid.setHeight("70%");
-			tileGrid.setTileHeight(150);
-			tileGrid.setTileWidth(100);
+			tileGrid.setHeight("30%");
+			tileGrid.setTileHeight(90);
+			tileGrid.setTileWidth(60);
 			tileGrid.setCanReorderTiles(false);  
 			tileGrid.setShowAllRecords(true); 
 			tileGrid.setCanDrag(false);
@@ -328,8 +331,9 @@ public class FriendService extends Service{
 			DetailViewerField pictureField = new DetailViewerField("picture"); 
 
 			pictureField.setType("image");  
-			pictureField.setImageWidth(100);  
-			pictureField.setImageHeight(100);  
+			
+			pictureField.setImageWidth(tileGrid.getTileSize());  
+			pictureField.setImageHeight(tileGrid.getTileSize());  
 			//pictureField.setImageURLPrefix("war/images/");
 			DetailViewerField nameField = new DetailViewerField("name");  
 			tileGrid.setFields(pictureField, nameField);  
@@ -419,14 +423,23 @@ public class FriendService extends Service{
 
 
 	public void buildRequest(){
-		requestForm=new DynamicForm();
-		requestForm.setSize("100%", "20%");
-		searchBox.setShowTitle(false);
+		DynamicForm requestForm;
+		final TextAreaItem searchBox = new TextAreaItem();
+		final ButtonItem searchButton = new ButtonItem("Search");
+		final IButton requestButton = new IButton("Add Friend");
 
+
+		requestForm=new DynamicForm();
+		requestForm.setSize("100%", "5%");
+		
+		searchBox.setShowTitle(false);
+		searchBox.setHeight(10);
+		searchBox.setWidth(Window.getClientWidth()/3);
 		requestForm.setItems(searchBox, searchButton);
+		requestForm.setAutoHeight();
 		//friendsPanel.addMember(searchButton);
 		final Label label0 = new Label();
-		final Label label = new Label();
+		//final Label label = new Label();
 
 		searchButton.addClickHandler(new ClickHandler(){
 
@@ -448,10 +461,14 @@ public class FriendService extends Service{
 							Window.alert("User does not exist in ");
 						else
 						{
-							final HLayout requestPanel = new HLayout();
-							friendsPanel.addMember(requestPanel);
-							requestPanel.addMember(label0);
-							requestPanel.addMember(requestButton);
+							if (requestPanel==null)
+							{
+								requestPanel= new HLayout();
+								friendsPanel.addMember(requestPanel);
+								requestPanel.addMember(label0);
+								requestPanel.addMember(requestButton);
+							}
+							
 							requestButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
 								@Override

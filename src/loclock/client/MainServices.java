@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.WindowResizeListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -81,14 +82,14 @@ public class MainServices extends TabSet{
 	
 	private void addMapService()
 	{
-		HLayout mapPanel=new HLayout();
+		final HLayout mapPanel=new HLayout();
 		
 		
-		String mapWidth=(rootLayout.getRight()-rootLayout.getLeft())/2+"px";
-		String mapHeight=(rootLayout.getBottom()-rootLayout.getTop())+"px";
+		String mapWidth=Window.getClientWidth()/2+"px";
+		String mapHeight=Window.getClientHeight()+"px";
 		mapService=new MapService(mapWidth,mapHeight);
 		
-		//mapPanel.setSize("50%", "100%");
+		mapPanel.setSize("50%", "100%");
 		//mapPanel.setAlign(Alignment.RIGHT);
 		//mapPanel.setAlign(VerticalAlignment.BOTTOM);
 		//mapPanel.setMemberOverlap(200);
@@ -100,6 +101,21 @@ public class MainServices extends TabSet{
 		
 		rootLayout.addMember(mapPanel);		
 		rootLayout.redraw();
+		
+		Window.addWindowResizeListener(new WindowResizeListener(){
+
+			@Override
+			@Deprecated
+			public void onWindowResized(int width, int height) {
+				rootLayout.removeMember(mapPanel);
+				mapPanel.destroy();
+				mapService=new MapService(width/2+"px",height+"px");
+				mapPanel.addMember(mapService.toWidget());
+				rootLayout.addMember(mapPanel,0);
+				rootLayout.addMember(mapPanel);		
+				rootLayout.redraw();
+			}});
+		
 	}
 	public MapService getMapService()
 	{
@@ -211,7 +227,6 @@ public class MainServices extends TabSet{
 		
 		private void login() 
 		{
-			println("lol");
 		    OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
 		      @Override
 		      public void onSuccess(Void v) {
