@@ -65,7 +65,7 @@ public class NotificationTabService extends Service {
 	public NotificationTabService() {
 		super(
 				"Notifications",
-				"http://cdn1.iconfinder.com/data/icons/Project_Icons___Version_1_1_9_by_bogo_d/PNG/Notification.png");
+				"http://i47.tinypic.com/5mjp68.png");
 
 		currentlyShownNotifications = new ArrayList<String>();
 		stackIdsRemoved = new ArrayList<String>();
