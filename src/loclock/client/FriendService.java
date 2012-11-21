@@ -88,7 +88,7 @@ public class FriendService extends Service{
 	public FriendService(String user)
 	{
 		this.setTitle("Friends");
-		this.setIcon("http://www.fabgb.com/images/friends_icon.jpg");
+		this.setIcon("http://i45.tinypic.com/fk5yx4.png");
 		this.user=user;
 		friendsPanel=new VLayout();
 		friendsPanel.setSize("100%", "100%");

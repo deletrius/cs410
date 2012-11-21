@@ -17,4 +17,5 @@ public interface CalendarServiceAsync {
 			Date startDate, Date endDate, AsyncCallback<Void> callback);
 	//boolean checkFree(String userName, Date time)
 	//void checkFree(String userName, Date time, AsyncCallback<Boolean> callback);
+	void checkDuplicate(String userName, String eventName,String description, Date startDate, Date endDate,AsyncCallback<String> callback);
 }
