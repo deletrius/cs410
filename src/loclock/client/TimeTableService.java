@@ -46,7 +46,7 @@ public class TimeTableService extends Service{
 	{	
 		super("Calendar", "http://i46.tinypic.com/j6h4kx.png");
 
-		//this.setTitle("Calendar");
+
 
 		buildGoogleCalendar();
 		this.setPane(calendar);
@@ -70,7 +70,8 @@ public class TimeTableService extends Service{
 
 						@Override
 						public void onFailure(Throwable caught) {
-							Window.alert("Failed to get User Calendar Events");
+//							Window.alert("Failed to get User Calendar Events");
+							System.out.println("Failed to get User Calendar Events");
 
 						}
 			//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate
@@ -305,7 +306,8 @@ public class TimeTableService extends Service{
 
 						@Override
 						public void onFailure(Throwable caught) {
-							Window.alert("Failed to get User Calendar Events");
+//							Window.alert("Failed to get User Calendar Events");
+							System.out.println("Failed to get User Calendar Events");
 
 						}
 			//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate

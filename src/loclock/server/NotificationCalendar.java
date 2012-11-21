@@ -31,7 +31,9 @@ public class NotificationCalendar extends Notification{
 	 * @param oldEndDate
 	 * @param newendDate
 	 */
-	public NotificationCalendar(String fromUser, String toUser, String content, String eventName, Date newStartDate, Date newendDate) {
+	public NotificationCalendar(String fromUser, String toUser, 
+			String content, String eventName, 
+			Date newStartDate, Date newendDate) {
 		super(fromUser, toUser, content, eventName);
 		this.newStartDate = newStartDate;
 		this.newendDate = newendDate;
