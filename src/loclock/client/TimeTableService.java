@@ -44,9 +44,9 @@ public class TimeTableService extends Service{
 	//private String uName = MainServices.account.getEmailAddress();
 	public TimeTableService()
 	{	
-		super();
+		super("Calendar", "http://i46.tinypic.com/j6h4kx.png");
 
-		this.setTitle("Calendar");
+		//this.setTitle("Calendar");
 
 		buildGoogleCalendar();
 		this.setPane(calendar);
