@@ -15,6 +15,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 		public boolean areFriends(String senderName, String receiverName);
 		public List<String> getInvitations(String senderName);
 		public List<String> getFriends(String senderName);
+		public List<String> getFriendsImages(String senderName);
 	}
 
 

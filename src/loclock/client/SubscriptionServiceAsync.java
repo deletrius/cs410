@@ -13,4 +13,5 @@ public interface SubscriptionServiceAsync {
 	 void areFriends(String senderName, String receiverName,AsyncCallback<Boolean> async);
 	 void getInvitations(String senderName, AsyncCallback<List<String>> async);
 	 void getFriends(String senderName, AsyncCallback<List<String>> async);
+	 void getFriendsImages(String senderName, AsyncCallback<List<String>> async);
 }

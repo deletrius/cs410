@@ -17,7 +17,9 @@ public interface UserLocationServiceAsync {
 	void updateUserLatLng(String username, String lat, String lng, Date lastupdate,
 			AsyncCallback<Void> callback);
 	
-	void getUsersAsArrayList(AsyncCallback<List<ArrayList<Object>>> callback);
+	void updateUserImage(String username, String url,AsyncCallback<Void> callback);
+	
+	void getUsersAsArrayList(String userName, AsyncCallback<List<ArrayList<Object>>> callback);
 
 	void getUserNameByID(String username, AsyncCallback<String> callback);
 	
@@ -25,4 +27,15 @@ public interface UserLocationServiceAsync {
 
 	//void getUserLongitude(String userName, AsyncCallback<Double> callback);
 	void getUserLocation(String userName,AsyncCallback<ArrayList<String>> callback);
+
+	void updateUserPrivacy(String username, String privacy,
+			AsyncCallback<Void> callback);
+
+	void updateUserFirstName(String username, String firstName,
+			AsyncCallback<Void> callback);
+
+	void updateUserLastName(String username, String lastName,
+			AsyncCallback<Void> callback);
+	
+	
 }

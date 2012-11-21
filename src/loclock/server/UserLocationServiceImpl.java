@@ -38,7 +38,7 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		// if not, go ahead and add the user to the database.
 		PersistenceManager pm = getPersistenceManager();
 		try{
-			pm.getObjectById(new UserLocation(getCurrentUser().getEmail()));
+			pm.getObjectById(UserLocation.class,username);
 		}
 		catch (JDOObjectNotFoundException e)
 		{
@@ -50,6 +50,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 			{
 				pm.close();
 			}
+		}
+		finally {
+			pm.close();
 		}
 	}
 	
@@ -114,6 +117,51 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 	}
 	
+	public void updateUserImage(String username, String url) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+	    try {
+	        UserLocation user = pm.getObjectById(UserLocation.class, username);
+	        user.setImage(url);
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
+	public void updateUserPrivacy(String username, String privacy) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+	    try {
+	        UserLocation user = pm.getObjectById(UserLocation.class, username);
+	        user.setPrivacy(privacy);
+	        pm.makePersistent(user);
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
+	public void updateUserFirstName(String username, String firstName) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+	    try {
+	        UserLocation user = pm.getObjectById(UserLocation.class, username);
+	        user.setFirstName(firstName);
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
+	public void updateUserLastName(String username, String lastName) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+	    try {
+	        UserLocation user = pm.getObjectById(UserLocation.class, username);
+	        user.setLastName(lastName);
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
 	public String getUserNameByID (String username) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -130,15 +178,17 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		}
 	}
 	
-	public List<ArrayList<Object>> getUsersAsArrayList() throws NotLoggedInException {
+	public List<ArrayList<Object>> getUsersAsArrayList(String userName) throws NotLoggedInException {
 		checkLoggedIn(); 
 		List<UserLocation> userList = new ArrayList<UserLocation>();
 		PersistenceManager pm = getPersistenceManager();
 		try {
-			Query q = pm.newQuery(UserLocation.class);
+//			Query q = pm.newQuery(UserLocation.class);
+			Query q = pm.newQuery(UserLocation.class, "userName == u");
+			q.declareParameters("String u");
 			//q.declareParameters("loclock.server.User u");
 			q.setOrdering("userName");
-			userList = (List<UserLocation>) q.execute();
+			userList = (List<UserLocation>) q.execute(userName);
 
 			List<ArrayList<Object>> userAsList = new ArrayList<ArrayList<Object>>();
 
@@ -147,6 +197,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 				userAttributes.add(userObj.getUserName());
 				userAttributes.add(userObj.getLatitude());
 				userAttributes.add(userObj.getLongitude());
+				userAttributes.add(userObj.getPrivacy());
+				userAttributes.add(userObj.getFirstName());
+				userAttributes.add(userObj.getLastName());
 				userAsList.add(userAttributes);
 			}
 
@@ -207,7 +260,8 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    	result.add(userloc.getUserName());
 	    	result.add(userloc.getLatitude());
 	    	result.add(userloc.getLongitude());
-	    	result.add(userloc.getLastUpdate().toString());	    			
+	    	result.add(userloc.getLastUpdate().toString());	    
+	    	result.add(userloc.getImage());
 	    } 
 		catch (JDOObjectNotFoundException e)
 		{
@@ -218,6 +272,8 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 		return result;
 	}
+	
+	
 //	public Double getUserLatitude(String userName) {
 //		PersistenceManager pm = getPersistenceManager();
 //		double lat = 0;

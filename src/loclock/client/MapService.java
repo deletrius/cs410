@@ -39,6 +39,7 @@ import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.WindowResizeListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -200,6 +201,7 @@ public class MapService {
 
 
 		mapwidget.setSize(width,height);
+		
 
 		updateUserCurrentLocation(true);
 		Timer refreshTimer = new Timer() {
@@ -342,7 +344,8 @@ public class MapService {
 		gps.getCurrentPosition(new Callback<Position, PositionError>() {
 			@Override
 			public void onFailure(PositionError reason) {
-				Window.alert("Failed to get user current location.");
+//				Window.alert("Failed to get user current location.");
+				System.out.println("Failed to get user current location.");
 			}
 
 			@Override
@@ -375,7 +378,8 @@ public class MapService {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Failed to get user location for "+userName);
+//				Window.alert("Failed to get user location for "+userName);\
+				System.out.println("Failed to get user location for "+userName);
 			}
 
 			@Override

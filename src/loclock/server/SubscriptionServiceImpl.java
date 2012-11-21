@@ -45,16 +45,10 @@ SubscriptionService {
 				subscription1 = pm.getObjectById(Subscription.class,senderName);			
 				subscription1.acceptRequest(receiverName);			
 
-			}
-			catch (JDOObjectNotFoundException e)
-			{
-				//Do nothing not supposed to happen			
-			}
-			
-			// update the other side's friend list
-			try{
 				subscription2 = pm.getObjectById(Subscription.class,receiverName);
-				subscription2.acceptRequest(senderName);	
+				
+				if (!subscription2.getEmailAddress().equals(subscription1.getEmailAddress()))
+					subscription2.acceptRequest(senderName);	
 				pm.makePersistent(subscription2);	
 			}
 			catch (JDOObjectNotFoundException e)
@@ -193,5 +187,35 @@ SubscriptionService {
 		return usernames;
 	}
 	
-	
+	public List<String> getFriendsImages(String user){
+		ArrayList<String> friendList;
+		ArrayList<String> types;
+		ArrayList<String> pics=new ArrayList<String>();
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		//Request request = new Request(senderName, receiverName);
+	    Subscription subscription;
+		try{
+			subscription = pm.getObjectById(Subscription.class,user);			
+			friendList=subscription.getFriends();	
+			types=subscription.getTypes();
+			int i=0;
+			while (i<friendList.size())
+			{
+				if (types.get(i).compareTo("friend")==0)
+				{
+					UserLocation userLocation=pm.getObjectById(UserLocation.class,friendList.get(i));
+					pics.add(userLocation.getImage());
+				}
+				i++;
+			}
+		}
+		catch (JDOObjectNotFoundException e)
+		{
+			//Do nothing not supposed to happen			
+		}
+		finally{			
+			pm.close();
+		}
+		return pics;
+	}
 }

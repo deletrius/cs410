@@ -1,12 +1,15 @@
 package loclock.client;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+
 
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.cell.client.TextCell;
@@ -62,7 +65,7 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 public class FriendService extends Service{
 	public static ChatPanelManager chatManager;
 	private VLayout friendsPanel;
-	private DynamicForm requestForm;
+	
 	private String user;
 	private String friendUserName;
 	private UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
@@ -72,11 +75,14 @@ public class FriendService extends Service{
 	private static boolean free = true;
 	private static String freeOrNot = "Yes";
 	private TileGrid tileGrid;
-	TextAreaItem searchBox = new TextAreaItem();
-	ButtonItem searchButton = new ButtonItem("Search");
-	IButton requestButton = new IButton("Add Friend");
-
-	DynamicForm profileForm=new DynamicForm();
+	private HLayout requestPanel;
+	
+//	private DynamicForm requestForm;
+//	TextAreaItem searchBox = new TextAreaItem();
+//	ButtonItem searchButton = new ButtonItem("Search");
+//	IButton requestButton = new IButton("Add Friend");
+//
+	private DynamicForm profileForm=new DynamicForm();
 	//	private static final List<String> DAYS = Arrays.asList("Sunday", "Monday",
 	//			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
 	public FriendService(String user)
@@ -129,7 +135,7 @@ public class FriendService extends Service{
 										chatManager.openChat(user,i);
 										chatManager.findChat(i).sendMessage(i+" has accepted your friend request!");
 										//chatManager.closeChat(i);
-										
+
 										checkInvitations();
 										buildFriendList();
 									}});
@@ -162,9 +168,9 @@ public class FriendService extends Service{
 		{
 			tileGrid=new TileGrid();  
 			tileGrid.setWidth("100%");  
-			tileGrid.setHeight("70%");
-			tileGrid.setTileHeight(150);
-			tileGrid.setTileWidth(100);
+			tileGrid.setHeight("30%");
+			tileGrid.setTileHeight(90);
+			tileGrid.setTileWidth(60);
 			tileGrid.setCanReorderTiles(false);  
 			tileGrid.setShowAllRecords(true); 
 			tileGrid.setCanDrag(false);
@@ -177,9 +183,9 @@ public class FriendService extends Service{
 			friendsPanel.removeMember(tileGrid);
 			tileGrid=new TileGrid();  
 			tileGrid.setWidth("100%");  
-			tileGrid.setHeight("70%");
-			tileGrid.setTileHeight(150);
-			tileGrid.setTileWidth(100);
+			tileGrid.setHeight("30%");
+			tileGrid.setTileHeight(90);
+			tileGrid.setTileWidth(60);
 			tileGrid.setCanReorderTiles(false);  
 			tileGrid.setShowAllRecords(true); 
 			tileGrid.setCanDrag(false);
@@ -194,138 +200,158 @@ public class FriendService extends Service{
 			public void run() {
 				checkInvitations();					
 			}};
-			
+
 			invitationChecker.scheduleRepeating(10000);
 			invitationChecker.run();
-		
-		tileGrid.addRecordClickHandler(new RecordClickHandler(){
-			@Override
-			public void onRecordClick(RecordClickEvent event) {
-				// TODO Auto-generated method stub
-				free = true;
-				freeOrNot = "Yes";
-				final String profileName=event.getRecord().getAttribute("name").toString();
-				checkSubscription(profileName);
-				friendUserName = profileName;
-				//Window.alert("test1");
-				//timeTableService.buildGoogleCalendar(friendUserName);
-				//Window.alert("test2");
 
-				final Date time = new Date();
+			tileGrid.addRecordClickHandler(new RecordClickHandler(){
+				@Override
+				public void onRecordClick(RecordClickEvent event) {
+					// TODO Auto-generated method stub
+					free = true;
+					freeOrNot = "Yes";
+					final String profileName=event.getRecord().getAttribute("name").toString();
+					checkSubscription(profileName);
+					friendUserName = profileName;
+					//Window.alert("test1");
+					//timeTableService.buildGoogleCalendar(friendUserName);
+					//Window.alert("test2");
+
+					final Date time = new Date();
 
 
-				calendarService.getEventByUserName(profileName, new AsyncCallback<List<ArrayList<Object>>>(){
+					calendarService.getEventByUserName(profileName, new AsyncCallback<List<ArrayList<Object>>>(){
 
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
 
-					}
-
-					@Override
-					public void onSuccess(List<ArrayList<Object>> result) {
-						for(int i =0; i< result.size();i++){
-							if(new Date(result.get(i).get(3).toString()).before(time))
-								if(new Date(result.get(i).get(4).toString()).after(time))
-									free = false;
-							freeOrNot = "No";
 						}
 
-					}});
+						@Override
+						public void onSuccess(List<ArrayList<Object>> result) {
+							for(int i =0; i< result.size();i++){
+								if(new Date(result.get(i).get(3).toString()).before(time))
+									if(new Date(result.get(i).get(4).toString()).after(time))
+										free = false;
+								freeOrNot = "No";
+							}
+
+						}});
 
 
 
 
-				locationService.getUserLocation(profileName, new AsyncCallback<ArrayList<String>>(){
+					locationService.getUserLocation(profileName, new AsyncCallback<ArrayList<String>>(){
 
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert(caught.getMessage());
-					}
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert(caught.getMessage());
+						}
 
-					@Override
-					public void onSuccess(ArrayList<String> result) {
-						//Window.alert("Profile Lat: "+result);
-						double lat1=Double.parseDouble(result.get(1));
-						double lon1=Double.parseDouble(result.get(2));
-						String lastUpdate=result.get(3);
-						//Window.alert("Profile Lon: "+result);
-						double lat2=MainServices.getInstance().getMapService().getUserLat();
-						double lon2=MainServices.getInstance().getMapService().getUserLng();
-						//Window.alert("User lat:"+lat2+"  User Long: "+lon2);
-						int R = 6371; // km
-						double dLat = Math.toRadians(lat2-lat1);
-						double dLon = Math.toRadians(lon2-lon1);
-						double lati1 = Math.toRadians(lat1);
-						double lati2 = Math.toRadians(lat2);
+						@Override
+						public void onSuccess(ArrayList<String> result) {
+							//Window.alert("Profile Lat: "+result);
+							double lat1=Double.parseDouble(result.get(1));
+							double lon1=Double.parseDouble(result.get(2));
+							String lastUpdate=result.get(3);
+							//Window.alert("Profile Lon: "+result);
+							double lat2=MainServices.getInstance().getMapService().getUserLat();
+							double lon2=MainServices.getInstance().getMapService().getUserLng();
+							//Window.alert("User lat:"+lat2+"  User Long: "+lon2);
+							int R = 6371; // km
+							double dLat = Math.toRadians(lat2-lat1);
+							double dLon = Math.toRadians(lon2-lon1);
+							double lati1 = Math.toRadians(lat1);
+							double lati2 = Math.toRadians(lat2);
 
-						double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-								Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lati1) * Math.cos(lati2); 
-						double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-						double d = R * c;
+							double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+									Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lati1) * Math.cos(lati2); 
+							double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+							double d = R * c;
 
-						//Window.alert(Double.toString(d));
-						//LatLng profilePosition=new LatLng(lat,ln);
+							//Window.alert(Double.toString(d));
+							//LatLng profilePosition=new LatLng(lat,ln);
 
-						updateProfilePanel(profileName,Double.toString((int)(d*1000)/1000.),new Date(lastUpdate).toString());
+							updateProfilePanel(profileName,Double.toString((int)(d*1000)/1000.),new Date(lastUpdate).toString());
 
-					}
-				});
-			}} );
+						}
+					});
+				}} );
 
 
-		subscriptionService.getFriends(user, new AsyncCallback<List<String>>(){
+			subscriptionService.getFriends(user, new AsyncCallback<List<String>>(){
 
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				Window.alert(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<String> result) {
-				// TODO Auto-generated method stub
-				ArrayList<StudentRecord> friends=new ArrayList<StudentRecord>();
-				for (String i:result)
-				{
-					friends.add(new StudentRecord(i, "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile"));
-					MainServices.getInstance().getMapService().showUserMarker(i, false);
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					Window.alert(caught.getMessage());
 				}
-				StudentRecord[] friendsRecord=new StudentRecord[friends.size()];
-				for (int i=0;i<friends.size();i++)
-				{
-					friendsRecord[i]=friends.get(i);
-				}
-				Record[] record =friendsRecord; //new StudentRecord[]{new StudentRecord("ubc Student", "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile")};
-				tileGrid.setData(record);
-			}});
 
-		//Record[] record = new StudentRecord[]{new StudentRecord("ubc Student", "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile")};
-		//tileGrid.setData(record); 
+				@Override
+				public void onSuccess(final List<String> result) {
+					// TODO Auto-generated method stub
+					final ArrayList<StudentRecord> friends=new ArrayList<StudentRecord>();
 
-		DetailViewerField pictureField = new DetailViewerField("picture"); 
+					subscriptionService.getFriendsImages(user, new AsyncCallback<List<String>>(){
 
-		pictureField.setType("image");  
-		pictureField.setImageWidth(100);  
-		pictureField.setImageHeight(100);  
-		//pictureField.setImageURLPrefix("war/images/");
-		DetailViewerField nameField = new DetailViewerField("name");  
-		tileGrid.setFields(pictureField, nameField);  
-		tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler(){
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert("Failed to retrieve pics");
 
-			@Override
-			public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+						}
 
-				String to=event.getRecord().getAttribute("name").toString();
-				System.out.println("");
-				System.out.println("user Name is: "+ to);
-				System.out.println("");
-				//TODO chatManager.openChat(user,to);
-				chatManager.openChat(user,to);
-			}});
-		tileGrid.draw(); 
+						@Override
+						public void onSuccess(List<String> result2) {
+							
+							for (int i=0;i<result.size();i++)
+							{
+								
+								//friends.add(new StudentRecord(i, "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile"));
+									System.out.println(result2.get(i));
+										friends.add(new StudentRecord(result.get(i),result2.get(i)));
+										MainServices.getInstance().getMapService().showUserMarker(result.get(i), false);
+									
+							}
+							
+							StudentRecord[] friendsRecord=new StudentRecord[friends.size()];
+							for (int i=0;i<friends.size();i++)
+							{
+								friendsRecord[i]=friends.get(i);
+							}
+							Record[] record =friendsRecord; //new StudentRecord[]{new StudentRecord("ubc Student", "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile")};
+							tileGrid.setData(record);
+						}});
 
-		friendsPanel.addMember(tileGrid,0);
+				}});
+
+			//Record[] record = new StudentRecord[]{new StudentRecord("ubc Student", "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile")};
+			//tileGrid.setData(record); 
+
+			DetailViewerField pictureField = new DetailViewerField("picture"); 
+
+			pictureField.setType("image");  
+			
+			pictureField.setImageWidth(tileGrid.getTileSize());  
+			pictureField.setImageHeight(tileGrid.getTileSize());  
+			//pictureField.setImageURLPrefix("war/images/");
+			DetailViewerField nameField = new DetailViewerField("name");  
+			tileGrid.setFields(pictureField, nameField);  
+			tileGrid.addRecordDoubleClickHandler(new RecordDoubleClickHandler(){
+
+				@Override
+				public void onRecordDoubleClick(RecordDoubleClickEvent event) {
+
+					String to=event.getRecord().getAttribute("name").toString();
+					System.out.println("");
+					System.out.println("user Name is: "+ to);
+					System.out.println("");
+					//TODO chatManager.openChat(user,to);
+					chatManager.openChat(user,to);
+				}});
+			tileGrid.draw(); 
+
+			friendsPanel.addMember(tileGrid,0);
 	} 
 
 	public void updateProfilePanel(final String name,String distance,String lastUpdate)
@@ -347,7 +373,7 @@ public class FriendService extends Service{
 			@Override
 			public void onClick(ClickEvent event) {	
 				checkSubscription(name);
-					
+
 				// TODO Auto-generated method stub
 				//Window.alert("1friendName is: "+ friendUserName);
 				timeTableService.buildGoogleCalendarWithUserName(friendUserName);
@@ -397,14 +423,23 @@ public class FriendService extends Service{
 
 
 	public void buildRequest(){
-		requestForm=new DynamicForm();
-		requestForm.setSize("100%", "20%");
-		searchBox.setShowTitle(false);
+		DynamicForm requestForm;
+		final TextAreaItem searchBox = new TextAreaItem();
+		final ButtonItem searchButton = new ButtonItem("Search");
+		final IButton requestButton = new IButton("Add Friend");
 
+
+		requestForm=new DynamicForm();
+		requestForm.setSize("100%", "5%");
+		
+		searchBox.setShowTitle(false);
+		searchBox.setHeight(10);
+		searchBox.setWidth(Window.getClientWidth()/3);
 		requestForm.setItems(searchBox, searchButton);
+		requestForm.setAutoHeight();
 		//friendsPanel.addMember(searchButton);
 		final Label label0 = new Label();
-		final Label label = new Label();
+		//final Label label = new Label();
 
 		searchButton.addClickHandler(new ClickHandler(){
 
@@ -426,10 +461,14 @@ public class FriendService extends Service{
 							Window.alert("User does not exist in ");
 						else
 						{
-							final HLayout requestPanel = new HLayout();
-							friendsPanel.addMember(requestPanel);
-							requestPanel.addMember(label0);
-							requestPanel.addMember(requestButton);
+							if (requestPanel==null)
+							{
+								requestPanel= new HLayout();
+								friendsPanel.addMember(requestPanel);
+								requestPanel.addMember(label0);
+								requestPanel.addMember(requestButton);
+							}
+							
 							requestButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
 								@Override
@@ -479,7 +518,7 @@ public class FriendService extends Service{
 			@Override
 			public void onFailure(Throwable caught) {
 				//System.out.println(result);
-				
+
 			}
 
 			@Override
@@ -489,5 +528,23 @@ public class FriendService extends Service{
 			}});
 
 	}
-	
+
+	//	private String getPersonProfilePic()
+	//	{
+	//		JsonFactory JSON_FACTORY = new GsonFactory();
+	//		HttpTransport TRANSPORT = new NetHttpTransport();
+	//		Plus.Builder builder=new Plus.Builder(TRANSPORT, JSON_FACTORY, null);
+	//		Plus plus=builder.build();
+	//		 try {
+	//			Person profile = plus.people().get("me").execute();
+	//			 System.out.println("image url: " + profile.getImage().getUrl());
+	//		} catch (IOException e) {
+	//			// TODO Auto-generated catch block
+	//			e.printStackTrace();
+	//		}
+	//		
+	////		Auth.authorize();
+	//		return "";
+	//		//Person mePerson = plus.people.get("me").execute();
+	//	}
 }
