@@ -34,10 +34,12 @@ public class MainServices extends TabSet{
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
-	private HLayout rootLayout;
+	private static HLayout rootLayout;
 	private LoginService loginService;
 
 	private static final Plus plus = GWT.create(Plus.class);
+	
+	private static HLayout rightTabLayout;
 	//Gerry's Key
 
 //	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
@@ -69,8 +71,14 @@ public class MainServices extends TabSet{
 	private static volatile MainServices mainServicesInstance;
 	private MainServices()
 	{
-		rootLayout=new HLayout(5);
+		this.setTabBarThickness(40);
+//		this.setAutoHeight();
+//		this.setAutoWidth();
+		rootLayout=new HLayout();
 		rootLayout.setSize("100%", "100%");
+		
+		rightTabLayout = new HLayout();
+		rightTabLayout.setSize("50%", "100%");
 
 		// Check if the user is logged in
 		loginService=new LoginService();	
@@ -89,9 +97,7 @@ public class MainServices extends TabSet{
 	public void addService(Service service)
 	{
 		this.addTab(service);
-		if (!rootLayout.contains(this))
-			rootLayout.addMember(this);
-		rootLayout.redraw();
+		
 	}
 
 	private void addMapService()
@@ -139,6 +145,22 @@ public class MainServices extends TabSet{
 	public Account  getAccount()
 	{
 		return account;
+	}
+	
+	public static HLayout getRootLayout()
+	{
+		return rootLayout;
+	}
+	
+	public void addRightTabPanel()
+	{
+		rightTabLayout.addMember(this);
+		rootLayout.addMember(rightTabLayout);
+	}
+	
+	public static HLayout getRightTabLayout()
+	{
+		return rightTabLayout;
 	}
 
 
@@ -224,9 +246,10 @@ public class MainServices extends TabSet{
 			rootLayout=new HLayout(5);
 			rootLayout.setSize("100%", "100%");
 			//TabPanel tabPanel=new TabPanel();
-			TabSet tabSet = new TabSet();
-			tabSet.setAutoHeight();
-			tabSet.setAutoWidth();
+//			TabSet tabSet = new TabSet();
+//			tabSet.setAutoHeight();
+//			tabSet.setAutoWidth();
+//			tabSet.setTabBarThickness(1000);
 			//tabSet.setSize("50%", "100%");
 			System.out.println("Good");
 
@@ -240,8 +263,13 @@ public class MainServices extends TabSet{
 			addService(new TimeTableService());
 			addService(new NotificationTabService());
 			addService(new SettingTabService());
-			rootLayout.addMember(MainServices.this);
-
+//			rootLayout.addMember(MainServices.this);
+		
+//			if (!rootLayout.contains(this))
+//				rootLayout.addMember(this);
+//			rootLayout.redraw();
+			addRightTabPanel();
+			
 			rootLayout.draw();
 		}
 
