@@ -30,14 +30,8 @@ public class MessageTest extends TestCase{
 	
 	@Test
 	public void testSetToUser() {
-		message.setToUser("fromMike");
+		message.setToUser("toKate");
 		assertEquals("toKate", message.getToUser());
-	}
-	
-	@Test
-	public void testSetMessage() {
-		message.setFromUser("message");
-		assertEquals("message", message.getMessageBody());
 	}
 
 }

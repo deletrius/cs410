@@ -11,7 +11,8 @@ import loclock.server.Notification;
 public class NotificationTest extends TestCase {
 	
 	private Notification notification = new Notification("fromJohn", "toMary", "content1", "bbq");
-	private Notification notificationWithoutParameter = new Notification();
+	private Notification notificationWithoutParameter = new Notification();	
+	private Date now = new Date();	
 	
 	@Test
 	public void testNotification() {
@@ -23,15 +24,14 @@ public class NotificationTest extends TestCase {
 	
 	@Test
 	public void testNotificationWithoutParameter() {
-		Date now = new Date();
 		assertEquals(now, notificationWithoutParameter.getNotificationCreationDate());
 	}
 	
 	@Test
 	public void testSetDate() {
-		Date now = new Date();
-		notificationWithoutParameter.setNotificationCreationDate(now);
-		assertEquals(now, notificationWithoutParameter.getNotificationCreationDate());
+		Date date = new Date();
+		notificationWithoutParameter.setNotificationCreationDate(date);
+		assertEquals(date, notificationWithoutParameter.getNotificationCreationDate());
 	}
 	
 	@Test
