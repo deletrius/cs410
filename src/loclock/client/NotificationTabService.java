@@ -53,7 +53,9 @@ public class NotificationTabService extends Service {
 	private static ImgButton removeButton;
 	private static TimeTableService timeTableService = GWT.create(TimeTableService.class);
 	private static Timer refreshTimer;
+
 	private static String duplicate;
+
 	private static List<String> stackIdsRemoved;
 
 
@@ -513,7 +515,9 @@ public class NotificationTabService extends Service {
 	{
 		popInContent.setContents("<center>You have <b>" + numberOfNewNotifications + "</b> new notifications!</center>");
 	}
+
 	
+
 }
 /**
 package loclock.client;
@@ -1108,3 +1112,4 @@ public class NotificationTabService extends Service {
 	
 }
 **/
+
