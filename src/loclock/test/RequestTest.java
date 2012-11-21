@@ -1,13 +1,11 @@
 package loclock.test;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import junit.framework.TestCase;
 import loclock.server.Request;
 
-public class RequestTest {
+public class RequestTest extends TestCase {
 	
 	private Request request = new Request("receiverJohn", "senderMary");
 	

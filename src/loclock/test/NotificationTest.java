@@ -1,14 +1,14 @@
 package loclock.test;
 
-import static org.junit.Assert.*;
-
 import java.util.Date;
+
+import junit.framework.TestCase;
 
 import org.junit.Test;
 
 import loclock.server.Notification;
 
-public class NotificationTest {
+public class NotificationTest extends TestCase {
 	
 	private Notification notification = new Notification("fromJohn", "toMary", "content1", "bbq");
 	private Notification notificationWithoutParameter = new Notification();

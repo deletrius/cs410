@@ -344,7 +344,8 @@ public class MapService {
 		gps.getCurrentPosition(new Callback<Position, PositionError>() {
 			@Override
 			public void onFailure(PositionError reason) {
-				Window.alert("Failed to get user current location.");
+//				Window.alert("Failed to get user current location.");
+				System.out.println("Failed to get user current location.");
 			}
 
 			@Override
@@ -377,7 +378,8 @@ public class MapService {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("Failed to get user location for "+userName);
+//				Window.alert("Failed to get user location for "+userName);\
+				System.out.println("Failed to get user location for "+userName);
 			}
 
 			@Override

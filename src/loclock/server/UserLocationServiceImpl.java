@@ -128,6 +128,40 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 	}
 	
+	public void updateUserPrivacy(String username, String privacy) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+	    try {
+	        UserLocation user = pm.getObjectById(UserLocation.class, username);
+	        user.setPrivacy(privacy);
+	        pm.makePersistent(user);
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
+	public void updateUserFirstName(String username, String firstName) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+	    try {
+	        UserLocation user = pm.getObjectById(UserLocation.class, username);
+	        user.setFirstName(firstName);
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
+	public void updateUserLastName(String username, String lastName) throws NotLoggedInException {
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+	    try {
+	        UserLocation user = pm.getObjectById(UserLocation.class, username);
+	        user.setLastName(lastName);
+	    } finally {
+	        pm.close();
+	    }
+	}
+	
 	public String getUserNameByID (String username) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -144,15 +178,17 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		}
 	}
 	
-	public List<ArrayList<Object>> getUsersAsArrayList() throws NotLoggedInException {
+	public List<ArrayList<Object>> getUsersAsArrayList(String userName) throws NotLoggedInException {
 		checkLoggedIn(); 
 		List<UserLocation> userList = new ArrayList<UserLocation>();
 		PersistenceManager pm = getPersistenceManager();
 		try {
-			Query q = pm.newQuery(UserLocation.class);
+//			Query q = pm.newQuery(UserLocation.class);
+			Query q = pm.newQuery(UserLocation.class, "userName == u");
+			q.declareParameters("String u");
 			//q.declareParameters("loclock.server.User u");
 			q.setOrdering("userName");
-			userList = (List<UserLocation>) q.execute();
+			userList = (List<UserLocation>) q.execute(userName);
 
 			List<ArrayList<Object>> userAsList = new ArrayList<ArrayList<Object>>();
 
@@ -161,6 +197,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 				userAttributes.add(userObj.getUserName());
 				userAttributes.add(userObj.getLatitude());
 				userAttributes.add(userObj.getLongitude());
+				userAttributes.add(userObj.getPrivacy());
+				userAttributes.add(userObj.getFirstName());
+				userAttributes.add(userObj.getLastName());
 				userAsList.add(userAttributes);
 			}
 

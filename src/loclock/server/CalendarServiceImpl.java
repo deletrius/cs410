@@ -20,39 +20,46 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 	public void saveEvent(String userName, String eventName,String description, Date startDate, Date endDate) throws NotLoggedInException{
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		  try{
-			  List<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>();
-			  list = getEventByUserName(userName);
-			  if(list.size()==0){
+			 
 				  pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
 			  }
+			
+		  
+		  finally{
+			  pm.close();
+		  }
+	}
+	public String checkDuplicate(String userName, String eventName,String description, Date startDate, Date endDate){
+		String duplicate = "1";
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		try{
+			 List<ArrayList<Object>> list = new ArrayList<ArrayList<Object>>();
+			  list = getEventByUserName(userName);
+			  if(list.size()==0){
+				  duplicate = "0";
+			  }
 			  else{
-			  for(int i=0; i< list.size();i++){
-				
-			 
-				  if(!(list.get(i).get(1).equals(eventName))){
-					 
-					  if(!(list.get(i).get(2).equals(description))){
-						  
-						  if(!(list.get(i).get(3).equals(startDate))){
-							  if(!(list.get(i).get(4).equals(endDate))){
-								  System.out.println("NOT Duplicated");
-								  pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
+				  for(int i=0; i< list.size();i++){
+
+
+					  if(!(list.get(i).get(1).equals(eventName))){
+
+						  if(!(list.get(i).get(2).equals(description))){
+
+							  if(!(list.get(i).get(3).equals(startDate))){
+								  if(!(list.get(i).get(4).equals(endDate))){
+									duplicate = "0";
+								  }
 							  }
 						  }
 					  }
 				  }
-				  else{
-					  Window.alert("Duplicated Event");
-				  }
-				 
 			  }
-		  
-			 // pm.makePersistent(new Calendar(userName, eventName, description, startDate, endDate));
-		  }
-		  }
-		  finally{
-			  pm.close();
-		  }
+		}
+		finally{
+			pm.close();
+		}
+			return duplicate;
 	}
 	/**
 	public boolean checkFree(String userName, Date time){

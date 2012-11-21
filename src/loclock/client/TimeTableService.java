@@ -44,9 +44,9 @@ public class TimeTableService extends Service{
 	//private String uName = MainServices.account.getEmailAddress();
 	public TimeTableService()
 	{	
-		super();
+		super("Calendar", "http://i45.tinypic.com/2qsv5mu.png");
 
-		this.setTitle("Calendar");
+
 
 		buildGoogleCalendar();
 		this.setPane(calendar);
@@ -57,7 +57,8 @@ public class TimeTableService extends Service{
 
 
 	public void buildGoogleCalendar(){
-		calendar = new Calendar();
+		
+		final Calendar cal1 = new Calendar();
 
 
 
@@ -69,7 +70,8 @@ public class TimeTableService extends Service{
 
 						@Override
 						public void onFailure(Throwable caught) {
-							Window.alert("Failed to get User Calendar Events");
+//							Window.alert("Failed to get User Calendar Events");
+							System.out.println("Failed to get User Calendar Events");
 
 						}
 			//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate
@@ -86,18 +88,19 @@ public class TimeTableService extends Service{
 							for (int i=0; i<calEvent.size();i++)
 							{
 								events[i]=calEvent.get(i);
+								//System.out.println(events[i].getName());
 							}
-							calendar.setData(events);
+							cal1.setData(events);
 
 						}
 
 
 					});
 	}
+		
 
-
-		calendar.setDisableWeekends(false);
-		calendar.setSize("600px", "600px");
+		cal1.setDisableWeekends(false);
+		cal1.setSize("600px", "600px");
 
 
 		sub.getFriends(MainServices.account.getEmailAddress(), new  AsyncCallback<List<String>>(){
@@ -119,7 +122,7 @@ public class TimeTableService extends Service{
 			}});
 //friends will be notified on event change
 	
-		calendar.addEventChangedHandler(new EventChangedHandler(){
+		cal1.addEventChangedHandler(new EventChangedHandler(){
 
 			@Override
 			public void onEventChanged(CalendarEventChangedEvent event) {
@@ -141,7 +144,7 @@ public class TimeTableService extends Service{
 							}});
 				//}
 			}});
-		calendar.addEventClickHandler(new EventClickHandler(){
+		cal1.addEventClickHandler(new EventClickHandler(){
 
 
 			public void onEventClick(CalendarEventClick event) {
@@ -187,7 +190,7 @@ public class TimeTableService extends Service{
 			//	}
 			}});
 
-		calendar.addDayBodyClickHandler(new DayBodyClickHandler(){
+		cal1.addDayBodyClickHandler(new DayBodyClickHandler(){
 
 			@Override
 			public void onDayBodyClick(DayBodyClickEvent event) {
@@ -199,7 +202,7 @@ public class TimeTableService extends Service{
 
 		});
 		//event will be removed when clicked on remove on calendar. friends will be notified
-		calendar.addEventRemovedHandler(new EventRemovedHandler() {
+		cal1.addEventRemovedHandler(new EventRemovedHandler() {
 
 			@Override
 			public void onEventRemoved(final CalendarEventRemoved event) {
@@ -237,7 +240,7 @@ public class TimeTableService extends Service{
 		});
 		
 		//event will be saved to datastore when added on Calendar UI
-		calendar.addEventAddedHandler(new EventAddedHandler(){
+		cal1.addEventAddedHandler(new EventAddedHandler(){
 
 			@Override
 			public void onEventAdded(CalendarEventAdded event) {
@@ -274,12 +277,12 @@ public class TimeTableService extends Service{
 
 		});
 
-		calendar.setEventDialogFields(sendInvitationButton);
+		cal1.setEventDialogFields(sendInvitationButton);
 		googleCalendar.setWidth("600px");
 		googleCalendar.setHeight("600px");
-		calendar.setCanEditEvents(true);//CAL_PUBLIC_URL;
-
-		//calendar.draw();
+		cal1.setCanEditEvents(true);//CAL_PUBLIC_URL;
+		calendar = cal1;
+		calendar.draw();
 	}
 
 
@@ -292,7 +295,7 @@ public class TimeTableService extends Service{
 
 
 	public void buildGoogleCalendarWithUserName(String userName){
-		calendar = new Calendar();
+		final Calendar cal2 = new Calendar();
 		PopupPanel popUp = new PopupPanel();
 		if(userName != null)
 		//if(MainServices.account != null)
@@ -303,7 +306,8 @@ public class TimeTableService extends Service{
 
 						@Override
 						public void onFailure(Throwable caught) {
-							Window.alert("Failed to get User Calendar Events");
+//							Window.alert("Failed to get User Calendar Events");
+							System.out.println("Failed to get User Calendar Events");
 
 						}
 			//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate
@@ -322,7 +326,7 @@ public class TimeTableService extends Service{
 							{
 								events[i]=calEvent.get(i);
 							}
-							calendar.setData(events);
+							cal2.setData(events);
 
 						}
 
@@ -332,10 +336,11 @@ public class TimeTableService extends Service{
 
 
 
-		calendar.setSize("600px", "600px");
+		cal2.setSize("600px", "600px");
 		
-		calendar.setDisableWeekends(false);
-		calendar.setCanEditEvents(false);
+		cal2.setDisableWeekends(false);
+		cal2.setCanEditEvents(false);
+		calendar = cal2;
 		calendar.draw();
 		popUp.add(calendar);
 		popUp.setGlassEnabled(true);
