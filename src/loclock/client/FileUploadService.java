@@ -42,7 +42,7 @@ public class FileUploadService extends Service{
 	private VLayout fileUploadForm;
 	private long dateTimeStart;
 	private long dateTimeEnd;
-	private TimeTableService timeTableService;
+	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
 	final long WEEKS_IN_MILLIS = 1000 * 60 * 60 * 24*7;
 	private DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyyMMddHHmmss");
 	//new SimpleDateFormat("yyyyMMddHHmmss");
@@ -215,7 +215,9 @@ public class FileUploadService extends Service{
 									System.out.println("contains == false");
 									System.out.println("Event "+ result.get(i).get(2).toString());
 
-									calendarService.saveEvent(MainServices.account.getEmailAddress(), result.get(i).get(0).toString(), result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
+									calendarService.saveEvent(MainServices.account.getEmailAddress(),
+											result.get(i).get(0).toString(), 
+											result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
 
 										@Override
 										public void onFailure(Throwable caught) {
@@ -240,15 +242,16 @@ public class FileUploadService extends Service{
 
 
 							}
+							
 							//TimeTableService.calendar.redraw();
 						}
-
+						timeTableService.redrawCalendar();
 
 					}
 
 
 				});
-				TimeTableService.calendar.redraw();
+				
 
 }
 		});

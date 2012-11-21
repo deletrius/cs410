@@ -258,11 +258,12 @@ public class MainServices extends TabSet{
 			System.out.println(account.getEmailAddress());
 			addMapService();
 
-			addService(new FileUploadService());
+			
 			addService(new FriendService(account.getEmailAddress())); //@@ TODO stub for usrname
 			addService(new TimeTableService());
 			addService(new NotificationTabService());
 			addService(new SettingTabService());
+			addService(new FileUploadService());
 //			rootLayout.addMember(MainServices.this);
 		
 //			if (!rootLayout.contains(this))
