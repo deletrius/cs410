@@ -28,8 +28,8 @@ public class SettingTabService extends Service{
   private HTMLFlow htmlFlow2 = new HTMLFlow();
   private HTMLFlow htmlFlowName = new HTMLFlow();
   
-  private String firstName;
-  private String lastName;
+  private String firstName = "";
+  private String lastName = "";
   
  
   private TextBox firstNameText = new TextBox();
