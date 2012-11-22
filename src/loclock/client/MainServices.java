@@ -64,7 +64,6 @@ public class MainServices extends TabSet{
 	private static final String CLIENT_ID = "118588470471-pll4trc5hvbj8d808bgpr3s34ljblt9g.apps.googleusercontent.com";
 	private static final String API_KEY = "F897RO-8nnVd_s2AjviDV0bu";
 
-
 	private static final String APPLICATION_NAME = "loclock/3.0";
 
 	private MapService mapService;
@@ -72,6 +71,9 @@ public class MainServices extends TabSet{
 	public static Account account = null;
 
 	private static volatile MainServices mainServicesInstance;
+	
+	private static String currentUserDisplayPicUrl = "";
+	
 	private MainServices()
 	{
 		this.setTabBarThickness(40);
@@ -175,6 +177,9 @@ public class MainServices extends TabSet{
 		return rightTabLayout;
 	}
 
+	public static String getCurrentUserDisplayPicUrl() {
+		return currentUserDisplayPicUrl;
+	}
 
 	private class LoginService
 	{
@@ -290,14 +295,15 @@ public class MainServices extends TabSet{
 			
 		}
 
-		/**
+		
 
 		private void login() 
 		{
 			OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
 				@Override
 				public void onSuccess(Void v) {
-					Window.alert("Authorized");
+//					Window.alert("Authorized");
+					println("authorize into Google+");
 					getMe();		        
 				}
 
@@ -308,16 +314,7 @@ public class MainServices extends TabSet{
 		      }
 		    });
 		  }
-		
 
-				@Override
-				public void onFailure(Exception e) {
-					println("failed authorize");
-				}
-			});
-		}
-
-**/
 		private void getMe() {
 			plus.people().get("me").to(new Receiver<Person>() {
 				@Override
@@ -326,18 +323,18 @@ public class MainServices extends TabSet{
 					//		        Window.alert("Hello, this is your name: " + person.getDisplayName());
 					if (person.getImage().getUrl()!=null)
 					{
+						currentUserDisplayPicUrl = person.getImage().getUrl();
 						locationService.updateUserImage(account.getEmailAddress(), person.getImage().getUrl(), new AsyncCallback<Void>(){
 
 							@Override
 							public void onFailure(Throwable caught) {
 								// TODO Auto-generated method stub
-
+								currentUserDisplayPicUrl = "";
 							}
 
 							@Override
 							public void onSuccess(Void result) {
 								// TODO Auto-generated method stub
-
 							}});
 					}
 					//getMyActivities();
@@ -364,7 +361,7 @@ public class MainServices extends TabSet{
 
 
 		private void println(String msg) {
-			Window.alert(msg);
+			System.out.println(msg);
 			//loginLayout.addMember(new Label(msg));
 			//rootLayout.draw();
 		}

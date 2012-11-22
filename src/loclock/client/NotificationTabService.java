@@ -348,26 +348,33 @@ public class NotificationTabService extends Service {
 		notificationSection = new SectionStackSection();
 		
 		String notificationTitle = "";
+		String friendPicture = MainServices.getCurrentUserDisplayPicUrl();
+		
+		if (friendPicture.length() > 0)
+		{
+			notificationTitle = Canvas.imgHTML(friendPicture) + " ";
+		}
+		
 		
 		if (type.equalsIgnoreCase("add"))
 		{
-			notificationTitle = Canvas.imgHTML("http://i46.tinypic.com/1pt1e8.png") + " - " + MainServices.account.getEmailAddress();
+			notificationTitle += Canvas.imgHTML("http://i46.tinypic.com/1pt1e8.png") + " - " + MainServices.account.getEmailAddress();
 		}
 		else if (type.equalsIgnoreCase("remove"))
 		{
-			notificationTitle = Canvas.imgHTML("http://i48.tinypic.com/ekqjoh.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle += Canvas.imgHTML("http://i48.tinypic.com/ekqjoh.png") + " " + MainServices.account.getEmailAddress();
 		}
 		else if (type.equalsIgnoreCase("modify"))
 		{
-			notificationTitle = Canvas.imgHTML("http://i47.tinypic.com/2wqe6af.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle += Canvas.imgHTML("http://i47.tinypic.com/2wqe6af.png") + " " + MainServices.account.getEmailAddress();
 		}
 		else if (type.equalsIgnoreCase("invite"))
 		{
-			notificationTitle = Canvas.imgHTML("http://i48.tinypic.com/10hkriv.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle += Canvas.imgHTML("http://i48.tinypic.com/10hkriv.png") + " " + MainServices.account.getEmailAddress();
 		}
 		else
 		{
-			notificationTitle = MainServices.account.getEmailAddress();
+			notificationTitle += MainServices.account.getEmailAddress();
 		}
 		
 		notificationSection = new SectionStackSection(notificationTitle);
