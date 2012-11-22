@@ -129,9 +129,9 @@ public class TimeTableService extends Service{
 			@Override
 			public void onEventChanged(CalendarEventChangedEvent event) {
 				//for(int i=0; i<friendList.size();i++){
-				notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "boradcast",
-						event.getEvent().getDescription(), event.getEvent().getName(),
-						event.getEvent().getStartDate(), event.getEvent().getEndDate(), new AsyncCallback<Void>(){
+				notification.addNotificationCalendar(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(),
+						"<u>I changed this event:</u> " + event.getEvent().getDescription(), event.getEvent().getName(),
+						event.getEvent().getStartDate(), event.getEvent().getEndDate(), "modify", new AsyncCallback<Void>(){
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -176,8 +176,8 @@ public class TimeTableService extends Service{
 				//for(int i=0; i<friendList.size();i++){
 
 					notification.addNotificationCalendar(MainServices.account.getEmailAddress(),
-							"broadcast",event1.getEvent().getDescription() , event1.getEvent().getName(),
-							event1.getEvent().getStartDate(), event1.getEvent().getEndDate(), new AsyncCallback<Void>(){
+							"broadcast", event1.getEvent().getDescription(), event1.getEvent().getName(),
+							event1.getEvent().getStartDate(), event1.getEvent().getEndDate(), "invite", new AsyncCallback<Void>(){
 
 								@Override
 								public void onFailure(Throwable caught) {
@@ -203,6 +203,7 @@ public class TimeTableService extends Service{
 
 
 		});
+				
 		//event will be removed when clicked on remove on calendar. friends will be notified
 		cal1.addEventRemovedHandler(new EventRemovedHandler() {
 
@@ -215,9 +216,9 @@ public class TimeTableService extends Service{
 
 							@Override
 							public void onSuccess(Void result) {
-								notification.addNotificationCalendar(MainServices.account.getEmailAddress(),"broadcast",
-						event.getEvent().getName(), event.getEvent().getDescription(), event.getEvent().getStartDate(),
-						event.getEvent().getEndDate(), new AsyncCallback<Void>(){
+								notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "broadcast",
+						event.getEvent().getName(), "<u>I removed this event:</u> " + event.getEvent().getDescription(), event.getEvent().getStartDate(),
+						event.getEvent().getEndDate(), "remove", new AsyncCallback<Void>(){
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -228,7 +229,7 @@ public class TimeTableService extends Service{
 							@Override
 							public void onSuccess(Void result) {
 								// TODO Auto-generated method stub
-								
+								System.out.println("user event deletion triggers notification");
 							}});
 							}
 
@@ -246,6 +247,7 @@ public class TimeTableService extends Service{
 
 			@Override
 			public void onEventAdded(CalendarEventAdded event) {
+				final CalendarEventAdded eventAdded = event;
 				CalendarEvent cEvent = event.getEvent();
 				calendarService.saveEvent(MainServices.account.getEmailAddress(),cEvent.getName(),cEvent.getDescription(),cEvent.getStartDate(),cEvent.getEndDate(), new AsyncCallback<Void>(){
 
@@ -257,24 +259,40 @@ public class TimeTableService extends Service{
 
 					@Override
 					public void onSuccess(Void result) {
+						System.out.println("Event is saved successfully.");
+						notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "broadcast",
+								eventAdded.getEvent().getName(), "<u>I added this new event:</u> " + eventAdded.getEvent().getDescription(), eventAdded.getEvent().getStartDate(),
+								eventAdded.getEvent().getEndDate(), "add", new AsyncCallback<Void>() {
+									
+									@Override
+									public void onSuccess(Void result) {
+										// TODO Auto-generated method stub
+										System.out.println("notification added due to added event");
+									}
+									
+									@Override
+									public void onFailure(Throwable caught) {
+										// TODO Auto-generated method stub
+										
+									}
+								});
 						//Window.alert("Event Saved");
-						calendarService.getEventByUserName(MainServices.account.getEmailAddress(), new AsyncCallback<List<ArrayList<Object>>>(){
-
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onSuccess(List<ArrayList<Object>> result) {
-								// TODO Auto-generated method stub
-								Window.alert(result.get(0).get(0).toString()+" "+result.get(0).get(1).toString()+" "+result.get(0).get(2).toString()+ " "+result.get(0).get(3).toString());
-							}});
+//						calendarService.getEventByUserName(MainServices.account.getEmailAddress(), new AsyncCallback<List<ArrayList<Object>>>(){
+//
+//							@Override
+//							public void onFailure(Throwable caught) {
+//								// TODO Auto-generated method stub
+//
+//							}
+//
+//							@Override
+//							public void onSuccess(List<ArrayList<Object>> result) {
+//								// TODO Auto-generated method stub
+//								Window.alert(result.get(0).get(0).toString()+" "+result.get(0).get(1).toString()+" "+result.get(0).get(2).toString()+ " "+result.get(0).get(3).toString());
+//							}});
 
 					}});
 				System.out.println("event is: "+event.getEvent());
-
 			}
 
 		});
@@ -287,7 +305,7 @@ public class TimeTableService extends Service{
 		//calendarContainer.removeChild(calendar);
 		//calendar = calendar;
 		calContainer.addMember(calendar);
-		calContainer.draw();
+//		calContainer.draw();
 		//calendar.draw();
 		
 	}

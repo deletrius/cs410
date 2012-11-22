@@ -13,7 +13,7 @@ public class NotificationCalendarTest extends TestCase {
 	private Date endDate = new Date(101, 11, 5, 15, 43, 52);
 	
 	private NotificationCalendar calendar = new NotificationCalendar("fromPaul",
-			"toKaty", "content", "event", startDate, endDate);
+			"toKaty", "content", "event", startDate, endDate, "add");
 	
 	@Test
 	public void testNotificationCalendar() {

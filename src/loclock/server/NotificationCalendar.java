@@ -22,7 +22,7 @@ public class NotificationCalendar extends Notification{
 	// Modified new end time/date
 	@Persistent
 	private Date newendDate;
-
+	
 	/**
 	 * Constructor for new calendar notification object.
 	 * 
@@ -33,8 +33,8 @@ public class NotificationCalendar extends Notification{
 	 */
 	public NotificationCalendar(String fromUser, String toUser, 
 			String content, String eventName, 
-			Date newStartDate, Date newendDate) {
-		super(fromUser, toUser, content, eventName);
+			Date newStartDate, Date newendDate, String type) {
+		super(fromUser, toUser, content, eventName, type);
 		this.newStartDate = newStartDate;
 		this.newendDate = newendDate;
 	}

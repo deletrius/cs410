@@ -198,28 +198,6 @@ public class NotificationTabService extends Service {
 		moveInButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				label.animateMove(10, 50);
-
-				notificationService.addNotification(
-						MainServices.account.getEmailAddress(),
-						MainServices.account.getEmailAddress(), "I see you.",
-						"New friend", new AsyncCallback<Void>() {
-
-							@Override
-							public void onSuccess(Void result) {
-								// TODO Auto-generated method stub
-								System.out
-										.println("Successful notification added.");
-							}
-
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-								System.out
-										.println("Failed failed failed notification added.");
-								System.out.println(caught.getMessage());
-							}
-						});
-
 			}
 		});
 
@@ -261,7 +239,7 @@ public class NotificationTabService extends Service {
 
 	private static SectionStackSection produceNewNotification(String id,
 			String fromUser, String eventName, String description,
-			String startDate, String endDate) {
+			String startDate, String endDate, String type) {
 		final String stackId = id;
 
 		notificationContents = "<b>Event</b>: " + eventName + "<br><b>Description</b>: "
@@ -358,12 +336,43 @@ public class NotificationTabService extends Service {
 				
 			}
 		});
-		hLayout.addMember(addToCalendarButton);
-		hLayout.addMember(cancelEventButton);
+		if (type.equalsIgnoreCase("invite"))
+		{
+			hLayout.addMember(addToCalendarButton);
+			hLayout.addMember(cancelEventButton);
+		}
+			
 //		hLayout.setPadding(10);
 		notificationVLayout.addMember(hLayout);
-		notificationSection = new SectionStackSection(
-				MainServices.account.getEmailAddress());
+		notificationSection = new SectionStackSection();
+		
+		String notificationTitle = "";
+		
+		if (type.equalsIgnoreCase("add"))
+		{
+			notificationTitle = Canvas.imgHTML("http://i46.tinypic.com/1pt1e8.png") + " - " + MainServices.account.getEmailAddress();
+		}
+		else if (type.equalsIgnoreCase("remove"))
+		{
+			notificationTitle = Canvas.imgHTML("http://i48.tinypic.com/ekqjoh.png") + " " + MainServices.account.getEmailAddress();
+		}
+		else if (type.equalsIgnoreCase("modify"))
+		{
+			notificationTitle = Canvas.imgHTML("http://i47.tinypic.com/2wqe6af.png") + " " + MainServices.account.getEmailAddress();
+		}
+		else if (type.equalsIgnoreCase("invite"))
+		{
+			notificationTitle = Canvas.imgHTML("http://i48.tinypic.com/10hkriv.png") + " " + MainServices.account.getEmailAddress();
+		}
+		else
+		{
+			notificationTitle = MainServices.account.getEmailAddress();
+		}
+		
+		notificationSection = new SectionStackSection(notificationTitle);
+		
+		System.out.println("The title of new notification is: " + notificationSection.getTitle());
+		
 		notificationSection.addItem(notificationVLayout);
 		notificationSection.setExpanded(true);
 		notificationSection.setID(stackId);
@@ -416,7 +425,8 @@ public class NotificationTabService extends Service {
 										(String) notificationObj.get(1),
 										(String) notificationObj.get(2),
 										(String) notificationObj.get(3),
-										(String) notificationObj.get(4)));
+										(String) notificationObj.get(4),
+										(String) notificationObj.get(7)));
 								currentlyShownNotifications
 										.add((String) notificationObj.get(0));
 								if (!isFirstRun)
@@ -457,7 +467,7 @@ public class NotificationTabService extends Service {
 		notificationService.addNotificationCalendar(
 				MainServices.account.getEmailAddress(), "broadcast",
 				"this is the description", "this is the name", new Date(),
-				new Date(), new AsyncCallback<Void>() {
+				new Date(), "added", new AsyncCallback<Void>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -502,8 +512,8 @@ public class NotificationTabService extends Service {
 //		notificationPopInPanel.addMember(popInNotificationLabel);
 		notificationPopInPanel.addMember(popInContent);
 		notificationPopInPanel.setParentElement(rightTabLayout);
-		notificationPopInPanel.setTop(rightTabLayout.getHeight() - notificationPopInPanel.getHeight() - 15);	
-		notificationPopInPanel.setLeft(rightTabLayout.getWidth() - notificationPopInPanel.getWidth() - 20);
+		notificationPopInPanel.setTop(rightTabLayout.getHeight() - notificationPopInPanel.getHeight() - 20);	
+		notificationPopInPanel.setLeft(rightTabLayout.getWidth() - notificationPopInPanel.getWidth() - 30);
 		notificationPopInPanel.setAnimateTime(900); // milliseconds
 		notificationPopInPanel.setVisible(false);
 		

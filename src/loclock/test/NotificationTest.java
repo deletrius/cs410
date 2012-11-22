@@ -10,7 +10,7 @@ import loclock.server.Notification;
 
 public class NotificationTest extends TestCase {
 	
-	private Notification notification = new Notification("fromJohn", "toMary", "content1", "bbq");
+	private Notification notification = new Notification("fromJohn", "toMary", "content1", "bbq", "add");
 	private Notification notificationWithoutParameter = new Notification();	
 	private Date now = new Date();	
 	
