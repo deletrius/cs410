@@ -57,7 +57,7 @@ public class UserLocation {
 		this.latitude = "-1.0";
 		this.longitude = "-1.0";
 		this.lastupdate=new Date();
-//		this.privacy = "";
+		this.privacy = "private";
 		this.firstName = "";
 		this.lastName = "";
 	}

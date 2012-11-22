@@ -19,9 +19,11 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.smartgwt.client.data.DSResponse;
+import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.Label;
 
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
@@ -44,18 +46,23 @@ public class FileUploadService extends Service{
 	final long WEEKS_IN_MILLIS = 1000 * 60 * 60 * 24*7;
 	private DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyyMMddHHmmss");
 	//new SimpleDateFormat("yyyyMMddHHmmss");
+	
+	private HTMLFlow instructions;
 	public FileUploadService()
 	{
 		super();
-		this.setTitle("File Upload");
+		this.setTitle("Schedule Upload");
+		this.setIcon("http://i46.tinypic.com/2622yo0.png");
 		fileUploadForm = new VLayout();	
 		fileUploadForm.setSize("100%", "100%");
 		//fileUploadForm.setNumCols(4);  		
 		//fileUploadForm.setAutoFocus(false);
 
 
-		Label lblUbcStudents = new Label("UBC Students:\r\nDownload your schedule from UBC courses as a .ics file and then upload it here.");
-
+		instructions = new HTMLFlow();
+		
+		String content = "<b>UBC Students:</b><br>Download your schedule from UBC courses as a .ics file and then upload it here.";
+		instructions.setContents(content);
 
 		final FormPanel form = new FormPanel();
 		form.setAction(UPLOAD_ACTION_URL);
@@ -65,7 +72,7 @@ public class FileUploadService extends Service{
 		form.setEncoding(FormPanel.ENCODING_MULTIPART);
 		form.setMethod(FormPanel.METHOD_POST);
 
-		VerticalPanel panel = new VerticalPanel();
+		HorizontalPanel panel = new HorizontalPanel();
 		form.setWidget(panel);
 
 		//final TextBox tb = new TextBox();
@@ -82,12 +89,28 @@ public class FileUploadService extends Service{
 		FileUpload upload = new FileUpload();
 		upload.setName("uploadFormElement");
 		panel.add(upload);
-
-		panel.add(new Button("Submit Schedule", new ClickHandler() {
+		
+		Button submitButton = new Button("Upload Schedule");
+		submitButton.setHTML("<img src='http://i50.tinypic.com/dy61p5.png'/>");
+		submitButton.setWidth("100px");
+		submitButton.setHeight("45px");
+//		submitButton.set
+		submitButton.addClickHandler(new ClickHandler() {
+			
+			@Override
 			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
 				form.submit();
 			}
-		}));
+		});
+		
+		panel.add(submitButton);
+
+//		panel.add(new Button("Submit Schedule", new ClickHandler() {
+//			public void onClick(ClickEvent event) {
+//				form.submit();
+//			}
+//		}));
 
 		form.addSubmitHandler(new FormPanel.SubmitHandler() {
 			public void onSubmit(SubmitEvent event) {
@@ -229,8 +252,8 @@ public class FileUploadService extends Service{
 		});
 		//FormItem lol;
 		//fileUploadForm.add(form);
-		VerticalPanel newV=new VerticalPanel();
-		newV.add(lblUbcStudents);
+		VerticalPanel newV = new VerticalPanel();
+		newV.add(instructions);
 		newV.add(form);
 
 		fileUploadForm.addChild(newV);

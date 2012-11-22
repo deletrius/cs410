@@ -8,10 +8,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.types.AnimationAcceleration;
+import com.smartgwt.client.types.AnimationEffect;
 import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
+import com.smartgwt.client.types.Visibility;
 import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -49,23 +53,25 @@ public class NotificationTabService extends Service {
 	private static ImgButton removeButton;
 
 	private static Timer refreshTimer;
-	//private static Timer refreshTimer2;
-
-	//private static String currentStackId;
-
-	//private static int lock;
-
-	//private static int refreshTimerIsRunning = 0;
 
 	private static List<String> stackIdsRemoved;
 
-	// private static final Domain DOMAIN =
-	// DomainFactory.getDomain("my_domain");
 
+	private static Label popInNotificationLabel;
+	
+	private HLayout rightTabLayout;
+	
+	private boolean isFirstRun = true;
+	
+	private VLayout notificationPopInPanel;
+	
+	private int numberOfNewNotifications = 0;
+	private HTMLFlow popInContent;
+	
 	public NotificationTabService() {
 		super(
 				"Notifications",
-				"http://i47.tinypic.com/5mjp68.png");
+				"http://i48.tinypic.com/dlgi15.png");
 
 		currentlyShownNotifications = new ArrayList<String>();
 		stackIdsRemoved = new ArrayList<String>();
@@ -132,15 +138,16 @@ public class NotificationTabService extends Service {
 		sectionStack = new SectionStack();
 
 		// System.out.println(GWT.getHostPageBaseURL() + "world.png");
-		String title = Canvas
-				.imgHTML("http://www1.usaid.gov/images/icons/obama_icon.jpg")
-				+ " Obama";
-		SectionStackSection section1 = new SectionStackSection(title);
-		// section1.setTitle("Obama");
+//		String title = Canvas
+//				.imgHTML("http://www1.usaid.gov/images/icons/obama_icon.jpg")
+//				+ " Obama";
+		SectionStackSection section1 = new SectionStackSection();
+		section1.setTitle("Notifications (" + currentlyShownNotifications.size() + ")");
 		// section1.setItems(listGrid);
 		// section1.setControls(addButton, removeButton);
-		section1.addItem(obamaNotifications);
+//		section1.addItem(obamaNotifications);
 		section1.setExpanded(true);
+		section1.setCanCollapse(false);
 
 		String title2 = Canvas
 				.imgHTML("https://si0.twimg.com/profile_images/990437145/neil-cartoon_normal.jpg")
@@ -154,7 +161,8 @@ public class NotificationTabService extends Service {
 		section2.setControls(removeButton);
 		section2.setExpanded(true);
 
-		// sectionStack.setSections(section1, section2);
+//		 sectionStack.setSections(section1);
+		sectionStack.setShowEdges(true);
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setAnimateSections(true);
 		sectionStack.setAlign(Alignment.CENTER);
@@ -223,17 +231,20 @@ public class NotificationTabService extends Service {
 
 			}
 		});
+		
+		setUpPopInNotification();
 
 		HLayout hLayout = new HLayout();
 		hLayout.setMembersMargin(10);
-		hLayout.addMember(moveInButton);
-		hLayout.addMember(moveOutButton);
+		
+		// Code used here for notification testing purpose
+		//hLayout.addMember(moveInButton);
+		//hLayout.addMember(moveOutButton);
 		layout.addMember(hLayout);
 
 		layout.draw();
 
-		// ====================Code used to show notifications to user with
-		// animated 'fly onscreen'====================
+		
 
 		this.setPane(layout);
 
@@ -241,15 +252,7 @@ public class NotificationTabService extends Service {
 		// every x seconds
 		refreshTimer = new Timer() {
 			public void run() {
-//				 if (lock == 0)
-//				 {
-//					 lock = 1;
 					 updateCurrentUserNotifications();
-//				 }
-//				 else
-//				 {
-//					 // do nothing and wait for next refresh timer call
-//				 }
 			}
 		};
 		refreshTimer.scheduleRepeating(5000);
@@ -260,8 +263,8 @@ public class NotificationTabService extends Service {
 			String startDate, String endDate) {
 		final String stackId = id;
 
-		notificationContents = "Event Name: " + eventName + "<br>Description: "
-				+ description + "<br>StartTime:" + startDate + "<br>EndTime: "
+		notificationContents = "<b>Event</b>: " + eventName + "<br><b>Description</b>: "
+				+ description + "<br><b>Start: </b>" + startDate + "<br><b>End: </b>"
 				+ endDate;
 
 		notificationHtmlFlow = new HTMLFlow();
@@ -274,9 +277,12 @@ public class NotificationTabService extends Service {
 
 		notificationHtmlFlow.setContents(notificationContents);
 		notificationVLayout = new VLayout();
+		notificationVLayout.setPadding(10);
 		notificationVLayout.addMember(notificationHtmlFlow);
 		HLayout hLayout = new HLayout();
-		IButton cancelEventButton = new IButton("Cancel Event");
+		IButton cancelEventButton = new IButton("Ignore and Delete");
+		cancelEventButton.setAutoFit(true);
+		cancelEventButton.setPageLeft(10);
 		cancelEventButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -299,7 +305,9 @@ public class NotificationTabService extends Service {
 			}
 		});
 
-		IButton addToCalendarButton = new IButton("Add to Calendar");
+		IButton addToCalendarButton = new IButton("Accept and Add to Calendar");
+//		addToCalendarButton.setWidth(addToCalendarButton.getTitle().length() + 20);
+		addToCalendarButton.setAutoFit(true);
 		addToCalendarButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -325,6 +333,7 @@ public class NotificationTabService extends Service {
 		});
 		hLayout.addMember(addToCalendarButton);
 		hLayout.addMember(cancelEventButton);
+//		hLayout.setPadding(10);
 		notificationVLayout.addMember(hLayout);
 		notificationSection = new SectionStackSection(
 				MainServices.account.getEmailAddress());
@@ -383,8 +392,28 @@ public class NotificationTabService extends Service {
 										(String) notificationObj.get(4)));
 								currentlyShownNotifications
 										.add((String) notificationObj.get(0));
-							} else {
-							}
+								if (!isFirstRun)
+								{
+									numberOfNewNotifications++;
+									refreshNotificationPopIn();
+//									notificationPopInPanel.animateMove(10, 50);
+									if(!notificationPopInPanel.isVisible())
+									{
+										notificationPopInPanel.redraw();
+										notificationPopInPanel.animateShow(AnimationEffect.FLY);
+									}
+									else if (notificationPopInPanel.isVisible())
+									{
+										notificationPopInPanel.animateHide(AnimationEffect.FADE);
+										notificationPopInPanel.redraw();
+										notificationPopInPanel.animateShow(AnimationEffect.FADE);
+									}
+								}
+							} 
+						}
+						if (isFirstRun)
+						{
+							isFirstRun = false;
 						}
 
 					}
@@ -417,4 +446,55 @@ public class NotificationTabService extends Service {
 
 				});
 	}
+	
+	private void setUpPopInNotification()
+	{
+		popInContent = new HTMLFlow();
+		popInContent.setContents("<center>You have <b>" + numberOfNewNotifications + "</b> new notifications!</center>");
+//		popInContent.setLayoutAlign(VerticalAlignment.CENTER);
+		rightTabLayout = MainServices.getRightTabLayout();
+		notificationPopInPanel = new VLayout();
+//		popInNotificationLabel = new com.smartgwt.client.widgets.Label();
+//		popInNotificationLabel.addm
+		
+		
+		
+		System.out.println("New vlayout panel for pop in!");
+		
+		notificationPopInPanel.setShowEdges(true);
+		notificationPopInPanel.setBackgroundColor("#ffffd0");
+		notificationPopInPanel.setPadding(5);
+		notificationPopInPanel.setHeight(100);
+		notificationPopInPanel.setWidth(200);
+		notificationPopInPanel.setTop(50);
+//		notificationPopInPanel.setValign(VerticalAlignment.CENTER);
+		notificationPopInPanel.setAlign(Alignment.CENTER);
+		
+//		notificationPopInPanel.setsho
+		
+//		notificationPopInPanel.addMember(popInNotificationLabel);
+		notificationPopInPanel.addMember(popInContent);
+		notificationPopInPanel.setParentElement(rightTabLayout);
+		notificationPopInPanel.setTop(rightTabLayout.getHeight() - notificationPopInPanel.getHeight() - 15);	
+		notificationPopInPanel.setLeft(rightTabLayout.getWidth() - notificationPopInPanel.getWidth() - 20);
+		notificationPopInPanel.setAnimateTime(900); // milliseconds
+		notificationPopInPanel.setVisible(false);
+		
+		notificationPopInPanel.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				notificationPopInPanel.animateHide(AnimationEffect.FLY);
+				numberOfNewNotifications = 0;
+			}
+		});
+		
+		rightTabLayout.redraw();
+	}
+	
+	private void refreshNotificationPopIn()
+	{
+		popInContent.setContents("<center>You have <b>" + numberOfNewNotifications + "</b> new notifications!</center>");
+	}
+	
 }
