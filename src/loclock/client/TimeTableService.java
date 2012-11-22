@@ -297,11 +297,13 @@ public class TimeTableService extends Service{
 
 		});
 		
+		
 		cal1.setEventDialogFields(sendInvitationButton);
 		googleCalendar.setWidth("600px");
 		googleCalendar.setHeight("600px");
 		cal1.setCanEditEvents(true);//CAL_PUBLIC_URL;
 		calendar = cal1;
+		
 		//calendarContainer.removeChild(calendar);
 		//calendar = calendar;
 		calContainer.addMember(calendar);
@@ -311,57 +313,9 @@ public class TimeTableService extends Service{
 	}
 
 	public void redrawCalendar(){
-		//calContainer.removeMember(calendar);
-		if(MainServices.account != null)
-		{
-		//calendarService.getEventByUserName(MainServices.account.getEmailAddress(), 
-			calendarService.getEventByUserName(MainServices.account.getEmailAddress(), 
-				new AsyncCallback<List<ArrayList<Object>>>(){
-
-						@Override
-						public void onFailure(Throwable caught) {
-//							Window.alert("Failed to get User Calendar Events");
-							System.out.println("Failed to get User Calendar Events");
-
-						}
-			//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate
-						@Override
-						public void onSuccess(List<ArrayList<Object>> result) {
-							//for(int i =0; i<result.length;i++)
-							ArrayList<CalendarEvent> calEvent=new ArrayList<CalendarEvent>();
-
-							for(int i=0; i < result.size();i++){
-								calEvent.add( new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString())));
-							}
-							events=new CalendarEvent[calEvent.size()];
-							//CalendarEvent[] events=new CalendarEvent[calEvent.size()];
-							for (int i=0; i<calEvent.size();i++)
-							{
-								events[i]=calEvent.get(i);
-								//System.out.println(events[i].getName());
-							}
-							calendar.setData(events);
-
-						}
-
-
-					});
-	}
-		
-
-		//calendar.setDisableWeekends(false);
-		calendar.setSize("600px", "600px");
-
-
-	
-		
-		//calendar.setEventDialogFields(sendInvitationButton);
-		googleCalendar.setWidth("600px");
-		googleCalendar.setHeight("600px");
-		
-	
-	
-		calendar.redraw();
+		calContainer.removeMember(calendar);
+		buildGoogleCalendar();
+		this.setPane(calContainer);
 		
 		
 		

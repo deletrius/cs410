@@ -18,7 +18,9 @@ import com.google.gwt.user.client.WindowResizeListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 
 
@@ -38,8 +40,9 @@ public class MainServices extends TabSet{
 	private LoginService loginService;
 
 	private static final Plus plus = GWT.create(Plus.class);
-	
+	private Image loadingImage = new Image("images/300.gif");
 	private static HLayout rightTabLayout;
+	private PopupPanel pop = new PopupPanel();
 	//Gerry's Key
 
 //	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
@@ -93,7 +96,16 @@ public class MainServices extends TabSet{
 		}
 		return mainServicesInstance;
 	}
-
+	public void onLoad(){
+		pop.add(loadingImage);
+		pop.setAnimationEnabled(true);
+		pop.setGlassEnabled(true);
+		pop.center();
+		pop.show();
+	}
+	public void loaded(){
+		pop.hide();
+	}
 	public void addService(Service service)
 	{
 		this.addTab(service);
@@ -186,9 +198,10 @@ public class MainServices extends TabSet{
 					account = result;
 					System.out.println("bbbb "+MainServices.account);
 					if(account.isLoggedIn()){
+						onLoad();
 						System.out.println("is logged in");
 						loadLoggedInScreen();
-
+						//loaded();
 					}
 					else{
 						System.out.println("setLoginScreen");
@@ -234,7 +247,7 @@ public class MainServices extends TabSet{
 
 		protected void loadLoggedInScreen() {
 
-			
+		
 			//plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
 			//login();
 
@@ -245,6 +258,7 @@ public class MainServices extends TabSet{
 			//rootLayout.destroy();
 			rootLayout=new HLayout(5);
 			rootLayout.setSize("100%", "100%");
+			
 			//TabPanel tabPanel=new TabPanel();
 //			TabSet tabSet = new TabSet();
 //			tabSet.setAutoHeight();
@@ -270,8 +284,10 @@ public class MainServices extends TabSet{
 //				rootLayout.addMember(this);
 //			rootLayout.redraw();
 			addRightTabPanel();
-			
+		
 			rootLayout.draw();
+			loaded();
+			
 		}
 
 		/**

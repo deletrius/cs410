@@ -245,7 +245,7 @@ public class FileUploadService extends Service{
 							
 							//TimeTableService.calendar.redraw();
 						}
-						timeTableService.redrawCalendar();
+						com.google.gwt.user.client.Window.Location.reload();
 
 					}
 

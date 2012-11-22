@@ -53,7 +53,7 @@ public class NotificationTabService extends Service {
 	private static ImgButton removeButton;
 	//private static TimeTableService timeTableService;
 	private static Timer refreshTimer;
-	private static TimeTableService timeTable = new TimeTableService();
+	
 
 	private static List<String> stackIdsRemoved;
 
@@ -321,8 +321,9 @@ public class NotificationTabService extends Service {
 											@Override
 											public void onSuccess(Void result) {
 												Window.alert("Notification Event Saved!");
-												
-												timeTable.redrawCalendar();
+												//TimeTableService timeTable = new TimeTableService();
+												//timeTable.redrawCalendar();
+												com.google.gwt.user.client.Window.Location.reload();
 
 											}
 										});

@@ -38,6 +38,9 @@ public class Notification {
 	@Persistent
 	private Integer hasBeenPublishedToUser;
 	
+	@Persistent
+	private String type;
+	
 	/**
 	 * 
 	 */
@@ -52,12 +55,13 @@ public class Notification {
 	 * @param toUser
 	 * @param content
 	 */
-	public Notification(String fromUser, String toUser, String content, String eventName) {
+	public Notification(String fromUser, String toUser, String content, String eventName, String type) {
 		this();
 		this.fromUser = fromUser;
 		this.toUser = toUser;
 		this.content = content;
 		this.eventName = eventName;
+		this.type = type;
 	}
 
 	/**
@@ -143,5 +147,13 @@ public class Notification {
 	 */
 	public void setNotificationCreationDate(Date notificationCreationDate) {
 		this.notificationCreationDate = notificationCreationDate;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }
