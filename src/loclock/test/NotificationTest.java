@@ -24,7 +24,9 @@ public class NotificationTest extends TestCase {
 	
 	@Test
 	public void testNotificationWithoutParameter() {
-		assertEquals(now, notificationWithoutParameter.getNotificationCreationDate());
+		Date now2 = new Date();
+		Notification notificationWithoutParameterDateTest = new Notification();
+		assertEquals(now2.toString(), notificationWithoutParameterDateTest.getNotificationCreationDate().toString());
 	}
 	
 	@Test
