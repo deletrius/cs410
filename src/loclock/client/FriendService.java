@@ -76,15 +76,14 @@ public class FriendService extends Service{
 	private static String freeOrNot = "Yes";
 	private TileGrid tileGrid;
 	private HLayout requestPanel;
-	
-//	private DynamicForm requestForm;
-//	TextAreaItem searchBox = new TextAreaItem();
-//	ButtonItem searchButton = new ButtonItem("Search");
-//	IButton requestButton = new IButton("Add Friend");
-//
 	private DynamicForm profileForm=new DynamicForm();
-	//	private static final List<String> DAYS = Arrays.asList("Sunday", "Monday",
-	//			"Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+	
+	/**
+	 * Constructor for friend service.
+	 * 
+	 * @param user current user of application
+	 * 
+	 */
 	public FriendService(String user)
 	{
 		this.setTitle("Friends");
@@ -104,6 +103,12 @@ public class FriendService extends Service{
 		this.setPane(friendsPanel);
 
 	}
+	
+	/**
+	 * Check the all invitations sent to the user, let 
+	 * the user decide whether to accept or reject the 
+	 * friend request
+	 */
 	public void checkInvitations()
 	{
 		subscriptionService.getInvitations(user,new AsyncCallback<List<String>> (){
@@ -163,6 +168,10 @@ public class FriendService extends Service{
 
 	}
 
+	/**
+	 * Build the UI for the Friends tab, set up the users' locations, 
+	 * calendars, friends subscriptions.
+	 */
 	public void buildFriendList(){
 		if (tileGrid ==null)
 		{
@@ -354,6 +363,14 @@ public class FriendService extends Service{
 			friendsPanel.addMember(tileGrid,0);
 	} 
 
+	/**
+	 * View the profile of a friend, view friend's position on a map,
+	 * remove a friend if needed
+	 * 
+	 * @param name name of the friend
+	 * @param distance distance between the user and his/her friend
+	 * @param lastUpdate the time of the last location update
+	 */
 	public void updateProfilePanel(final String name,String distance,String lastUpdate)
 	{			
 
@@ -422,6 +439,11 @@ public class FriendService extends Service{
 	}
 
 
+	/**
+	 * Find a user in using the app, send a friend request/invitation
+	 * when needed.
+	 * 
+	 */
 	public void buildRequest(){
 		DynamicForm requestForm;
 		final TextAreaItem searchBox = new TextAreaItem();
@@ -511,6 +533,9 @@ public class FriendService extends Service{
 
 
 
+	/**
+	 * @param user2
+	 */
 	private void checkSubscription(String user2)
 	{
 

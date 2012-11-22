@@ -40,11 +40,19 @@ public class UserLocation {
 	@Persistent
 	private String lastName;
 	
+	/**
+	 * Basic class constructor of UserLocation.
+	 */
 	public UserLocation() 
 	{
 		
 	}
 	
+	/**
+	 * Class constructor of UserLocation.
+	 * 
+	 * @param username the username of the account
+	 */
 	public UserLocation(String username)
 	{
 		this();
@@ -57,69 +65,150 @@ public class UserLocation {
 		this.lastName = "";
 	}
 	
+	/**
+	 * Set the picture of the profile.
+	 * 
+	 * @param url the url of the picture
+	 */
 	public void setImage(String url)
 	{
 		profileImageURL=url;
 	}
+	
+	/**
+	 * Get the URL of the profile picture of the user.
+	 * 
+	 * @return the url of the profile picture of the user
+	 */
 	public String getImage()
 	{
 		return profileImageURL;
 	}
 	
+	/**
+	 * Get the username of the account.
+	 * 
+	 * @return the username of the account
+	 */
 	public String getUserName() 
 	{
 		return this.userName;
 	}
 	
+	/**
+	 * Set the username of the user.
+	 * 
+	 * @param username the username of the account
+	 */
 	public void setUser(String username)
 	{
 		this.userName = username;
 	}
 	
+	/**
+	 * Get the latitude of the user's location.
+	 * 
+	 * @return the latitude of the user's location
+	 */
 	public String getLatitude() {
 		return latitude;
 	}
 
+	/**
+	 * Set the latitude of the user's location.
+	 * 
+	 * @param latitude
+	 */
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
 	
+	/**
+	 * Get the time when the last update took place.
+	 * 
+	 * @return the time of the last update
+	 */
 	public Date getLastUpdate() {
 		return lastupdate;
 	}
 	
+	/**
+	 * Set the time when last update took place.
+	 * 
+	 * @param lastupdate the date and time input of the last update
+	 */
 	public void setLastUpdate(Date lastupdate) {
 		this.lastupdate = lastupdate;
 	}
 
+	/**
+	 * Get the longitude of the user's location.
+	 * 
+	 * @return longtitude longitude of the user's location
+	 */
 	public String getLongitude() {
 		return longitude;
 	}
 
+	/**
+	 * Set the longitude of the user's location
+	 * 
+	 * @param longitude of the user's location
+	 */
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
 
+	/**
+	 * Get the privacy status of the user account.
+	 * 
+	 * @return privacy the privacy status of the user account
+	 */
 	public String getPrivacy() {
 		return privacy;
 	}
 
+	/**
+	 * Set the privacy status of the user account.
+	 * 
+	 * @param privacy of the user account
+	 */
 	public void setPrivacy(String privacy) {
 		this.privacy = privacy;
 	}
 
+	/**
+	 * Get the first name of the user.
+	 * 
+	 * @return firstName the first name of the user
+	 */
 	public String getFirstName() {
 		return firstName;
 	}
 
+	/**
+	 * Set the first name of the user in the system.
+	 * 
+	 * @param firstName the first name of the user
+	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
+	/**
+	 * Get the last name of the user.
+	 * 
+	 * @return lastName the first name of the user
+	 */
 	public String getLastName() {
 		return lastName;
 	}
 
+	/**
+	 * Set the last name of the user in the system.
+	 * 
+	 * @param lastName the last name of the user
+	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}	
