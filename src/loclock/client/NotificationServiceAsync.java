@@ -15,7 +15,7 @@ public interface NotificationServiceAsync {
 	 * @param eventName
 	 * @param callback
 	 */
-	void addNotification(String fromName, String toName, String content, String eventName,
+	void addNotification(String fromName, String toName, String content, String eventName, String type,
 			AsyncCallback<Void> callback);
 
 	/**
@@ -44,6 +44,6 @@ public interface NotificationServiceAsync {
 	 */
 	void addNotificationCalendar(String fromName, String toName,
 			String content, String eventName, Date newStart,
-			Date newEnd, AsyncCallback<Void> callback);
+			Date newEnd, String type, AsyncCallback<Void> callback);
 
 }

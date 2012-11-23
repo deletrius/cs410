@@ -16,7 +16,7 @@ public interface NotificationService extends RemoteService {
 	 * @param eventName
 	 * @throws NotLoggedInException
 	 */
-	public void addNotification(String fromName, String toName, String content, String eventName) throws NotLoggedInException;
+	public void addNotification(String fromName, String toName, String content, String eventName, String type) throws NotLoggedInException;
 	
 	/**
 	 * Store a calendar modified event to be sent to friends of user.
@@ -29,7 +29,7 @@ public interface NotificationService extends RemoteService {
 	 * @param newEnd the end time of the modified event
 	 * @throws NotLoggedInException if the user is not currently logged in
 	 */
-	public void addNotificationCalendar(String fromName, String toName, String content, String eventName, Date newStart, Date newEnd) throws NotLoggedInException;
+	public void addNotificationCalendar(String fromName, String toName, String content, String eventName, Date newStart, Date newEnd, String type) throws NotLoggedInException;
 	/**
 	 * @param fromName
 	 * @param toName

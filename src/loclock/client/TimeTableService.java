@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.calendar.Calendar;
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventAdded;
@@ -25,8 +26,12 @@ import com.smartgwt.client.widgets.calendar.events.EventRemovedHandler;
 
 
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
+import com.smartgwt.client.widgets.layout.HLayout;
+import com.smartgwt.client.widgets.layout.VLayout;
 
 public class TimeTableService extends Service{
 
@@ -37,29 +42,31 @@ public class TimeTableService extends Service{
 	public static Calendar calendar;
 	public static CalendarEvent[] events;
 	private ArrayList<String> friendList = new ArrayList();
-	private ButtonItem sendInvitationButton = new ButtonItem("SendInvitation");
+//	private ButtonItem sendInvitationButton = new ButtonItem("SendInvitation");
 	private NotificationServiceAsync notification = GWT.create(NotificationService.class);
 	private CalendarEventClick event1;
 	private ClickHandler clickHandler1;
+	private VLayout calContainer = new VLayout();
 	//private String uName = MainServices.account.getEmailAddress();
 	public TimeTableService()
 	{	
 		super("Calendar", "http://i45.tinypic.com/2qsv5mu.png");
 
-
-
 		buildGoogleCalendar();
-		this.setPane(calendar);
+		
+		this.setPane(calContainer);
 	}
 
 
-
+	
 
 
 	public void buildGoogleCalendar(){
 		
+		//final Calendar calendar = new Calendar();
 		final Calendar cal1 = new Calendar();
-
+//		cal1.setAutoFetchData(true);
+//		cal1.setScrollToWorkday(true);
 
 
 		if(MainServices.account != null)
@@ -81,7 +88,10 @@ public class TimeTableService extends Service{
 							ArrayList<CalendarEvent> calEvent=new ArrayList<CalendarEvent>();
 
 							for(int i=0; i < result.size();i++){
-								calEvent.add( new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString())));
+								CalendarEvent event = new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString()));
+//								event.setEventWindowStyle("background-color:#b0c4de");
+//								calEvent.add( new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString())));
+								calEvent.add(event);
 							}
 							events=new CalendarEvent[calEvent.size()];
 							//CalendarEvent[] events=new CalendarEvent[calEvent.size()];
@@ -100,7 +110,9 @@ public class TimeTableService extends Service{
 		
 
 		cal1.setDisableWeekends(false);
-		cal1.setSize("600px", "600px");
+//		cal1.setSize("600px", "600px");
+		cal1.setWidth("95%");
+		cal1.setHeight("90%");
 
 
 		sub.getFriends(MainServices.account.getEmailAddress(), new  AsyncCallback<List<String>>(){
@@ -127,9 +139,9 @@ public class TimeTableService extends Service{
 			@Override
 			public void onEventChanged(CalendarEventChangedEvent event) {
 				//for(int i=0; i<friendList.size();i++){
-				notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "boradcast",
-						event.getEvent().getDescription(), event.getEvent().getName(),
-						event.getEvent().getStartDate(), event.getEvent().getEndDate(), new AsyncCallback<Void>(){
+				notification.addNotificationCalendar(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(),
+						"<u>I changed this event:</u> " + event.getEvent().getDescription(), event.getEvent().getName(),
+						event.getEvent().getStartDate(), event.getEvent().getEndDate(), "modify", new AsyncCallback<Void>(){
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -165,27 +177,29 @@ public class TimeTableService extends Service{
 
 
 		});
-//invitations of this event will be sent to all friends
+		
+		ButtonItem sendInvitationButton = new ButtonItem("sendinvitation");
+		sendInvitationButton.setTitle("Invite friends to event");
+        
+		//invitations of this event will be sent to all friends
 		sendInvitationButton.addClickHandler(new ClickHandler(){
 
 
 			public void onClick(ClickEvent event2) {
-
-				//for(int i=0; i<friendList.size();i++){
-
+				System.out.println("invite button clicked");
 					notification.addNotificationCalendar(MainServices.account.getEmailAddress(),
-							"broadcast",event1.getEvent().getDescription() , event1.getEvent().getName(),
-							event1.getEvent().getStartDate(), event1.getEvent().getEndDate(), new AsyncCallback<Void>(){
+							"broadcast", event1.getEvent().getDescription(), event1.getEvent().getName(),
+							event1.getEvent().getStartDate(), event1.getEvent().getEndDate(), "invite", new AsyncCallback<Void>(){
 
 								@Override
 								public void onFailure(Throwable caught) {
 									// TODO Auto-generated method stub
-
+									System.out.println("notification added fail: " + caught.getMessage());
 								}
 
 								@Override
 								public void onSuccess(Void result) {
-
+									System.out.println("notification added success");
 								}});
 			//	}
 			}});
@@ -201,6 +215,7 @@ public class TimeTableService extends Service{
 
 
 		});
+				
 		//event will be removed when clicked on remove on calendar. friends will be notified
 		cal1.addEventRemovedHandler(new EventRemovedHandler() {
 
@@ -213,9 +228,9 @@ public class TimeTableService extends Service{
 
 							@Override
 							public void onSuccess(Void result) {
-								notification.addNotificationCalendar(MainServices.account.getEmailAddress(),"broadcast",
-						event.getEvent().getName(), event.getEvent().getDescription(), event.getEvent().getStartDate(),
-						event.getEvent().getEndDate(), new AsyncCallback<Void>(){
+								notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "broadcast",
+						event.getEvent().getName(), "<u>I removed this event:</u> " + event.getEvent().getDescription(), event.getEvent().getStartDate(),
+						event.getEvent().getEndDate(), "remove", new AsyncCallback<Void>(){
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -226,7 +241,7 @@ public class TimeTableService extends Service{
 							@Override
 							public void onSuccess(Void result) {
 								// TODO Auto-generated method stub
-								
+								System.out.println("user event deletion triggers notification");
 							}});
 							}
 
@@ -244,6 +259,7 @@ public class TimeTableService extends Service{
 
 			@Override
 			public void onEventAdded(CalendarEventAdded event) {
+				final CalendarEventAdded eventAdded = event;
 				CalendarEvent cEvent = event.getEvent();
 				calendarService.saveEvent(MainServices.account.getEmailAddress(),cEvent.getName(),cEvent.getDescription(),cEvent.getStartDate(),cEvent.getEndDate(), new AsyncCallback<Void>(){
 
@@ -255,37 +271,72 @@ public class TimeTableService extends Service{
 
 					@Override
 					public void onSuccess(Void result) {
+						System.out.println("Event is saved successfully.");
+						notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "broadcast",
+								eventAdded.getEvent().getName(), "<u>I added this new event:</u> " + eventAdded.getEvent().getDescription(), eventAdded.getEvent().getStartDate(),
+								eventAdded.getEvent().getEndDate(), "add", new AsyncCallback<Void>() {
+									
+									@Override
+									public void onSuccess(Void result) {
+										// TODO Auto-generated method stub
+										System.out.println("notification added due to added event");
+									}
+									
+									@Override
+									public void onFailure(Throwable caught) {
+										// TODO Auto-generated method stub
+										
+									}
+								});
 						//Window.alert("Event Saved");
-						calendarService.getEventByUserName(MainServices.account.getEmailAddress(), new AsyncCallback<List<ArrayList<Object>>>(){
-
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onSuccess(List<ArrayList<Object>> result) {
-								// TODO Auto-generated method stub
-								Window.alert(result.get(0).get(0).toString()+" "+result.get(0).get(1).toString()+" "+result.get(0).get(2).toString()+ " "+result.get(0).get(3).toString());
-							}});
+//						calendarService.getEventByUserName(MainServices.account.getEmailAddress(), new AsyncCallback<List<ArrayList<Object>>>(){
+//
+//							@Override
+//							public void onFailure(Throwable caught) {
+//								// TODO Auto-generated method stub
+//
+//							}
+//
+//							@Override
+//							public void onSuccess(List<ArrayList<Object>> result) {
+//								// TODO Auto-generated method stub
+//								Window.alert(result.get(0).get(0).toString()+" "+result.get(0).get(1).toString()+" "+result.get(0).get(2).toString()+ " "+result.get(0).get(3).toString());
+//							}});
 
 					}});
 				System.out.println("event is: "+event.getEvent());
-
 			}
 
 		});
-
-		cal1.setEventDialogFields(sendInvitationButton);
-		googleCalendar.setWidth("600px");
-		googleCalendar.setHeight("600px");
+		
+		TextItem nameItem = new TextItem();  
+        nameItem.setType("text");  
+        nameItem.setName("name");
+          
+        cal1.setEventDialogFields(nameItem, sendInvitationButton);
+		
+//		cal1.setEventDialogFields(sendInvitationButton);
+//		googleCalendar.setWidth("600px");
+//		googleCalendar.setHeight("600px");
 		cal1.setCanEditEvents(true);//CAL_PUBLIC_URL;
 		calendar = cal1;
-		calendar.draw();
+		
+		//calendarContainer.removeChild(calendar);
+		//calendar = calendar;
+		calContainer.addMember(calendar);
+//		calContainer.draw();
+		//calendar.draw();
+		
 	}
 
-
+	public void redrawCalendar(){
+		calContainer.removeMember(calendar);
+		buildGoogleCalendar();
+		this.setPane(calContainer);
+		
+		
+		
+	}
 
 
 
@@ -341,14 +392,21 @@ public class TimeTableService extends Service{
 		cal2.setDisableWeekends(false);
 		cal2.setCanEditEvents(false);
 		calendar = cal2;
-		calendar.draw();
-		popUp.add(calendar);
-		popUp.setGlassEnabled(true);
-		popUp.setPixelSize(calendar.getWidth(), calendar.getHeight());
+//		calendar.draw();
+		VLayout popUpCalendar = new VLayout();
+		popUpCalendar.setBackgroundColor("#ffffd0");
+		popUpCalendar.setWidth(1200);
+//		popUpCalendar.setHeight(calendar.getHeight() + 20);
+//		popUpCalendar.setSize(Integer.toString(calendar.getWidth() + 20), Integer.toString(calendar.getHeight() + 15));
+		popUpCalendar.setShowEdges(true);
+		popUpCalendar.addMember(calendar);
+		popUp.add(popUpCalendar);
+//		popUp.setGlassEnabled(true);
+		//popUp.setPixelSize(calendar.getWidth(), calendar.getHeight());
 		popUp.setAnimationEnabled(true);
 		popUp.setAutoHideEnabled(true);
 		popUp.center();
-		popUp.setVisible(true);
+//		popUp.setVisible(true);
 		popUp.show();
 
 

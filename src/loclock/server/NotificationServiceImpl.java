@@ -28,14 +28,14 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	/* (non-Javadoc)
 	 * @see loclock.client.NotificationService#addNotification(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void addNotification(String fromName, String toName, String content, String eventName)
+	public void addNotification(String fromName, String toName, String content, String eventName, String type)
 			throws NotLoggedInException 
 	{
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
 		try 
 		{
-			pm.makePersistent(new Notification(fromName, toName, content, eventName));
+			pm.makePersistent(new Notification(fromName, toName, content, eventName, type));
 		} 
 		finally 
 		{
@@ -128,7 +128,8 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 				calendarAttributes.add(notifiyObj.getNewStartDate().toString());
 				calendarAttributes.add(notifiyObj.getNewendDate().toString());
 				calendarAttributes.add(notifiyObj.getFromUser());
-				calendarAttributes.add(notifiyObj.getNotificationCreationDateAsReadable());				
+				calendarAttributes.add(notifiyObj.getNotificationCreationDateAsReadable());	
+				calendarAttributes.add(notifiyObj.getType());
 				notificationAsList.add(calendarAttributes);
 				
 				
@@ -175,7 +176,7 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 	 */
 	@Override
 	public void addNotificationCalendar(String fromName, String toName,
-			String content, String eventName, Date newStart, Date newEnd)
+			String content, String eventName, Date newStart, Date newEnd, String type)
 			throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -199,16 +200,21 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 
 				for (String friendEmail : usernames) {
 					pm.makePersistent(new NotificationCalendar(fromName,
-							friendEmail, content, eventName, newStart, newEnd));
+							friendEmail, content, eventName, newStart, newEnd, type));
 				}
 
 			} 
 			else {
 				pm.makePersistent(new NotificationCalendar(fromName, toName,
-						content, eventName, newStart, newEnd));
+						content, eventName, newStart, newEnd, type));
 			}
 			// try {
-		} finally {
+		}
+		catch (Exception e)
+		{
+			System.out.println("error: " + e.getMessage());
+		}
+		finally {
 			pm.close();
 		}
 	}
