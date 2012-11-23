@@ -29,6 +29,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#addUser(java.lang.String)
+	 */
 	public void addUser(String username) throws NotLoggedInException 
 	{
 		
@@ -56,6 +59,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#removeUser(java.lang.String)
+	 */
 	public void removeUser(String username) throws NotLoggedInException 
 	{
 		checkLoggedIn();
@@ -81,6 +87,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#getUsers()
+	 */
 	public String[] getUsers() throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -104,6 +113,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		return (String[]) usersList.toArray(new String[0]);
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#updateUserLatLng(java.lang.String, java.lang.String, java.lang.String, java.util.Date)
+	 */
 	public void updateUserLatLng(String username, String lat, String lng, Date lastupdate) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -117,6 +129,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#updateUserImage(java.lang.String, java.lang.String)
+	 */
 	public void updateUserImage(String username, String url) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -128,6 +143,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#updateUserPrivacy(java.lang.String, java.lang.String)
+	 */
 	public void updateUserPrivacy(String username, String privacy) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -140,6 +158,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#updateUserFirstName(java.lang.String, java.lang.String)
+	 */
 	public void updateUserFirstName(String username, String firstName) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -151,6 +172,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#updateUserLastName(java.lang.String, java.lang.String)
+	 */
 	public void updateUserLastName(String username, String lastName) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -162,6 +186,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#getUserNameByID(java.lang.String)
+	 */
 	public String getUserNameByID (String username) throws NotLoggedInException {
 		checkLoggedIn();
 		PersistenceManager pm = getPersistenceManager();
@@ -178,6 +205,9 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#getUsersAsArrayList(java.lang.String)
+	 */
 	public List<ArrayList<Object>> getUsersAsArrayList(String userName) throws NotLoggedInException {
 		checkLoggedIn(); 
 		List<UserLocation> userList = new ArrayList<UserLocation>();
@@ -209,6 +239,11 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		}
 	}
 	
+	/**
+	 * Check if the current user is logged in.
+	 * 
+	 * @throws NotLoggedInException
+	 */
 	private void checkLoggedIn() throws NotLoggedInException 
 	{
 		if (getCurrentUser() == null) {
@@ -216,41 +251,30 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		}
 	}
 
+	/**
+	 * Get the current user.
+	 * 
+	 * @return current user of userService
+	 */
 	private com.google.appengine.api.users.User getCurrentUser() 
 	{
 		UserService userService = UserServiceFactory.getUserService();
 		return userService.getCurrentUser();
 	}
 
+	/**
+	 * Get the persistence manager.
+	 * 
+	 * @return persistence manager
+	 */
 	private PersistenceManager getPersistenceManager() 
 	{
 		return PMF.getPersistenceManager();
 	}
 
-//	public void createUser(String userName,String realName, String age, String height,String weight,String faculty,String email,String yearLevel, String phoneNumber,Date timeRegistered,double lat, double log,LatLng location, String address){
-//		PersistenceManager pm = PMF.get().getPersistenceManager();
-//    	try{
-//			pm.makePersistent(new User(userName,realName,age,height,weight,faculty,email,yearLevel,phoneNumber,timeRegistered,lat,log,location,address));
-//		}
-//		finally{
-//			pm.close();
-//		}
-//	}
-//	public void deleteUser(String name) {
-//		PersistenceManager pm = PMF.get().getPersistenceManager();
-//		  Query q = pm.newQuery(User.class);
-//		  q.setFilter("schoolName == u");
-//		  q.declareParameters("String u");
-//		try {
-//			  List<User> userSet = (List<User>) q.execute(name);
-//		      for(User s : userSet){
-//		    	  pm.deletePersistent(s);
-//		      }
-//		    } finally {
-//		    	q.closeAll();
-//		      pm.close();
-//		    }
-//	}
+	/* (non-Javadoc)
+	 * @see loclock.client.UserLocationService#getUserLocation(java.lang.String)
+	 */
 	public ArrayList<String> getUserLocation(String userName) {
 		PersistenceManager pm = getPersistenceManager();
 		double lat = 0;
@@ -272,101 +296,5 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 	    }
 		return result;
 	}
-	
-	
-//	public Double getUserLatitude(String userName) {
-//		PersistenceManager pm = getPersistenceManager();
-//		double lat = 0;
-//		
-//		 Query q = pm.newQuery(UserLocation.class);
-//		  q.setFilter("userName == u");
-//		  q.declareParameters("String u");
-//	    try {
-//	    	System.out.println("lat is");
-//			  List<UserLocation> users = (List<UserLocation>) q.execute(userName);
-//			  for(UserLocation user : users){
-//				  lat = (Double)Double.parseDouble(user.getLatitude());
-//				 
-//			  }
-//	    } finally {
-//	    	q.closeAll();
-//	      pm.close();
-//	    }
-//		return lat;
-//	}
-
-//	public Double getUserLongitude(String userName) {
-//		PersistenceManager pm = getPersistenceManager();
-//		double log = 0;
-//		
-//		 Query q = pm.newQuery(UserLocation.class);
-//		  q.setFilter("userName == u");
-//		  q.declareParameters("String u");
-//	    try {
-//	    	System.out.println("log is");
-//			  List<UserLocation> users = (List<UserLocation>) q.execute(userName);
-//			  for(UserLocation user : users){
-//				  log = (Double)Double.parseDouble(user.getLongitude());
-//				 
-//			  }
-//	    } finally {
-//	    	q.closeAll();
-//	      pm.close();
-//	    }
-//		return log;
-//	}
-//	
-//	public Date getUserLastUpdate(String userName) {
-//		PersistenceManager pm = getPersistenceManager();
-//		double log = 0;
-//		
-//		 Query q = pm.newQuery(UserLocation.class);
-//		  q.setFilter("userName == u");
-//		  q.declareParameters("String u");
-//	    try {
-//	    	System.out.println("log is");
-//			  List<UserLocation> users = (List<UserLocation>) q.execute(userName);
-//			  for(UserLocation user : users){
-//				  log = (Double)Double.parseDouble(user.getLongitude());
-//				 
-//			  }
-//	    } finally {
-//	    	q.closeAll();
-//	      pm.close();
-//	    }
-//		return log;
-//	}
-
-//	public List<List<String>> getAllUserInfo(){
-//		PersistenceManager pm = PMF.get().getPersistenceManager();
-//		List<List<String>> userInfos;
-//		List<String> userNames;
-//		Query q = pm.newQuery(User.class);
-//		List<User> users = (List<User>) q.execute();
-//		try{
-//			userInfos = new ArrayList<List<String>>(users.size());
-//			for(User user: users){
-//				userNames = new ArrayList<String>();
-//				userNames.add(user.getUserName());
-//				userNames.add(user.getRealName());
-//				userNames.add(user.getHeight());
-//				userNames.add(user.getWeight());
-//				userNames.add(user.getPhoneNumber());
-//				userNames.add(user.getAddress());
-//				userNames.add(user.getFaculty());
-//				userNames.add(user.getYealLevel());
-//				userNames.add(user.getRegisteredTime().toString());
-//				userNames.add(String.valueOf(user.getLatitude()));
-//				userNames.add(String.valueOf(user.getLongitude()));
-//				userNames.add(user.getAddress());
-//				userInfos.add(userNames);
-//			}
-//			return userInfos;
-//		}
-//		finally{
-//			q.closeAll();
-//			pm.close();
-//		}		
-//	}
 
 }

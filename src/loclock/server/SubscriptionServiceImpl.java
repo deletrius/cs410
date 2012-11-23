@@ -17,6 +17,9 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class SubscriptionServiceImpl extends RemoteServiceServlet implements
 SubscriptionService {
 
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#sendInvitation(java.lang.String, java.lang.String)
+	 */
 	public void sendInvitation(String senderName, String receiverName) {
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		//Request request = new Request(senderName, receiverName);
@@ -38,6 +41,9 @@ SubscriptionService {
 	}
 	
 	// two way update
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#acceptInvitation(java.lang.String, java.lang.String)
+	 */
 	public void acceptInvitation(String senderName, String receiverName){
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		//Request request = new Request(senderName, receiverName);
@@ -69,6 +75,9 @@ SubscriptionService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#rejectInvitation(java.lang.String, java.lang.String)
+	 */
 	public void rejectInvitation(String senderName, String receiverName){
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		//Request request = new Request(senderName, receiverName);
@@ -87,6 +96,9 @@ SubscriptionService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#removeFriend(java.lang.String, java.lang.String)
+	 */
 	public void removeFriend(String senderName, String receiverName){
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		//Request request = new Request(senderName, receiverName);
@@ -109,6 +121,9 @@ SubscriptionService {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#areFriends(java.lang.String, java.lang.String)
+	 */
 	public boolean areFriends(String senderName, String receiverName)
 	{
 		PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -129,6 +144,9 @@ SubscriptionService {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#getInvitations(java.lang.String)
+	 */
 	public List<String> getInvitations(String user){
 		ArrayList<String> friendList;
 		ArrayList<String> types;
@@ -160,6 +178,9 @@ SubscriptionService {
 		return usernames;
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#getFriends(java.lang.String)
+	 */
 	public List<String> getFriends(String user){
 		ArrayList<String> friendList;
 		ArrayList<String> types;
@@ -191,6 +212,9 @@ SubscriptionService {
 		return usernames;
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#getFriendsImages(java.lang.String)
+	 */
 	public List<String> getFriendsImages(String user){
 		ArrayList<String> friendList;
 		ArrayList<String> types;
@@ -223,6 +247,9 @@ SubscriptionService {
 		return pics;
 	}
 	
+	/* (non-Javadoc)
+	 * @see loclock.client.SubscriptionService#addSubscription(java.lang.String)
+	 */
 	public void addSubscription(String username) throws NotLoggedInException
 	{
 		checkLoggedIn();
@@ -248,8 +275,10 @@ SubscriptionService {
 			pm.close();
 		}
 	}
-	
+
 	/**
+	 * Check if user is logged in.
+	 * 
 	 * @throws NotLoggedInException
 	 */
 	private void checkLoggedIn() throws NotLoggedInException 
@@ -260,16 +289,20 @@ SubscriptionService {
 	}
 
 	/**
-	 * @return
+	 * Get the current user of the user service.
+	 * 
+	 * @return the current user of the user service
 	 */
 	private com.google.appengine.api.users.User getCurrentUser() 
 	{
 		UserService userService = UserServiceFactory.getUserService();
 		return userService.getCurrentUser();
 	}
-	
+
 	/**
-	 * @return
+	 * Get the persistence manager.
+	 * 
+	 * @return persistence manager
 	 */
 	private PersistenceManager getPersistenceManager() 
 	{
