@@ -40,13 +40,10 @@ import com.smartgwt.client.data.DSRequest;
 public class FileUploadService extends Service{
 	private static final String UPLOAD_ACTION_URL = GWT.getModuleBaseURL() + "upload";
 	private VLayout fileUploadForm;
-	private long dateTimeStart;
-	private long dateTimeEnd;
-	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
 	final long WEEKS_IN_MILLIS = 1000 * 60 * 60 * 24*7;
 	private DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyyMMddHHmmss");
 	//new SimpleDateFormat("yyyyMMddHHmmss");
-	
+
 	private HTMLFlow instructions;
 	public FileUploadService()
 	{
@@ -60,14 +57,14 @@ public class FileUploadService extends Service{
 
 
 		instructions = new HTMLFlow();
-		
+
 		String content = "<b>UBC Students:</b><br>Download your schedule from UBC courses as a .ics file and then upload it here.";
 		instructions.setContents(content);
 
 		final FormPanel form = new FormPanel();
 		form.setAction(UPLOAD_ACTION_URL);
 
-//		System.out.println(UPLOAD_ACTION_URL);
+		//		System.out.println(UPLOAD_ACTION_URL);
 
 		form.setEncoding(FormPanel.ENCODING_MULTIPART);
 		form.setMethod(FormPanel.METHOD_POST);
@@ -89,28 +86,28 @@ public class FileUploadService extends Service{
 		FileUpload upload = new FileUpload();
 		upload.setName("uploadFormElement");
 		panel.add(upload);
-		
+
 		Button submitButton = new Button("Upload Schedule");
 		submitButton.setHTML("<img src='http://i50.tinypic.com/dy61p5.png'/>");
 		submitButton.setWidth("100px");
 		submitButton.setHeight("45px");
-//		submitButton.set
+		//		submitButton.set
 		submitButton.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				form.submit();
 			}
 		});
-		
+
 		panel.add(submitButton);
 
-//		panel.add(new Button("Submit Schedule", new ClickHandler() {
-//			public void onClick(ClickEvent event) {
-//				form.submit();
-//			}
-//		}));
+		//		panel.add(new Button("Submit Schedule", new ClickHandler() {
+		//			public void onClick(ClickEvent event) {
+		//				form.submit();
+		//			}
+		//		}));
 
 		form.addSubmitHandler(new FormPanel.SubmitHandler() {
 			public void onSubmit(SubmitEvent event) {
@@ -150,7 +147,7 @@ public class FileUploadService extends Service{
 					@Override
 					public void onSuccess(List<ArrayList<Object>> result) {
 						System.out.println("parserService succeed");
-						CalendarEvent[] calEvents = TimeTableService.events;
+						CalendarEvent[] calEvents = TimeTableService.getInstance().getEvents();
 
 						CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 						for(int i=0;i<result.size();i++){
@@ -172,90 +169,92 @@ public class FileUploadService extends Service{
 
 							//System.out.println("WEEKS_IN_MILLIS is:"+ weekDiff);
 
-							for(int j=0; j<weekDiff+1;j++){
+							for(int j=0; j<weekDiff+1;j++)
+							{
 
-							boolean contains = false;
-							//if(d1.before(dateTermEnd)){
-							//System.out.println("Date end is: "+ dateTermEnd);
-							//System.out.println("d1 is: " + d1.toString());
-							if(!(d1.after(dateTermEnd))){
+								boolean contains = false;
+								//if(d1.before(dateTermEnd)){
 								//System.out.println("Date end is: "+ dateTermEnd);
 								//System.out.println("d1 is: " + d1.toString());
-								if(calEvents.length!=0){
-									//System.out.println("Size of calEvent is: "+ calEvents.length);
-								for(int k = 0; k<calEvents.length;k++){
-									//check duplication if event consider to be duplicated if this event has same startDate, endDate, name, and description
-									//else add the calendar
-									//System.out.println(calEvents[k].getName());
+								if(!(d1.after(dateTermEnd))){
+									//System.out.println("Date end is: "+ dateTermEnd);
+									//System.out.println("d1 is: " + d1.toString());
+									if(calEvents.length!=0){
+										//System.out.println("Size of calEvent is: "+ calEvents.length);
+										for(int k = 0; k<calEvents.length;k++){
+											//check duplication if event consider to be duplicated if this event has same startDate, endDate, name, and description
+											//else add the calendar
+											//System.out.println(calEvents[k].getName());
 
-									if(calEvents[k].getStartDate().equals(d1)){
+											if(calEvents[k].getStartDate().equals(d1)){
 
-										//System.out.println("different startDate");
-										if(calEvents[k].getEndDate().equals(d2)){
-											
-											contains = true;
-											
-											//System.out.println("different endDate");
-											if(calEvents[k].getName() == result.get(i).get(0).toString()){
-												//System.out.println("same name");
-												//System.out.println("different eventName");
-											if(calEvents[k].getDescription() == result.get(i).get(1).toString()){
-												//System.out.println("different description");
+												//System.out.println("different startDate");
+												if(calEvents[k].getEndDate().equals(d2)){
+
+													contains = true;
+
+													//System.out.println("different endDate");
+													if(calEvents[k].getName() == result.get(i).get(0).toString()){
+														//System.out.println("same name");
+														//System.out.println("different eventName");
+														if(calEvents[k].getDescription() == result.get(i).get(1).toString()){
+															//System.out.println("different description");
 
 
 
+														}
+
+													}
+												}
 											}
-
-											}
-										}
+										}			
 									}
-								}			
+									if(contains == false){
+										System.out.println("contains == false");
+										System.out.println("Event "+ result.get(i).get(2).toString());
+
+										calendarService.saveEvent(MainServices.account.getEmailAddress(),
+												result.get(i).get(0).toString(), 
+												result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
+
+											@Override
+											public void onFailure(Throwable caught) {
+												// TODO Auto-generated method stub
+												//											Window.alert("Upload Failed");
+												System.out.println("save event failed: " + caught.getMessage());
+											}
+
+											@Override
+											public void onSuccess(Void result) {
+												// TODO Auto-generated method stub
+												//											Window.alert("Event Saved");
+												System.out.println("save event successful");
+												//timeTableService.calendarDraw();
+
+
+
+											}});
+									}
+
 								}
-								if(contains == false){
-									System.out.println("contains == false");
-									System.out.println("Event "+ result.get(i).get(2).toString());
-
-									calendarService.saveEvent(MainServices.account.getEmailAddress(),
-											result.get(i).get(0).toString(), 
-											result.get(i).get(1).toString(), d1,d2, new AsyncCallback<Void>(){
-
-										@Override
-										public void onFailure(Throwable caught) {
-											// TODO Auto-generated method stub
-//											Window.alert("Upload Failed");
-											System.out.println("save event failed: " + caught.getMessage());
-										}
-
-										@Override
-										public void onSuccess(Void result) {
-											// TODO Auto-generated method stub
-//											Window.alert("Event Saved");
-											System.out.println("save event successful");
-											//timeTableService.calendarDraw();
-
-
-
-										}});
-								}
-
-						}
-							CalendarUtil.addDaysToDate(d1, 7);
-							CalendarUtil.addDaysToDate(d2, 7);
+								CalendarUtil.addDaysToDate(d1, 7);
+								CalendarUtil.addDaysToDate(d2, 7);
 
 
 							}
-							
+
 							//TimeTableService.calendar.redraw();
 						}
-						com.google.gwt.user.client.Window.Location.reload();
+						TimeTableService.getInstance().buildGoogleCalendar();
+						//com.google.gwt.user.client.Window.Location.reload();
 
 					}
 
 
 				});
-				
 
-}
+
+			}
 		});
 		//FormItem lol;
 		//fileUploadForm.add(form);

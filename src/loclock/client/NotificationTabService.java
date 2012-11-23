@@ -1,8 +1,5 @@
 package loclock.client;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +53,7 @@ public class NotificationTabService extends Service {
 	private static ImgButton removeButton;
 	//private static TimeTableService timeTableService;
 	private static Timer refreshTimer;
+	//private TimeTableService timetableService;
 	
 
 	private static List<String> stackIdsRemoved;
@@ -170,7 +168,7 @@ public class NotificationTabService extends Service {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setAnimateSections(true);
 		sectionStack.setAlign(Alignment.CENTER);
-		sectionStack.setWidth("95%");
+		sectionStack.setWidth("100%");
 		sectionStack.setHeight("95%");
 		sectionStack.setOverflow(Overflow.AUTO);
 
@@ -200,77 +198,7 @@ public class NotificationTabService extends Service {
 		moveInButton.setLeft(40);
 		moveInButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-//				label.animateMove(10, 50);
-				calendarService.getCalendarEventsForTodayByUsername(MainServices.account.getEmailAddress(), new AsyncCallback<List<ArrayList<Object>>>() {
-					
-					@Override
-					public void onSuccess(List<ArrayList<Object>> result) {	
-						
-						// move this checking to server!
-						boolean sevenToEight = false;
-						boolean eightToNine = false;
-						boolean nineToTen = false;
-						boolean tenToEleven = false;
-						boolean elevenToTwelve = false;
-						boolean twelveToOne = false;
-						boolean oneToTwo = false;
-						boolean twoToThree = false;
-						boolean threeToFour = false;
-						boolean fourToFive = false;
-						boolean fiveToSix = false;
-						boolean sixToSeven = false;
-						
-						for (ArrayList<Object> calendarObjectAsArrayList : result)
-						{
-							long startDateInMilliseconds = Long.valueOf((String) calendarObjectAsArrayList.get(3));
-							Date startDateFromMilliseconds = new Date(startDateInMilliseconds);
-							
-							long endDateInMilliseconds = Long.valueOf((String) calendarObjectAsArrayList.get(4));
-							Date endDateFromMilliseconds = new Date(endDateInMilliseconds);
-							
-							
-							System.out.println("The event date is: " + startDateFromMilliseconds.getMonth() + 
-									" " + startDateFromMilliseconds.getDay() + " " + startDateFromMilliseconds.getYear());
-							System.out.println("The date in string is: " + startDateFromMilliseconds.toString());
-							
-							calendarService.isWithinRange("12", "PM", startDateFromMilliseconds, endDateFromMilliseconds, new AsyncCallback<Boolean>() {
-
-								@Override
-								public void onSuccess(Boolean result) {
-									// TODO Auto-generated method stub
-
-								}
-
-								@Override
-								public void onFailure(Throwable caught) {
-									// TODO Auto-generated method stub
-
-								}
-							});
-							
-							calendarService.isWithinRange("12", "AM", startDateFromMilliseconds, endDateFromMilliseconds, new AsyncCallback<Boolean>() {
-
-								@Override
-								public void onSuccess(Boolean result) {
-									// TODO Auto-generated method stub
-
-								}
-
-								@Override
-								public void onFailure(Throwable caught) {
-									// TODO Auto-generated method stub
-
-								}
-							});
-						}
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
+				label.animateMove(10, 50);
 			}
 		});
 
@@ -290,7 +218,7 @@ public class NotificationTabService extends Service {
 		hLayout.setMembersMargin(10);
 		
 		// Code used here for notification testing purpose
-		hLayout.addMember(moveInButton);
+		//hLayout.addMember(moveInButton);
 		//hLayout.addMember(moveOutButton);
 		layout.addMember(hLayout);
 
@@ -396,7 +324,9 @@ public class NotificationTabService extends Service {
 												Window.alert("Notification Event Saved!");
 												//TimeTableService timeTable = new TimeTableService();
 												//timeTable.redrawCalendar();
-												com.google.gwt.user.client.Window.Location.reload();
+												
+												TimeTableService.getInstance().buildGoogleCalendar();
+											//	com.google.gwt.user.client.Window.Location.reload();
 
 											}
 										});
@@ -421,33 +351,26 @@ public class NotificationTabService extends Service {
 		notificationSection = new SectionStackSection();
 		
 		String notificationTitle = "";
-		String friendPicture = MainServices.getCurrentUserDisplayPicUrl();
-		
-		if (friendPicture.length() > 0)
-		{
-			notificationTitle = Canvas.imgHTML(friendPicture) + " ";
-		}
-		
 		
 		if (type.equalsIgnoreCase("add"))
 		{
-			notificationTitle += Canvas.imgHTML("http://i46.tinypic.com/1pt1e8.png") + " - " + MainServices.account.getEmailAddress();
+			notificationTitle = Canvas.imgHTML("http://i46.tinypic.com/1pt1e8.png") + " - " + MainServices.account.getEmailAddress();
 		}
 		else if (type.equalsIgnoreCase("remove"))
 		{
-			notificationTitle += Canvas.imgHTML("http://i48.tinypic.com/ekqjoh.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle = Canvas.imgHTML("http://i48.tinypic.com/ekqjoh.png") + " " + MainServices.account.getEmailAddress();
 		}
 		else if (type.equalsIgnoreCase("modify"))
 		{
-			notificationTitle += Canvas.imgHTML("http://i47.tinypic.com/2wqe6af.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle = Canvas.imgHTML("http://i47.tinypic.com/2wqe6af.png") + " " + MainServices.account.getEmailAddress();
 		}
 		else if (type.equalsIgnoreCase("invite"))
 		{
-			notificationTitle += Canvas.imgHTML("http://i48.tinypic.com/10hkriv.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle = Canvas.imgHTML("http://i48.tinypic.com/10hkriv.png") + " " + MainServices.account.getEmailAddress();
 		}
 		else
 		{
-			notificationTitle += MainServices.account.getEmailAddress();
+			notificationTitle = MainServices.account.getEmailAddress();
 		}
 		
 		notificationSection = new SectionStackSection(notificationTitle);
@@ -613,5 +536,8 @@ public class NotificationTabService extends Service {
 	private void refreshNotificationPopIn()
 	{
 		popInContent.setContents("<center>You have <b>" + numberOfNewNotifications + "</b> new notifications!</center>");
-	}	
+	}
+
+	
+
 }
