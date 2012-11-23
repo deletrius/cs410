@@ -18,9 +18,7 @@ import com.google.gwt.user.client.WindowResizeListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.web.bindery.requestfactory.shared.Receiver;
 
 
@@ -36,14 +34,12 @@ public class MainServices extends TabSet{
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
-	private final SubscriptionServiceAsync subscriptionService = GWT.create(SubscriptionService.class);
 	private static HLayout rootLayout;
 	private LoginService loginService;
 
 	private static final Plus plus = GWT.create(Plus.class);
-	private Image loadingImage = new Image("images/300.gif");
+	
 	private static HLayout rightTabLayout;
-	private PopupPanel pop = new PopupPanel();
 	//Gerry's Key
 
 //	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
@@ -65,16 +61,14 @@ public class MainServices extends TabSet{
 	private static final String CLIENT_ID = "118588470471-pll4trc5hvbj8d808bgpr3s34ljblt9g.apps.googleusercontent.com";
 	private static final String API_KEY = "F897RO-8nnVd_s2AjviDV0bu";
 
+
 	private static final String APPLICATION_NAME = "loclock/3.0";
 
 	private MapService mapService;
-
+	private TimeTableService timetableService;
 	public static Account account = null;
 
 	private static volatile MainServices mainServicesInstance;
-	
-	private static String currentUserDisplayPicUrl = "";
-	
 	private MainServices()
 	{
 		this.setTabBarThickness(40);
@@ -99,22 +93,16 @@ public class MainServices extends TabSet{
 		}
 		return mainServicesInstance;
 	}
-	public void onLoad(){
-		pop.add(loadingImage);
-		pop.setAnimationEnabled(true);
-		pop.setGlassEnabled(true);
-		pop.center();
-		pop.show();
-	}
-	public void loaded(){
-		pop.hide();
-	}
+
 	public void addService(Service service)
 	{
 		this.addTab(service);
 		
 	}
-
+//private void addTimeTableService(){
+//	final VLayout cal = new VLayout();
+//	timetableService= new TimeTableService();
+//}
 	private void addMapService()
 	{
 		final HLayout mapPanel=new HLayout();
@@ -178,9 +166,6 @@ public class MainServices extends TabSet{
 		return rightTabLayout;
 	}
 
-	public static String getCurrentUserDisplayPicUrl() {
-		return currentUserDisplayPicUrl;
-	}
 
 	private class LoginService
 	{
@@ -204,10 +189,9 @@ public class MainServices extends TabSet{
 					account = result;
 					System.out.println("bbbb "+MainServices.account);
 					if(account.isLoggedIn()){
-						onLoad();
 						System.out.println("is logged in");
 						loadLoggedInScreen();
-						//loaded();
+
 					}
 					else{
 						System.out.println("setLoginScreen");
@@ -235,88 +219,37 @@ public class MainServices extends TabSet{
 			rootLayout.draw();
 
 
-			//     		plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-			//			 final IButton b = new IButton("Authenticate to get public activities");
-			//
-			//			 b.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-			//				
-			//				@Override
-			//				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-			//					// TODO Auto-generated method stub
-			//					login();
-			//					Window.alert("After login!");
-			//				}
-			//			});
-
-			//			 loginLayout.addMember(b);
+		
 		}
 
 		protected void loadLoggedInScreen() {
 
-		
-			//plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-			//login();
-
-
-			//plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-			//login();
-			//System.out.println("OK");
-			//rootLayout.destroy();
+			
+			
 			rootLayout=new HLayout(5);
 			rootLayout.setSize("100%", "100%");
 			
-			//TabPanel tabPanel=new TabPanel();
-//			TabSet tabSet = new TabSet();
-//			tabSet.setAutoHeight();
-//			tabSet.setAutoWidth();
-//			tabSet.setTabBarThickness(1000);
-			//tabSet.setSize("50%", "100%");
 			System.out.println("Good");
 
 
 			addUser(account.getEmailAddress());
-			addUserSubscription(account.getEmailAddress());
 			System.out.println(account.getEmailAddress());
 			addMapService();
 
 			
 			addService(new FriendService(account.getEmailAddress())); //@@ TODO stub for usrname
-			addService(new TimeTableService());
+			addService(TimeTableService.getInstance());
 			addService(new NotificationTabService());
 			addService(new SettingTabService());
 			addService(new FileUploadService());
-//			rootLayout.addMember(MainServices.this);
-		
-//			if (!rootLayout.contains(this))
-//				rootLayout.addMember(this);
-//			rootLayout.redraw();
+
 			addRightTabPanel();
-		
-			rootLayout.draw();
-			loaded();
 			
+			rootLayout.draw();
 		}
-
 		
 
-		private void login() 
-		{
-			OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
-				@Override
-				public void onSuccess(Void v) {
-//					Window.alert("Authorized");
-					println("authorize into Google+");
-					getMe();		        
-				}
-
-
-		      @Override
-		      public void onFailure(Exception e) {
-		        println("failed authorize");
-		      }
-		    });
-		  }
-
+		
 		private void getMe() {
 			plus.people().get("me").to(new Receiver<Person>() {
 				@Override
@@ -325,47 +258,31 @@ public class MainServices extends TabSet{
 					//		        Window.alert("Hello, this is your name: " + person.getDisplayName());
 					if (person.getImage().getUrl()!=null)
 					{
-						currentUserDisplayPicUrl = person.getImage().getUrl();
 						locationService.updateUserImage(account.getEmailAddress(), person.getImage().getUrl(), new AsyncCallback<Void>(){
 
 							@Override
 							public void onFailure(Throwable caught) {
 								// TODO Auto-generated method stub
-								currentUserDisplayPicUrl = "";
+
 							}
 
 							@Override
 							public void onSuccess(Void result) {
 								// TODO Auto-generated method stub
+
 							}});
 					}
-					//getMyActivities();
+					
 				}
 			}).fire();
 		}
 
-		//		private void getMyActivities() {	
-		//			
-		//		    plus.activities().list("me", Collection.PUBLIC).to(new Receiver<ActivityFeed>() {
-		//		      @Override
-		//		      public void onSuccess(ActivityFeed feed) {
-		//		        println("===== PUBLIC ACTIVITIES =====");
-		//		        if (feed.getItems() == null || feed.getItems().isEmpty()) {
-		//		          println("You have no public activities");
-		//		        } else {
-		//		          for (Activity a : feed.getItems()) {
-		//		            println(a.getTitle());
-		//		          }
-		//		        }
-		//		      }
-		//		    }).fire();
-		//		  }
+	
 
 
 		private void println(String msg) {
-			System.out.println(msg);
-			//loginLayout.addMember(new Label(msg));
-			//rootLayout.draw();
+			Window.alert(msg);
+			
 		}
 
 		private void addUser(final String username)
@@ -385,25 +302,6 @@ public class MainServices extends TabSet{
 				}
 			});
 		}
-		
-		private void addUserSubscription(String username)
-		{
-			subscriptionService.addSubscription(username, new AsyncCallback<Void>() {
-				
-				@Override
-				public void onSuccess(Void result) {
-					// TODO Auto-generated method stub
-					System.out.println("subscription added");
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-					System.out.println("subscription failed");
-				}
-			});
-		}
-		
 		private void loadUsers()
 		{
 			locationService.getUsers(new AsyncCallback<String[]>() {
