@@ -18,4 +18,8 @@ public interface CalendarServiceAsync {
 	//boolean checkFree(String userName, Date time)
 	//void checkFree(String userName, Date time, AsyncCallback<Boolean> callback);
 	void checkDuplicate(String userName, String eventName,String description, Date startDate, Date endDate,AsyncCallback<String> callback);
+	void getCalendarEventsForTodayByUsername(String userName,
+			AsyncCallback<List<ArrayList<Object>>> callback);
+	void isWithinRange(String hour, String amPm, Date start, Date end,
+			AsyncCallback<Boolean> callback);
 }

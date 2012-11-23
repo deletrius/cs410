@@ -1,14 +1,19 @@
 package loclock.client;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import loclock.server.Calendar;
+import loclock.server.PMF;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -50,5 +55,7 @@ public interface CalendarService extends RemoteService{
 	public void deleteEvent(String userName, String eventName,String description, Date startDate, Date endDate);
 	public String checkDuplicate(String userName, String eventName,String description, Date startDate, Date endDate);
 	//public boolean checkFree(String userName, Date time);
+	public List<ArrayList<Object>> getCalendarEventsForTodayByUsername(String userName);
+	public boolean isWithinRange(String hour, String amPm, Date start, Date end);
 }
 

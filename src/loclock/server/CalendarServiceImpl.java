@@ -1,4 +1,6 @@
 package loclock.server;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -154,6 +156,81 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 	    }
 		
 		
+	}
+	
+	public List<ArrayList<Object>> getCalendarEventsForTodayByUsername(String userName){		
+		Date date = new Date();
+		int todayMonth = date.getMonth();
+		int todayDay = date.getDay();
+		int todayYear = date.getYear();
+		
+		System.out.println("Today's date is: " + todayMonth + " " + todayDay + " " + todayYear);
+		
+		List<Calendar> userCalendarList = new ArrayList<Calendar>();
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		 Query q = pm.newQuery(Calendar.class);
+		 q.setFilter("userName == u");
+		 q.declareParameters("String u");
+		try {
+			
+			// get all the calendar objects of the user
+			userCalendarList =  (List<Calendar>) q.execute(userName);
+		
+			List<ArrayList<Object>> calendarAsList = new ArrayList<ArrayList<Object>>();
+			
+			// loop through all the calendar objects
+			for (Calendar calendarObj : userCalendarList)
+			{
+				int calendarObjectMonth = calendarObj.getStartDate().getMonth();
+				int calendarObjectDay = calendarObj.getStartDate().getDay();
+				int calendarObjectYear = calendarObj.getStartDate().getYear();
+				
+				// Check that the month, day and year of the date object in database matches today's month, day, year
+				if (calendarObjectDay == todayDay && calendarObjectYear == todayYear && calendarObjectMonth == todayMonth)
+				{
+					System.out.println("Found date is: " + calendarObjectMonth + " " + calendarObjectDay + " " + calendarObjectYear);
+					ArrayList<Object> calendarAttributes = new ArrayList<Object>();
+					calendarAttributes.add(calendarObj.getUserName());
+					calendarAttributes.add(calendarObj.getEventName());
+					calendarAttributes.add(calendarObj.getDescription());
+					
+					// store as milliseconds so that we can convert it back in the client side
+					calendarAttributes.add(Long.toString(calendarObj.getStartDate().getTime()));
+					calendarAttributes.add(Long.toString(calendarObj.getEndDate().getTime()));
+					
+					calendarAsList.add(calendarAttributes);
+				}
+			}
+			
+			return calendarAsList;
+		}
+		finally {
+	    	q.closeAll();
+	      pm.close();
+	    }
+	}
+	
+	public boolean isWithinRange(String hour, String amPm, Date start, Date end)
+	{		
+		Date seven;
+		try {
+			seven = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").parse("2012-11-23 " + hour +":00:00 " + amPm);
+			if (isWithinRange(seven, start, end))
+			{
+				System.out.println("The date: " + start.toString() + " " + end.toString() + " contains " + hour + " oclock");
+				return true;
+			} 
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	private boolean isWithinRange(Date testDate, Date startDate, Date endDate)
+	{
+	   return !(testDate.before(startDate) || testDate.after(endDate));
 	}
 	
 }
