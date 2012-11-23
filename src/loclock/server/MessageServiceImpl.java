@@ -21,6 +21,9 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 	private static PersistenceManager pm=PMF.getPersistenceManager();
+	/* (non-Javadoc)
+	 * @see loclock.client.MessageService#sendMessage(java.lang.String, java.lang.String, java.lang.String, java.util.Date)
+	 */
 	@Override
 	public void sendMessage(String fromName, String toName, String messageBody,
 			Date timestamp) throws NotLoggedInException {
@@ -30,6 +33,9 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.MessageService#retrieveMessage(java.lang.String)
+	 */
 	@Override
 	public List<String[]> retrieveMessage(String fromName) throws NotLoggedInException {
 		//PersistenceManager pm=PMF.getPersistenceManager();
@@ -62,6 +68,11 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 		return result;
 	}
 
+	/**
+	 * Get the persistence manager.
+	 * 
+	 * @return the persistence manager
+	 */
 	private PersistenceManager getPersistenceManager() 
 	{
 		return PMF.getPersistenceManager();
