@@ -37,6 +37,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.ibm.icu.util.Calendar;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.SelectionStyle;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
@@ -96,6 +97,7 @@ public class FriendService extends Service{
 		buildFriendList();
 		profileForm.setBorder("2px solid grey");		
 		profileForm.setSize("100%", "20%");
+		profileForm.setNumCols(4);
 		updateProfilePanel(user,"0",new Date().toString());
 		friendsPanel.addMember(profileForm);
 		friendsPanel.addMember(chatManager);
@@ -434,7 +436,7 @@ public class FriendService extends Service{
 					}
 				});
 			}});
-		profileForm.setItems(profileName,freeToMeet,profileDistance,profileLastUpdate,showCalendar,showMap,removeFriend);		
+		profileForm.setItems(profileName,freeToMeet,profileDistance,profileLastUpdate,showCalendar,showMap,removeFriend);
 		profileForm.setAutoHeight();
 	}
 
