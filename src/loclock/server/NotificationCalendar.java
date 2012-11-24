@@ -26,10 +26,10 @@ public class NotificationCalendar extends Notification{
 	/**
 	 * Constructor for new calendar notification object.
 	 * 
-	 * @param oldStartDate
-	 * @param newStartDate
-	 * @param oldEndDate
-	 * @param newendDate
+	 * @param oldStartDate the old start date of the event
+	 * @param newStartDate the new start date of the event
+	 * @param oldEndDate the old end date of the event
+	 * @param newendDate the new end date of the event
 	 */
 	public NotificationCalendar(String fromUser, String toUser, 
 			String content, String eventName, 
@@ -40,36 +40,36 @@ public class NotificationCalendar extends Notification{
 	}
 
 	/**
-	 * Getter for new start date.
+	 * Get the new start date of the event.
 	 * 
-	 * @return
+	 * @return newStartDate the new start date of the event
 	 */
 	public Date getNewStartDate() {
 		return newStartDate;
 	}
 
 	/**
-	 * Setter for new start date.
+	 * Set for new start date of the event.
 	 * 
-	 * @param newStartDate
+	 * @param newStartDate the new start date of the event
 	 */
 	public void setNewStartDate(Date newStartDate) {
 		this.newStartDate = newStartDate;
 	}
 
 	/**
-	 * Getter for new end date.
+	 * Get the new end date of the event.
 	 * 
-	 * @return
+	 * @return the new end date of the event
 	 */
 	public Date getNewendDate() {
 		return newendDate;
 	}
 
 	/**
-	 * Setter for new end date.
+	 * Set for new end date of the event.
 	 * 
-	 * @param newendDate
+	 * @param newendDate the new end date of the event
 	 */
 	public void setNewendDate(Date newendDate) {
 		this.newendDate = newendDate;

@@ -21,69 +21,13 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 
 public class FileUploadServlet extends HttpServlet {
-
-//	private static final String UPLOAD_DIRECTORY = "d:\\uploaded\\";
-//	 
-//	     @Override
-//	     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-//	             throws ServletException, IOException {
-//	    	 
-//	    	 System.out.println("IN GET");
-//	    	 
-//	         super.doGet(req, resp);
-//	     }
-//	 
-//	     @Override
-//	     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-//	             throws ServletException, IOException {
-//	    	 System.out.println("IN POST");
-//	    	 System.out.println(req.toString());
-//	         // process only multipart requests
-//	         if (ServletFileUpload.isMultipartContent(req)) {
-//	 
-//	             // Create a factory for disk-based file items
-//	             FileItemFactory factory = new DiskFileItemFactory();
-//	 
-//	             // Create a new file upload handler
-//	             ServletFileUpload upload = new ServletFileUpload(factory);
-//	 
-//	             // Parse the request
-//	             try {
-//	                 List<FileItem> items = upload.parseRequest(req);
-//	                 for (FileItem item : items) {
-//	                     // process only file upload - discard other form item types
-//	                     if (item.isFormField()) continue;
-//	                     
-//	                     String fileName = item.getName();
-//	                     // get only the file name not whole path
-//	                     if (fileName != null) {
-//	                         fileName = FilenameUtils. getName(fileName);
-//	                     }
-//	 
-//	                     File uploadedFile = new File(UPLOAD_DIRECTORY, fileName);
-//	                     if (uploadedFile.createNewFile()) {
-//	                         item.write(uploadedFile);
-//	                         resp.setStatus(HttpServletResponse.SC_CREATED);
-//	                         resp.getWriter().print("The file was created successfully.");
-//	                         resp.flushBuffer();
-//	                     } else
-//	                         throw new IOException("The file already exists in repository.");
-//	                 }
-//	             } catch (Exception e) {
-//	                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-//	                         "An error occurred while creating the file : " + e.getMessage());
-//	             }
-//	 
-//	         } else {
-//	             resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
-//	                             "Request contents type is not supported by the servlet.");
-//	         }
-//	     }
-	
 	
 	private static final Logger log = Logger.getLogger(FileUpload.class
 			.getName());
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 		try {
