@@ -68,11 +68,6 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
-        <copy includeemptydirs="false" todir="test-classes">
-            <fileset dir="test">
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
     </target>
     <target name="clean">
         <delete dir="war/WEB-INF/classes"/>
@@ -85,10 +80,6 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="war/WEB-INF/classes" includeantruntime="false" source="${source}" target="${target}">
             <src path="src"/>
-            <classpath refid="loclock.classpath"/>
-        </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="test-classes" includeantruntime="false" source="${source}" target="${target}">
-            <src path="test"/>
             <classpath refid="loclock.classpath"/>
         </javac>
     </target>
