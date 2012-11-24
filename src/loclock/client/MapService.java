@@ -118,7 +118,8 @@ public class MapService {
 //					infoWindow.close();
 					interactionPanelMoveIn();
 					DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
-					infoWindow.setContent("Your " + username + " location at: " + dtf.format(lastupdate));
+					
+					infoWindow.setContent("<b>" + username + "</b><br><br>Last updated: " + "<i>" + dtf.format(lastupdate) + "</i>");
 
 					infoWindow.bindTo("", marker);
 					infoWindow.open(mapwidget.getMap(), marker);
@@ -139,7 +140,8 @@ public class MapService {
 		{
 			this.lastupdate=lastupdate;
 			DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
-			infoWindow.setContent("Your " + username + " location at: " + dtf.format(this.lastupdate));
+			infoWindow.setContent("<b>" + username + "</b><br><br>Last updated: " + "<i>" + dtf.format(this.lastupdate) + "</i>");
+//			infoWindow.setContent("Your " + username + " location at: " + dtf.format(this.lastupdate));
 			marker.setPosition(latlng);
 			if (panTo)
 				mapwidget.getMap().panTo(latlng);
