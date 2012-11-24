@@ -1,5 +1,8 @@
 package loclock.client;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +15,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.types.AnimationAcceleration;
 import com.smartgwt.client.types.AnimationEffect;
+import com.smartgwt.client.types.ImageStyle;
 import com.smartgwt.client.types.ListGridEditEvent;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.VerticalAlignment;
@@ -20,6 +24,7 @@ import com.smartgwt.client.types.VisibilityMode;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Img;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -42,18 +47,19 @@ public class NotificationTabService extends Service {
 			.create(NotificationService.class);
 	private static CalendarServiceAsync calendarService = GWT
 			.create(CalendarService.class);
+	
+	private static UserLocationServiceAsync userLocationService = GWT.create(UserLocationService.class);
 	// private final NotificationPushServiceAsync notificationPushService =
 	// GWT.create(NotificationPushService.class);
 	private static String notificationContents;
 	private static HTMLFlow notificationHtmlFlow;
-	private static VLayout notificationVLayout;
+	private static HLayout notificationVLayout;
 	private static SectionStackSection notificationSection;
 	private static SectionStack sectionStack;
 	private static List<String> currentlyShownNotifications;
 	private static ImgButton removeButton;
 	//private static TimeTableService timeTableService;
 	private static Timer refreshTimer;
-	//private TimeTableService timetableService;
 	
 
 	private static List<String> stackIdsRemoved;
@@ -69,6 +75,8 @@ public class NotificationTabService extends Service {
 	
 	private int numberOfNewNotifications = 0;
 	private HTMLFlow popInContent;
+	
+	private ArrayList<Object> globalNotificationObject;
 	
 	public NotificationTabService() {
 		super(
@@ -168,7 +176,7 @@ public class NotificationTabService extends Service {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setAnimateSections(true);
 		sectionStack.setAlign(Alignment.CENTER);
-		sectionStack.setWidth("100%");
+		sectionStack.setWidth("95%");
 		sectionStack.setHeight("95%");
 		sectionStack.setOverflow(Overflow.AUTO);
 
@@ -198,7 +206,77 @@ public class NotificationTabService extends Service {
 		moveInButton.setLeft(40);
 		moveInButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				label.animateMove(10, 50);
+//				label.animateMove(10, 50);
+				calendarService.getCalendarEventsForTodayByUsername(MainServices.account.getEmailAddress(), new AsyncCallback<List<ArrayList<Object>>>() {
+					
+					@Override
+					public void onSuccess(List<ArrayList<Object>> result) {	
+						
+						// move this checking to server!
+						boolean sevenToEight = false;
+						boolean eightToNine = false;
+						boolean nineToTen = false;
+						boolean tenToEleven = false;
+						boolean elevenToTwelve = false;
+						boolean twelveToOne = false;
+						boolean oneToTwo = false;
+						boolean twoToThree = false;
+						boolean threeToFour = false;
+						boolean fourToFive = false;
+						boolean fiveToSix = false;
+						boolean sixToSeven = false;
+						
+						for (ArrayList<Object> calendarObjectAsArrayList : result)
+						{
+							long startDateInMilliseconds = Long.valueOf((String) calendarObjectAsArrayList.get(3));
+							Date startDateFromMilliseconds = new Date(startDateInMilliseconds);
+							
+							long endDateInMilliseconds = Long.valueOf((String) calendarObjectAsArrayList.get(4));
+							Date endDateFromMilliseconds = new Date(endDateInMilliseconds);
+							
+							
+							System.out.println("The event date is: " + startDateFromMilliseconds.getMonth() + 
+									" " + startDateFromMilliseconds.getDay() + " " + startDateFromMilliseconds.getYear());
+							System.out.println("The date in string is: " + startDateFromMilliseconds.toString());
+							
+							calendarService.isWithinRange("12", "PM", startDateFromMilliseconds, endDateFromMilliseconds, new AsyncCallback<Boolean>() {
+
+								@Override
+								public void onSuccess(Boolean result) {
+									// TODO Auto-generated method stub
+
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub
+
+								}
+							});
+							
+							calendarService.isWithinRange("12", "AM", startDateFromMilliseconds, endDateFromMilliseconds, new AsyncCallback<Boolean>() {
+
+								@Override
+								public void onSuccess(Boolean result) {
+									// TODO Auto-generated method stub
+
+								}
+
+								@Override
+								public void onFailure(Throwable caught) {
+									// TODO Auto-generated method stub
+
+								}
+							});
+						}
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 			}
 		});
 
@@ -218,7 +296,7 @@ public class NotificationTabService extends Service {
 		hLayout.setMembersMargin(10);
 		
 		// Code used here for notification testing purpose
-		//hLayout.addMember(moveInButton);
+		hLayout.addMember(moveInButton);
 		//hLayout.addMember(moveOutButton);
 		layout.addMember(hLayout);
 
@@ -240,10 +318,30 @@ public class NotificationTabService extends Service {
 
 	private static SectionStackSection produceNewNotification(String id,
 			String fromUser, String eventName, String description,
-			String startDate, String endDate, String type) {
+			String startDate, String endDate, String type, String friendUrl) {
 		final String stackId = id;
+		
+		String notificationHeader = "";
+		
+		if (type.equalsIgnoreCase("modify"))
+		{
+			notificationHeader = "<h3 style=\"color:#1569C7;\">Event Modified</h3>";
+		}
+		else if (type.equalsIgnoreCase("add"))
+		{
+			notificationHeader = "<h3 style=\"color:green;\">New Event Added</h3>";
+		}
+		else if (type.equalsIgnoreCase("remove"))
+		{
+			notificationHeader = "<h3 style=\"color:#C11B17;\">Event Removed</h3>";
+		}
+		else if (type.equalsIgnoreCase("invite"))
+		{
+			notificationHeader = "<h3 style=\"color:#FBB917;\">Event Invitation</h3>";
+		}
+		
 
-		notificationContents = "<b>Event</b>: " + eventName + "<br><b>Description</b>: "
+		notificationContents = notificationHeader + "<b>Event</b>: " + eventName + "<br><b>Description</b>: "
 				+ description + "<br><b>Start: </b>" + startDate + "<br><b>End: </b>"
 				+ endDate;
 
@@ -255,10 +353,25 @@ public class NotificationTabService extends Service {
 		final Date startDate2 = new Date(startDate);
 		final Date endDate2 = new Date(endDate);
 		
+		Img starImg2 = new Img(friendUrl);
+		starImg2.setWidth("50%");
+		starImg2.setHeight("30%");
+        starImg2.setImageWidth(128);  
+        starImg2.setImageHeight(128);  
+        starImg2.setImageType(ImageStyle.CENTER);  
+        starImg2.setBorder("1px solid gray");  
+        starImg2.setLeft(120);  
+//        canvas.addChild(starImg2);
+		
 		notificationHtmlFlow.setContents(notificationContents);
-		notificationVLayout = new VLayout();
-		notificationVLayout.setPadding(10);
+		notificationVLayout = new HLayout();
+//		notificationVLayout.setHeight("25%");
+		notificationVLayout.setWidth100();
+		notificationVLayout.setHeight100();
+		notificationVLayout.setPadding(8);
+		notificationVLayout.setMembersMargin(15);
 		notificationVLayout.addMember(notificationHtmlFlow);
+		notificationVLayout.addMember(starImg2);
 		HLayout hLayout = new HLayout();
 		IButton cancelEventButton = new IButton("Ignore and Delete");
 		cancelEventButton.setAutoFit(true);
@@ -321,7 +434,10 @@ public class NotificationTabService extends Service {
 
 											@Override
 											public void onSuccess(Void result) {
-												Window.alert("Notification Event Saved!");
+//												Window.alert("Notification Event Saved!");
+												System.out.println("notification event saved");
+												currentlyShownNotifications.remove(stackId);
+												stackIdsRemoved.add(stackId);
 												//TimeTableService timeTable = new TimeTableService();
 												//timeTable.redrawCalendar();
 												
@@ -342,8 +458,15 @@ public class NotificationTabService extends Service {
 		});
 		if (type.equalsIgnoreCase("invite"))
 		{
-			hLayout.addMember(addToCalendarButton);
-			hLayout.addMember(cancelEventButton);
+			VLayout buttonLayout = new VLayout();
+			buttonLayout.setWidth100();
+			buttonLayout.setHeight100();
+			buttonLayout.setPadding(8);
+			buttonLayout.setMembersMargin(15);
+			buttonLayout.addMember(addToCalendarButton);
+			buttonLayout.addMember(cancelEventButton);
+			
+			hLayout.addMember(buttonLayout);
 		}
 			
 //		hLayout.setPadding(10);
@@ -351,26 +474,33 @@ public class NotificationTabService extends Service {
 		notificationSection = new SectionStackSection();
 		
 		String notificationTitle = "";
+//		String friendPicture = friendUrl;
+		
+//		if (friendPicture.length() > 0)
+//		{
+//			notificationTitle = Canvas.imgHTML(friendPicture, 30, 30) + "   ";
+//		}
+		
 		
 		if (type.equalsIgnoreCase("add"))
 		{
-			notificationTitle = Canvas.imgHTML("http://i46.tinypic.com/1pt1e8.png") + " - " + MainServices.account.getEmailAddress();
+			notificationTitle += Canvas.imgHTML("http://i46.tinypic.com/1pt1e8.png") + "    " + fromUser;
 		}
 		else if (type.equalsIgnoreCase("remove"))
 		{
-			notificationTitle = Canvas.imgHTML("http://i48.tinypic.com/ekqjoh.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle += Canvas.imgHTML("http://i48.tinypic.com/ekqjoh.png") + "    " + fromUser;
 		}
 		else if (type.equalsIgnoreCase("modify"))
 		{
-			notificationTitle = Canvas.imgHTML("http://i47.tinypic.com/2wqe6af.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle += Canvas.imgHTML("http://i47.tinypic.com/2wqe6af.png") + "    " + fromUser;
 		}
 		else if (type.equalsIgnoreCase("invite"))
 		{
-			notificationTitle = Canvas.imgHTML("http://i48.tinypic.com/10hkriv.png") + " " + MainServices.account.getEmailAddress();
+			notificationTitle += Canvas.imgHTML("http://i48.tinypic.com/10hkriv.png") + "    " + fromUser;
 		}
 		else
 		{
-			notificationTitle = MainServices.account.getEmailAddress();
+			notificationTitle += fromUser;
 		}
 		
 		notificationSection = new SectionStackSection(notificationTitle);
@@ -420,19 +550,25 @@ public class NotificationTabService extends Service {
 
 					@Override
 					public void onSuccess(List<ArrayList<Object>> result) {
-						for (ArrayList<Object> notificationObj : result) {
+						for (ArrayList<Object> notificationObj : result) 
+						{
+							globalNotificationObject = notificationObj;
 							if (!currentlyShownNotifications
-									.contains((String) notificationObj.get(0)) && !stackIdsRemoved.contains(notificationObj.get(0))) {
+									.contains((String) notificationObj.get(0)) && !stackIdsRemoved.contains(notificationObj.get(0))) 
+							{
 								sectionStack.addSection(produceNewNotification(
-										(String) notificationObj.get(0),
-										(String) notificationObj.get(5),
-										(String) notificationObj.get(1),
-										(String) notificationObj.get(2),
-										(String) notificationObj.get(3),
-										(String) notificationObj.get(4),
-										(String) notificationObj.get(7)));
-								currentlyShownNotifications
-										.add((String) notificationObj.get(0));
+										(String) globalNotificationObject.get(0),
+										(String) globalNotificationObject.get(5),
+										(String) globalNotificationObject.get(1),
+										(String) globalNotificationObject.get(2),
+										(String) globalNotificationObject.get(3),
+										(String) globalNotificationObject.get(4),
+										(String) globalNotificationObject.get(7),
+										(String) globalNotificationObject.get(8)));
+								
+								
+								currentlyShownNotifications.add((String) globalNotificationObject.get(0));
+								
 								if (!isFirstRun)
 								{
 									numberOfNewNotifications++;
@@ -525,6 +661,7 @@ public class NotificationTabService extends Service {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				MainServices.getInstance().selectTab(2);
 				notificationPopInPanel.animateHide(AnimationEffect.FLY);
 				numberOfNewNotifications = 0;
 			}
@@ -536,8 +673,5 @@ public class NotificationTabService extends Service {
 	private void refreshNotificationPopIn()
 	{
 		popInContent.setContents("<center>You have <b>" + numberOfNewNotifications + "</b> new notifications!</center>");
-	}
-
-	
-
+	}	
 }

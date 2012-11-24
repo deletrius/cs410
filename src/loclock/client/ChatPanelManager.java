@@ -1,6 +1,7 @@
 package loclock.client;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import loclock.server.Message;
@@ -70,7 +71,7 @@ public class ChatPanelManager extends TabSet{
 					for (String[] i: result)
 					{
 						openChat(i[1],i[0]);
-						findChat(i[0]).updateConvoTextBox(i[2],i[3]);
+						findChat(i[0]).updateConvoTextBox(i[2],new Date(Long.parseLong(i[3])).toString());
 					}
 					
 //					Timer t=new Timer();
@@ -91,7 +92,7 @@ public void openChat(String from, String to)
 {
 	
 	// TODO check for subscription
-	MainServices.getInstance().selectTab(1);
+	MainServices.getInstance().selectTab(0);
 	ChatPanel i=findChat(to);
 	if (i!=null)
 	{		

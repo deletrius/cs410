@@ -6,14 +6,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+
+import loclock.client.MapService.TYPE;
 
 
 
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+
 //import com.google.gwt.event.dom.client.ClickEvent;
 //import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -35,8 +40,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.ibm.icu.util.Calendar;
+import com.smartgwt.client.data.DataSource;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.SelectionStyle;
+import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
@@ -44,9 +51,14 @@ import com.smartgwt.client.widgets.IButton;
 
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -68,6 +80,7 @@ public class FriendService extends Service{
 	
 	private String user;
 	private String friendUserName;
+	private String friendPic;
 	private UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
 	private SubscriptionServiceAsync subscriptionService=GWT.create(SubscriptionService.class);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
@@ -96,6 +109,7 @@ public class FriendService extends Service{
 		buildFriendList();
 		profileForm.setBorder("2px solid grey");		
 		profileForm.setSize("100%", "20%");
+		profileForm.setNumCols(4);
 		updateProfilePanel(user,"0",new Date().toString());
 		friendsPanel.addMember(profileForm);
 		friendsPanel.addMember(chatManager);
@@ -220,8 +234,10 @@ public class FriendService extends Service{
 					free = true;
 					freeOrNot = "Yes";
 					final String profileName=event.getRecord().getAttribute("name").toString();
+					final String profilePic=event.getRecord().getAttribute("picture");
 					checkSubscription(profileName);
 					friendUserName = profileName;
+					friendPic=profilePic;
 					//Window.alert("test1");
 					//timeTableService.buildGoogleCalendar(friendUserName);
 					//Window.alert("test2");
@@ -319,10 +335,10 @@ public class FriendService extends Service{
 								//friends.add(new StudentRecord(i, "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile"));
 									System.out.println(result2.get(i));
 										friends.add(new StudentRecord(result.get(i),result2.get(i)));
-										MainServices.getInstance().getMapService().showUserMarker(result.get(i), false);
+										MainServices.getInstance().getMapService().showUserMarker(result.get(i), false, TYPE.FRIEND,result2.get(i));
 									
 							}
-							
+							MainServices.getInstance().getMapService().showPublicMarkers(1);
 							StudentRecord[] friendsRecord=new StudentRecord[friends.size()];
 							for (int i=0;i<friends.size();i++)
 							{
@@ -375,9 +391,10 @@ public class FriendService extends Service{
 	{			
 
 		profileForm.clearValues();
+		
 		StaticTextItem profileName=new StaticTextItem("ProfileName","Profile Name");
 		profileName.setValue(name);
-
+		profileForm.setNumCols(4);
 		StaticTextItem freeToMeet = new StaticTextItem("freeOrNot", "Free to meet up:");
 		freeToMeet.setValue(freeOrNot);
 		StaticTextItem profileDistance=new StaticTextItem("ProfileDistance","Distance To");
@@ -398,16 +415,18 @@ public class FriendService extends Service{
 				//calendarService.getEventByUserName(name, async)
 
 			}});
-
+		showCalendar.setRowSpan(2);
+		showCalendar.setColSpan(1);
 		ButtonItem showMap=new ButtonItem("ShowMap","Indicate On Map");
 		showMap.addClickHandler(new ClickHandler(){		
 
 			@Override
 			public void onClick(ClickEvent event) {
 				checkSubscription(name);
-				MainServices.getInstance().getMapService().showUserMarker(name, true);
-			}});
-
+				MainServices.getInstance().getMapService().showUserMarker(name, true, TYPE.FRIEND,friendPic);
+				}});
+		showMap.setRowSpan(2);
+		showMap.setColSpan(1);
 		ButtonItem removeFriend=new ButtonItem("RemoveFriend","Remove Friend");
 		removeFriend.addClickHandler(new ClickHandler(){
 
@@ -434,7 +453,39 @@ public class FriendService extends Service{
 					}
 				});
 			}});
-		profileForm.setItems(profileName,freeToMeet,profileDistance,profileLastUpdate,showCalendar,showMap,removeFriend);		
+
+		removeFriend.setRowSpan(2);
+		removeFriend.setColSpan(1);
+		
+		final SelectItem dropBox=new SelectItem();
+		
+		dropBox.setTitle("Show nearby users:");
+//		LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+		String[] values={"0","5","10","20","40"};
+//		valueMap.put("0", "0");
+//		valueMap.put("5", "5");
+//		valueMap.put("10", "10");
+//		valueMap.put("20", "20");
+//		valueMap.put("40", "40");
+		dropBox.setValue("0");
+		dropBox.setHint("Select number");
+		dropBox.setValueMap(values);
+		dropBox.setRowSpan(4);
+		dropBox.setColSpan(1);
+		
+		ButtonItem showNearby=new ButtonItem("ShowNearBy","Show Nearby Users");
+		showNearby.setRowSpan(1);
+		showNearby.setColSpan(1);
+		showNearby.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				MainServices.getInstance().getMapService().showPublicMarkers(Integer.parseInt(dropBox.getDisplayValue()));
+			}});
+		
+		
+		profileForm.setItems(profileName,freeToMeet,profileDistance,profileLastUpdate,showCalendar,showMap,removeFriend,showNearby,dropBox);		
 		profileForm.setAutoHeight();
 	}
 
