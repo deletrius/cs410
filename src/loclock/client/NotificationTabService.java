@@ -604,6 +604,7 @@ public class NotificationTabService extends Service {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				MainServices.getInstance().selectTab(2);
 				notificationPopInPanel.animateHide(AnimationEffect.FLY);
 				numberOfNewNotifications = 0;
 			}
