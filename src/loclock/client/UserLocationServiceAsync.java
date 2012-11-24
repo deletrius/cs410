@@ -14,6 +14,8 @@ public interface UserLocationServiceAsync {
 
 	void getUsers(AsyncCallback<String[]> callback);
 	
+	void getNearNPublicUsers(String user, int n, double lat, double lon,AsyncCallback<ArrayList<String>> callback);
+	
 	void updateUserLatLng(String username, String lat, String lng, Date lastupdate,
 			AsyncCallback<Void> callback);
 	

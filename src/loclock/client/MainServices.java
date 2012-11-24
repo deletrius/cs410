@@ -1,5 +1,7 @@
 package loclock.client;
 
+import java.util.ArrayList;
+
 import com.google.api.gwt.client.GoogleApiRequestTransport;
 import com.google.api.gwt.client.OAuth2Login;
 import com.google.api.gwt.services.plus.shared.Plus;
@@ -58,12 +60,13 @@ public class MainServices extends TabSet{
 	//	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
 
 	//Raymond's myloclock Key
-//	private static final String CLIENT_ID = "118588470471.apps.googleusercontent.com";
-//	private static final String API_KEY = "3Nk4zNSGJW8efRAO0Og4jOTJ";
+	private static final String CLIENT_ID = "118588470471.apps.googleusercontent.com";
+	private static final String API_KEY = "3Nk4zNSGJW8efRAO0Og4jOTJ";
 
 	//Raymond's yunyunloclock Key
-	private static final String CLIENT_ID = "118588470471-pll4trc5hvbj8d808bgpr3s34ljblt9g.apps.googleusercontent.com";
-	private static final String API_KEY = "F897RO-8nnVd_s2AjviDV0bu";
+//	private static final String CLIENT_ID = "118588470471-pll4trc5hvbj8d808bgpr3s34ljblt9g.apps.googleusercontent.com";
+//	private static final String API_KEY = "F897RO-8nnVd_s2AjviDV0bu";
+
 
 	private static final String APPLICATION_NAME = "loclock/3.0";
 
@@ -73,7 +76,7 @@ public class MainServices extends TabSet{
 
 	private static volatile MainServices mainServicesInstance;
 	
-	private static String currentUserDisplayPicUrl = "";
+	public static String currentUserDisplayPicUrl = "";
 	
 	private MainServices()
 	{
@@ -202,6 +205,19 @@ public class MainServices extends TabSet{
 				public void onSuccess(Account result) {
 
 					account = result;
+					locationService.getUserLocation(account.getEmailAddress(), new AsyncCallback<ArrayList<String>>(){
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onSuccess(ArrayList<String> result) {
+							// TODO Auto-generated method stub
+							currentUserDisplayPicUrl=result.get(4);
+						}});
 					System.out.println("bbbb "+MainServices.account);
 					if(account.isLoggedIn()){
 						onLoad();
@@ -254,8 +270,8 @@ public class MainServices extends TabSet{
 		protected void loadLoggedInScreen() {
 
 		
-			//plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-			//login();
+			plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
+			login();
 
 
 			//plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));

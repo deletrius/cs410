@@ -1,6 +1,8 @@
 package loclock.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -20,7 +22,7 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 
 	private static final Logger LOG = Logger.getLogger(UserLocationServiceImpl.class.getName());
 	private static final PersistenceManagerFactory PMF = JDOHelper.getPersistenceManagerFactory("transactions-optional");
-	private static PersistenceManager pm=PMF.getPersistenceManager();
+	
 	/* (non-Javadoc)
 	 * @see loclock.client.MessageService#sendMessage(java.lang.String, java.lang.String, java.lang.String, java.util.Date)
 	 */
@@ -28,8 +30,9 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 	public void sendMessage(String fromName, String toName, String messageBody,
 			Date timestamp) throws NotLoggedInException {
 		
+		PersistenceManager pm=getPersistenceManager();
 		pm.makePersistent(new Message(fromName, toName, messageBody, timestamp));
-		
+		pm.close();
 		
 	}
 
@@ -39,7 +42,7 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 	@Override
 	public List<String[]> retrieveMessage(String fromName) throws NotLoggedInException {
 		//PersistenceManager pm=PMF.getPersistenceManager();
-		
+		PersistenceManager pm=getPersistenceManager();
 		Query q = pm.newQuery(Message.class);
 		 q.setFilter("toUser == u");
 		 q.declareParameters("String u");
@@ -53,7 +56,8 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 			 messageToStringArray[0]=i.getFromUser();
 			 messageToStringArray[1]=i.getToUser();
 			 messageToStringArray[2]=i.getMessageBody();
-			 messageToStringArray[3]=i.getTimeStamp().toString();
+			 messageToStringArray[3]=Long.toString(i.getTimeStamp().getTime());
+			 
 			 result.add(messageToStringArray);
 			 
 			 //pm.currentTransaction().begin();
@@ -61,8 +65,19 @@ public class MessageServiceImpl extends RemoteServiceServlet implements MessageS
 			 //pm.currentTransaction().commit();
 			 
 		 }
+		 Collections.sort(result,new Comparator<String[]> (){
+
+			@Override
+			public int compare(String[] arg0, String[] arg1) {
+				if(Long.parseLong(arg0[3])<Long.parseLong(arg1[3]))
+					return -1;
+				else if (Long.parseLong(arg0[3])>Long.parseLong(arg1[3]))
+					return 1;
+				else 
+					return 0;
+			}});
 		 
-		// pm.close();
+		 pm.close();
 		 
 		 
 		return result;

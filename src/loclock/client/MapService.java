@@ -21,6 +21,7 @@ import com.google.gwt.maps.client.base.ElementProvider;
 import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.maps.client.base.InfoWindow;
 import com.google.gwt.maps.client.base.LatLng;
+import com.google.gwt.maps.client.base.Size;
 import com.google.gwt.maps.client.directions.DirectionsCallback;
 import com.google.gwt.maps.client.directions.DirectionsRenderer;
 import com.google.gwt.maps.client.directions.DirectionsRendererOptions;
@@ -35,6 +36,7 @@ import com.google.gwt.maps.client.event.Event;
 import com.google.gwt.maps.client.event.EventCallback;
 import com.google.gwt.maps.client.geocoder.GeocoderRequest;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.MarkerImage;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
@@ -75,6 +77,7 @@ public class MapService {
 	private VerticalPanel directionDetailPanel=new VerticalPanel();
 	private String selectedUserName;
 	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
+	public static enum TYPE{FRIEND, ME, STRANGER}
 
 	private class UserMarker
 	{
@@ -83,15 +86,30 @@ public class MapService {
 		InfoWindow infoWindow;
 		String username;
 		Date lastupdate=new Date();
-		public UserMarker(final String username, LatLng latlng, Date date, Boolean panTo)
+		private String icon;
+		public UserMarker(final String username, LatLng latlng, Date date, Boolean panTo, TYPE type,String iconUrl)
 		{
 			this.username=username;
 			this.lastupdate=date;
+			this.icon=iconUrl;
 			MarkerOptions mo = new MarkerOptions();
 			mo.setMap(mapwidget.getMap());
 			mo.setClickable(true);
 			mo.setPosition(latlng);
-			marker = new Marker(mo);		
+			if (type.equals(TYPE.ME))
+				mo.setIcon(new MarkerImage.Builder("http://google-maps-icons.googlecode.com/files/lingerie.png").build());
+			else if(type.equals(TYPE.FRIEND))
+			{
+				MarkerImage.Builder iconBuilder=new MarkerImage.Builder(iconUrl);
+				iconBuilder.setScaledSize(new Size(30,30));
+				
+				mo.setIcon(iconBuilder.build());
+			}
+			else if(type.equals(TYPE.STRANGER))
+			{
+				mo.setIcon(new MarkerImage.Builder("http://google-maps-icons.googlecode.com/files/beach-certified.png").build());
+			}
+		    marker = new Marker(mo);		
 			
 
 			if (infoWindow==null)
@@ -119,7 +137,7 @@ public class MapService {
 					interactionPanelMoveIn();
 					DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
 					
-					infoWindow.setContent("<b>" + username + "</b><br><br>Last updated: " + "<i>" + dtf.format(lastupdate) + "</i>");
+					infoWindow.setContent( Canvas.imgHTML(icon,50,50)+"<br><b>" + username + "</b><br><br>Last updated: " + "<i>" + dtf.format(lastupdate) + "</i>");
 
 					infoWindow.bindTo("", marker);
 					infoWindow.open(mapwidget.getMap(), marker);
@@ -140,7 +158,7 @@ public class MapService {
 		{
 			this.lastupdate=lastupdate;
 			DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
-			infoWindow.setContent("<b>" + username + "</b><br><br>Last updated: " + "<i>" + dtf.format(this.lastupdate) + "</i>");
+			infoWindow.setContent(Canvas.imgHTML(icon,50,50)+"<br><b>" + username + "</b><br><br>Last updated: " + "<i>" + dtf.format(this.lastupdate) + "</i>");
 //			infoWindow.setContent("Your " + username + " location at: " + dtf.format(this.lastupdate));
 			marker.setPosition(latlng);
 			if (panTo)
@@ -358,7 +376,7 @@ public class MapService {
 					@Override
 					public void onSuccess(Void result) {
 						//System.out.println("Success user update");
-						showUserMarker(MainServices.account.getEmailAddress(),panTo);
+						showUserMarker(MainServices.account.getEmailAddress(),panTo,TYPE.ME,MainServices.getInstance().currentUserDisplayPicUrl);
 					}
 
 					@Override
@@ -373,7 +391,7 @@ public class MapService {
 
 	}
 
-	public void showUserMarker(final String userName,final boolean panTo)
+	public void showUserMarker(final String userName,final boolean panTo, final TYPE type, final String iconUrl)
 	{
 		
 		userLocationService.getUserLocation(userName, new AsyncCallback<ArrayList<String>>(){
@@ -385,7 +403,12 @@ public class MapService {
 			}
 
 			@Override
-			public void onSuccess(ArrayList<String> result) {		
+			public void onSuccess(ArrayList<String> result) {	
+				if (result.get(5).compareTo("only me")==0)
+				{
+					//Window.alert("private");
+					return;
+				}
 //				for(String i:result)
 //					System.out.println(i);
 				LatLng pos=new LatLng(Double.parseDouble(result.get(1)),Double.parseDouble(result.get(2)));
@@ -394,7 +417,7 @@ public class MapService {
 				if (!userMarkers.containsKey(userName))
 				{
 					//System.out.println("put");
-					userMarkers.put(userName, new UserMarker(userName,pos,date,panTo));
+					userMarkers.put(userName, new UserMarker(userName,pos,date,panTo,type,iconUrl));
 				}
 				else
 				{
@@ -405,6 +428,27 @@ public class MapService {
 		});
 	}
 
+	public void showPublicMarkers(int n)
+	{
+		userLocationService.getNearNPublicUsers(MainServices.getInstance().account.getEmailAddress(), n, currentUserLat, currentUserLng, new AsyncCallback<ArrayList<String>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(ArrayList<String> result) {
+				// TODO Auto-generated method stub
+				
+				for (String i:result)
+				{
+					showUserMarker(i, false, TYPE.STRANGER, "");
+				}
+			}});
+	}
+	
 	public MapWidget toWidget()
 	{
 		return mapwidget;

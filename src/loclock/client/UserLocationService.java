@@ -16,6 +16,9 @@ public interface UserLocationService extends RemoteService {
 	public void addUser(String name) throws NotLoggedInException;
 	public void removeUser(String name) throws NotLoggedInException;
 	public String[] getUsers() throws NotLoggedInException;
+	
+	public ArrayList<String> getNearNPublicUsers(String user, int n, double lat, double lon) throws NotLoggedInException;
+	
 	public void updateUserLatLng(String username, String lat, String lng, Date lastupdate) throws NotLoggedInException;
 	public void updateUserImage(String username, String url) throws NotLoggedInException;
 	public List<ArrayList<Object>> getUsersAsArrayList(String userName) throws NotLoggedInException; 
