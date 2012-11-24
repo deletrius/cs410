@@ -31,6 +31,12 @@ public class ChatPanelManager extends TabSet{
 			
 		}};
 	
+	/**
+	 * Class constructor of the chat panel manager
+	 * 
+	 * @param parent the parent panel that contains the chat panel manager
+	 * @param fromUser message sender
+	 */
 	public ChatPanelManager(FriendService parent,String fromUser)
 	{
 		super();
@@ -55,6 +61,10 @@ public class ChatPanelManager extends TabSet{
 		
 	}
 
+	/**
+	 * Keep pulling message from the server to get the message
+	 * received.
+	 */
 	private void pullMessageFromServer()
 	{
 		try{
@@ -88,6 +98,12 @@ public class ChatPanelManager extends TabSet{
 
 
 
+/**
+ * Open a new chat panel.
+ * 
+ * @param from the message sender
+ * @param to the  message receiver
+ */
 public void openChat(String from, String to)
 {
 	
@@ -112,6 +128,11 @@ public void openChat(String from, String to)
 	}
 }
 
+/**
+ * Close the chat panel.
+ * 
+ * @param to the message receiver
+ */
 public void closeChat(String to)
 {
 	ChatPanel i=findChat(to);
@@ -119,6 +140,12 @@ public void closeChat(String to)
 		this.removeTab(i);
 }
 
+/**
+ * Find the chat panel
+ * 
+ * @param to the message receiver
+ * @return the chat panel, null if not found
+ */
 public ChatPanel findChat(String to)
 {
 	for(int i=0;i<chats.size();i++)
