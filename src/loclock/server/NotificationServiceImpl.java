@@ -209,7 +209,12 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 						content, eventName, newStart, newEnd, type));
 			}
 			// try {
-		} finally {
+		}
+		catch (Exception e)
+		{
+			System.out.println("error: " + e.getMessage());
+		}
+		finally {
 			pm.close();
 		}
 	}

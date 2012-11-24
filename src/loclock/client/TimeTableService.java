@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.calendar.Calendar;
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
 import com.smartgwt.client.widgets.calendar.events.CalendarEventAdded;
@@ -25,6 +26,8 @@ import com.smartgwt.client.widgets.calendar.events.EventRemovedHandler;
 
 
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
+import com.smartgwt.client.widgets.form.fields.RadioGroupItem;
+import com.smartgwt.client.widgets.form.fields.TextItem;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -39,7 +42,7 @@ public class TimeTableService extends Service{
 	public static Calendar calendar;
 	public static CalendarEvent[] events;
 	private ArrayList<String> friendList = new ArrayList();
-	private ButtonItem sendInvitationButton = new ButtonItem("SendInvitation");
+//	private ButtonItem sendInvitationButton = new ButtonItem("SendInvitation");
 	private NotificationServiceAsync notification = GWT.create(NotificationService.class);
 	private CalendarEventClick event1;
 	private ClickHandler clickHandler1;
@@ -62,6 +65,8 @@ public class TimeTableService extends Service{
 		
 		//final Calendar calendar = new Calendar();
 		final Calendar cal1 = new Calendar();
+//		cal1.setAutoFetchData(true);
+//		cal1.setScrollToWorkday(true);
 
 
 		if(MainServices.account != null)
@@ -83,7 +88,10 @@ public class TimeTableService extends Service{
 							ArrayList<CalendarEvent> calEvent=new ArrayList<CalendarEvent>();
 
 							for(int i=0; i < result.size();i++){
-								calEvent.add( new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString())));
+								CalendarEvent event = new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString()));
+//								event.setEventWindowStyle("background-color:#b0c4de");
+//								calEvent.add( new CalendarEvent(i,result.get(i).get(1).toString(), result.get(i).get(2).toString(),new Date(result.get(i).get(3).toString()),new Date(result.get(i).get(4).toString())));
+								calEvent.add(event);
 							}
 							events=new CalendarEvent[calEvent.size()];
 							//CalendarEvent[] events=new CalendarEvent[calEvent.size()];
@@ -102,7 +110,9 @@ public class TimeTableService extends Service{
 		
 
 		cal1.setDisableWeekends(false);
-		cal1.setSize("600px", "600px");
+//		cal1.setSize("600px", "600px");
+		cal1.setWidth("95%");
+		cal1.setHeight("90%");
 
 
 		sub.getFriends(MainServices.account.getEmailAddress(), new  AsyncCallback<List<String>>(){
@@ -167,14 +177,16 @@ public class TimeTableService extends Service{
 
 
 		});
-//invitations of this event will be sent to all friends
+		
+		ButtonItem sendInvitationButton = new ButtonItem("sendinvitation");
+		sendInvitationButton.setTitle("Invite friends to event");
+        
+		//invitations of this event will be sent to all friends
 		sendInvitationButton.addClickHandler(new ClickHandler(){
 
 
 			public void onClick(ClickEvent event2) {
-
-				//for(int i=0; i<friendList.size();i++){
-
+				System.out.println("invite button clicked");
 					notification.addNotificationCalendar(MainServices.account.getEmailAddress(),
 							"broadcast", event1.getEvent().getDescription(), event1.getEvent().getName(),
 							event1.getEvent().getStartDate(), event1.getEvent().getEndDate(), "invite", new AsyncCallback<Void>(){
@@ -182,12 +194,12 @@ public class TimeTableService extends Service{
 								@Override
 								public void onFailure(Throwable caught) {
 									// TODO Auto-generated method stub
-
+									System.out.println("notification added fail: " + caught.getMessage());
 								}
 
 								@Override
 								public void onSuccess(Void result) {
-
+									System.out.println("notification added success");
 								}});
 			//	}
 			}});
@@ -297,10 +309,15 @@ public class TimeTableService extends Service{
 
 		});
 		
+		TextItem nameItem = new TextItem();  
+        nameItem.setType("text");  
+        nameItem.setName("name");
+          
+        cal1.setEventDialogFields(nameItem, sendInvitationButton);
 		
-		cal1.setEventDialogFields(sendInvitationButton);
-		googleCalendar.setWidth("600px");
-		googleCalendar.setHeight("600px");
+//		cal1.setEventDialogFields(sendInvitationButton);
+//		googleCalendar.setWidth("600px");
+//		googleCalendar.setHeight("600px");
 		cal1.setCanEditEvents(true);//CAL_PUBLIC_URL;
 		calendar = cal1;
 		
@@ -375,14 +392,21 @@ public class TimeTableService extends Service{
 		cal2.setDisableWeekends(false);
 		cal2.setCanEditEvents(false);
 		calendar = cal2;
-		calendar.draw();
-		popUp.add(calendar);
-		popUp.setGlassEnabled(true);
-		popUp.setPixelSize(calendar.getWidth(), calendar.getHeight());
+//		calendar.draw();
+		VLayout popUpCalendar = new VLayout();
+		popUpCalendar.setBackgroundColor("#ffffd0");
+		popUpCalendar.setWidth(1200);
+//		popUpCalendar.setHeight(calendar.getHeight() + 20);
+//		popUpCalendar.setSize(Integer.toString(calendar.getWidth() + 20), Integer.toString(calendar.getHeight() + 15));
+		popUpCalendar.setShowEdges(true);
+		popUpCalendar.addMember(calendar);
+		popUp.add(popUpCalendar);
+//		popUp.setGlassEnabled(true);
+		//popUp.setPixelSize(calendar.getWidth(), calendar.getHeight());
 		popUp.setAnimationEnabled(true);
 		popUp.setAutoHideEnabled(true);
 		popUp.center();
-		popUp.setVisible(true);
+//		popUp.setVisible(true);
 		popUp.show();
 
 

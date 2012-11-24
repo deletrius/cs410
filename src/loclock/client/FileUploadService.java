@@ -222,13 +222,15 @@ public class FileUploadService extends Service{
 										@Override
 										public void onFailure(Throwable caught) {
 											// TODO Auto-generated method stub
-											Window.alert("Upload Failed");
+//											Window.alert("Upload Failed");
+											System.out.println("save event failed: " + caught.getMessage());
 										}
 
 										@Override
 										public void onSuccess(Void result) {
 											// TODO Auto-generated method stub
-											Window.alert("Event Saved");
+//											Window.alert("Event Saved");
+											System.out.println("save event successful");
 											//timeTableService.calendarDraw();
 
 

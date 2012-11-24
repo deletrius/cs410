@@ -167,7 +167,7 @@ public class NotificationTabService extends Service {
 		sectionStack.setVisibilityMode(VisibilityMode.MULTIPLE);
 		sectionStack.setAnimateSections(true);
 		sectionStack.setAlign(Alignment.CENTER);
-		sectionStack.setWidth("100%");
+		sectionStack.setWidth("95%");
 		sectionStack.setHeight("95%");
 		sectionStack.setOverflow(Overflow.AUTO);
 

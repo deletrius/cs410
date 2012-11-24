@@ -36,6 +36,7 @@ public class MainServices extends TabSet{
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 	private final UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
+	private final SubscriptionServiceAsync subscriptionService = GWT.create(SubscriptionService.class);
 	private static HLayout rootLayout;
 	private LoginService loginService;
 
@@ -274,6 +275,7 @@ public class MainServices extends TabSet{
 
 
 			addUser(account.getEmailAddress());
+			addUserSubscription(account.getEmailAddress());
 			System.out.println(account.getEmailAddress());
 			addMapService();
 
@@ -383,6 +385,25 @@ public class MainServices extends TabSet{
 				}
 			});
 		}
+		
+		private void addUserSubscription(String username)
+		{
+			subscriptionService.addSubscription(username, new AsyncCallback<Void>() {
+				
+				@Override
+				public void onSuccess(Void result) {
+					// TODO Auto-generated method stub
+					System.out.println("subscription added");
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					System.out.println("subscription failed");
+				}
+			});
+		}
+		
 		private void loadUsers()
 		{
 			locationService.getUsers(new AsyncCallback<String[]>() {

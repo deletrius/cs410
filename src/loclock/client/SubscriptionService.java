@@ -3,7 +3,7 @@ package loclock.client;
 	import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-	import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 	@RemoteServiceRelativePath("request")
@@ -16,6 +16,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 		public List<String> getInvitations(String senderName);
 		public List<String> getFriends(String senderName);
 		public List<String> getFriendsImages(String senderName);
+		public void addSubscription(String username) throws NotLoggedInException;
 	}
 
 

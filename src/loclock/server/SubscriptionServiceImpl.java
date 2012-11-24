@@ -7,7 +7,11 @@ import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import loclock.client.NotLoggedInException;
 import loclock.client.SubscriptionService;
+
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class SubscriptionServiceImpl extends RemoteServiceServlet implements
@@ -217,5 +221,58 @@ SubscriptionService {
 			pm.close();
 		}
 		return pics;
+	}
+	
+	public void addSubscription(String username) throws NotLoggedInException
+	{
+		checkLoggedIn();
+		PersistenceManager pm = getPersistenceManager();
+		try 
+		{
+			pm.getObjectById(Subscription.class, username);
+		}
+		catch (JDOObjectNotFoundException e)
+		{
+			try 
+			{
+				pm.makePersistent(new Subscription(username));
+				System.out.println("new subscription object was created.");
+			} 
+			finally 
+			{
+				pm.close();
+			}
+		}
+		finally 
+		{
+			pm.close();
+		}
+	}
+	
+	/**
+	 * @throws NotLoggedInException
+	 */
+	private void checkLoggedIn() throws NotLoggedInException 
+	{
+		if (getCurrentUser() == null) {
+			throw new NotLoggedInException("Not logged in.");
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	private com.google.appengine.api.users.User getCurrentUser() 
+	{
+		UserService userService = UserServiceFactory.getUserService();
+		return userService.getCurrentUser();
+	}
+	
+	/**
+	 * @return
+	 */
+	private PersistenceManager getPersistenceManager() 
+	{
+		return PMF.get().getPersistenceManager();
 	}
 }
