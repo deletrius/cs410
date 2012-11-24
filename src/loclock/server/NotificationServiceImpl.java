@@ -121,6 +121,8 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 			
 			for (NotificationCalendar notifiyObj : notificationList)
 			{
+				UserLocation foundUser = pm.getObjectById(UserLocation.class, notifiyObj.getFromUser());
+				
 				ArrayList<Object> calendarAttributes = new ArrayList<Object>();
 				calendarAttributes.add(notifiyObj.getId().toString());
 				calendarAttributes.add(notifiyObj.getEventName());
@@ -130,9 +132,8 @@ public class NotificationServiceImpl extends RemoteServiceServlet implements Not
 				calendarAttributes.add(notifiyObj.getFromUser());
 				calendarAttributes.add(notifiyObj.getNotificationCreationDateAsReadable());	
 				calendarAttributes.add(notifiyObj.getType());
-				notificationAsList.add(calendarAttributes);
-				
-				
+				calendarAttributes.add(foundUser.getImage());
+				notificationAsList.add(calendarAttributes);	
 			}
 			
 			return notificationAsList;
