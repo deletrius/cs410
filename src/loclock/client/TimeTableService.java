@@ -111,7 +111,7 @@ public class TimeTableService extends Service{
 			public void onEventChanged(CalendarEventChangedEvent event) {
 				//for(int i=0; i<friendList.size();i++){
 				notification.addNotificationCalendar(MainServices.account.getEmailAddress(), MainServices.account.getEmailAddress(),
-						"<u>I changed this event:</u> " + event.getEvent().getDescription(), event.getEvent().getName(),
+						event.getEvent().getDescription(), event.getEvent().getName(),
 						event.getEvent().getStartDate(), event.getEvent().getEndDate(), "modify", new AsyncCallback<Void>(){
 
 							@Override
@@ -200,7 +200,7 @@ public class TimeTableService extends Service{
 							@Override
 							public void onSuccess(Void result) {
 								notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "broadcast",
-						event.getEvent().getName(), "<u>I removed this event:</u> " + event.getEvent().getDescription(), event.getEvent().getStartDate(),
+						event.getEvent().getName(), event.getEvent().getDescription(), event.getEvent().getStartDate(),
 						event.getEvent().getEndDate(), "remove", new AsyncCallback<Void>(){
 
 							@Override
@@ -244,7 +244,7 @@ public class TimeTableService extends Service{
 					public void onSuccess(Void result) {
 						System.out.println("Event is saved successfully.");
 						notification.addNotificationCalendar(MainServices.account.getEmailAddress(), "broadcast",
-								eventAdded.getEvent().getName(), "<u>I added this new event:</u> " + eventAdded.getEvent().getDescription(), eventAdded.getEvent().getStartDate(),
+								eventAdded.getEvent().getName(), eventAdded.getEvent().getDescription(), eventAdded.getEvent().getStartDate(),
 								eventAdded.getEvent().getEndDate(), "add", new AsyncCallback<Void>() {
 									
 									@Override
