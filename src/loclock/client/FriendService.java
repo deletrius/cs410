@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -17,8 +18,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ChangeEvent;
+
 //import com.google.gwt.event.dom.client.ClickEvent;
 //import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -55,6 +55,10 @@ import com.smartgwt.client.widgets.form.fields.SelectItem;
 import com.smartgwt.client.widgets.form.fields.StaticTextItem;
 import com.smartgwt.client.widgets.form.fields.TextAreaItem;
 import com.smartgwt.client.widgets.form.fields.TextItem;
+import com.smartgwt.client.widgets.form.fields.events.ChangeEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangeHandler;
+import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
+import com.smartgwt.client.widgets.form.fields.events.ChangedHandler;
 import com.smartgwt.client.widgets.form.fields.events.ClickEvent;
 import com.smartgwt.client.widgets.form.fields.events.ClickHandler;
 import com.smartgwt.client.widgets.layout.HLayout;
@@ -421,7 +425,7 @@ public class FriendService extends Service{
 				checkSubscription(name);
 				MainServices.getInstance().getMapService().showUserMarker(name, true, TYPE.FRIEND,friendPic);
 				}});
-		showMap.setRowSpan(1);
+		showMap.setRowSpan(2);
 		showMap.setColSpan(1);
 		ButtonItem removeFriend=new ButtonItem("RemoveFriend","Remove Friend");
 		removeFriend.addClickHandler(new ClickHandler(){
@@ -450,17 +454,38 @@ public class FriendService extends Service{
 				});
 			}});
 
-		removeFriend.setRowSpan(1);
+		removeFriend.setRowSpan(2);
 		removeFriend.setColSpan(1);
 		
-//		final SelectItem dropBox=new SelectItem();
-//		DataSource dataSource=new DataSource();
-//		Record r1=new Record();
-//		r1.setAttribute("name", 0);
-//		dataSource.addData(r1);
-//		dropBox.setOptionDataSource(dataSource);
+		final SelectItem dropBox=new SelectItem();
 		
-		profileForm.setItems(profileName,freeToMeet,profileDistance,profileLastUpdate,showCalendar,showMap,removeFriend);		
+		dropBox.setTitle("Show nearby users:");
+//		LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+		String[] values={"0","5","10","20","40"};
+//		valueMap.put("0", "0");
+//		valueMap.put("5", "5");
+//		valueMap.put("10", "10");
+//		valueMap.put("20", "20");
+//		valueMap.put("40", "40");
+		dropBox.setValue("0");
+		dropBox.setHint("Select number");
+		dropBox.setValueMap(values);
+		dropBox.setRowSpan(4);
+		dropBox.setColSpan(1);
+		
+		ButtonItem showNearby=new ButtonItem("ShowNearBy","Show Nearby Users");
+		showNearby.setRowSpan(1);
+		showNearby.setColSpan(1);
+		showNearby.addClickHandler(new ClickHandler(){
+
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				MainServices.getInstance().getMapService().showPublicMarkers(Integer.parseInt(dropBox.getDisplayValue()));
+			}});
+		
+		
+		profileForm.setItems(profileName,freeToMeet,profileDistance,profileLastUpdate,showCalendar,showMap,removeFriend,showNearby,dropBox);		
 		profileForm.setAutoHeight();
 	}
 

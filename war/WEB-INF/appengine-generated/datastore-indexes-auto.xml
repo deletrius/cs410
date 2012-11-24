@@ -1,8 +1,8 @@
-<!-- Indices written at Sat, 24 Nov 2012 05:45:15 UTC -->
+<!-- Indices written at Sat, 24 Nov 2012 11:43:09 UTC -->
 
 <datastore-indexes>
 
-    <!-- Used 28 times in query history -->
+    <!-- Used 11 times in query history -->
     <datastore-index kind="NotificationCalendar" ancestor="false" source="auto">
         <property name="toUser" direction="asc"/>
         <property name="content" direction="asc"/>

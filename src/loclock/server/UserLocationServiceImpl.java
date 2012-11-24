@@ -130,7 +130,7 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 		{
 			Query q = pm.newQuery(UserLocation.class);
 			//q.declareParameters("loclock.server.User u");
-			q.setOrdering("userName");
+			q.setFilter("privacy == 'public'");
 			List<UserLocation> users = (List<UserLocation>) q.execute();
 			
 			for (UserLocation i : users) {
@@ -203,6 +203,7 @@ public class UserLocationServiceImpl extends RemoteServiceServlet implements Use
 					return 0;
 				}});
 
+			
 			for (int i=0;i<n&&i<namesWithDistances.size();i++)
 			{
 				resultUserList.add(namesWithDistances.get(i).getLeft());
