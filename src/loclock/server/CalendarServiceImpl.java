@@ -17,8 +17,9 @@ import com.smartgwt.client.widgets.calendar.CalendarEvent;
 
 public class CalendarServiceImpl extends RemoteServiceServlet implements CalendarService{
 
-
-
+	/* (non-Javadoc)
+	 * @see loclock.client.CalendarService#saveEvent(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
+	 */
 	public void saveEvent(String userName, String eventName,String description, Date startDate, Date endDate) throws NotLoggedInException{
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		try{
@@ -31,6 +32,10 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 			pm.close();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see loclock.client.CalendarService#checkDuplicate(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
+	 */
 	public String checkDuplicate(String userName, String eventName,String description, Date startDate, Date endDate){
 		String duplicate ="1";
 		String du ="0";
@@ -75,29 +80,10 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 		System.out.println("Duplicate is: "+ duplicate);
 		return du;
 	}
-	/**
-	public boolean checkFree(String userName, Date time){
-		List<Calendar> calendarList = new ArrayList<Calendar>();
-		boolean free = false;
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Query q = pm.newQuery(Calendar.class);
-		q.setFilter("userName ==u && startDate  >= s && endDate <= end");
-		q.declareParameters("String u, java.util.Date s");
-		try{
-			calendarList = (List<Calendar>) q.execute(userName, time);
-			if((calendarList.size())==0)
-				free = true;
-			else{
-				free = false;
-			}
-		}
-		finally{
-			q.closeAll();
-			pm.close();
-		}
-		return free;
-	}
-	 **/
+	
+	/* (non-Javadoc)
+	 * @see loclock.client.CalendarService#deleteEvent(java.lang.String, java.lang.String, java.lang.String, java.util.Date, java.util.Date)
+	 */
 	public void deleteEvent(String userName,String eventName,String description,Date startDate,Date endDate){
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query q = pm.newQuery(Calendar.class);
@@ -118,6 +104,9 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.CalendarService#getEventByUserName(java.lang.String)
+	 */
 	public List<ArrayList<Object>> getEventByUserName(String userName){
 		List<Calendar> calendarList = new ArrayList<Calendar>();
 		PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -153,6 +142,9 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.CalendarService#getCalendarEventsForTodayByUsername(java.lang.String)
+	 */
 	public List<ArrayList<Object>> getCalendarEventsForTodayByUsername(String userName){		
 		Date date = new Date();
 		int todayMonth = date.getMonth();
@@ -205,6 +197,9 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see loclock.client.CalendarService#isWithinRange(java.lang.String, java.lang.String, java.util.Date, java.util.Date)
+	 */
 	public boolean isWithinRange(String hour, String amPm, Date start, Date end)
 	{		
 		Date seven;
@@ -223,6 +218,14 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
 		return false;
 	}
 
+	/**
+	 * Check if the time input is out of the bound of the event.
+	 * 
+	 * @param testDate the time input
+	 * @param startDate the start time of the event
+	 * @param endDate the end time of the event
+	 * @return
+	 */
 	private boolean isWithinRange(Date testDate, Date startDate, Date endDate)
 	{
 		return !(testDate.before(startDate) || testDate.after(endDate));

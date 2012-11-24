@@ -71,18 +71,7 @@ public class FileUploadService extends Service{
 
 		HorizontalPanel panel = new HorizontalPanel();
 		form.setWidget(panel);
-
-		//final TextBox tb = new TextBox();
-		//tb.setName("textBoxFormElement");
-		//panel.add(tb);
-
-		//ListBox lb = new ListBox();
-		//		lb.setName("listBoxFormElement");
-		//		lb.addItem("foo", "fooValue");
-		//		lb.addItem("bar", "barValue");
-		//		lb.addItem("baz", "bazValue");
-		//		panel.add(lb);
-
+		
 		FileUpload upload = new FileUpload();
 		upload.setName("uploadFormElement");
 		panel.add(upload);
@@ -91,7 +80,6 @@ public class FileUploadService extends Service{
 		submitButton.setHTML("<img src='http://i50.tinypic.com/dy61p5.png'/>");
 		submitButton.setWidth("100px");
 		submitButton.setHeight("45px");
-		//		submitButton.set
 		submitButton.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -102,12 +90,6 @@ public class FileUploadService extends Service{
 		});
 
 		panel.add(submitButton);
-
-		//		panel.add(new Button("Submit Schedule", new ClickHandler() {
-		//			public void onClick(ClickEvent event) {
-		//				form.submit();
-		//			}
-		//		}));
 
 		form.addSubmitHandler(new FormPanel.SubmitHandler() {
 			public void onSubmit(SubmitEvent event) {
