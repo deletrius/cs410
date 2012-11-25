@@ -133,7 +133,6 @@ public class MapService {
 						um.infoWindow.close();
 					}
 					
-//					infoWindow.close();
 					interactionPanelMoveIn();
 					DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
 					
@@ -159,7 +158,6 @@ public class MapService {
 			this.lastupdate=lastupdate;
 			DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
 			infoWindow.setContent(Canvas.imgHTML(icon,50,50)+"<br><b>" + username + "</b><br><br>Last updated: " + "<i>" + dtf.format(this.lastupdate) + "</i>");
-//			infoWindow.setContent("Your " + username + " location at: " + dtf.format(this.lastupdate));
 			marker.setPosition(latlng);
 			if (panTo)
 				mapwidget.getMap().panTo(latlng);
@@ -172,6 +170,11 @@ public class MapService {
 		}
 	}
 
+	/**
+	 * Class constructor of MapService
+	 * @param width the width of the map
+	 * @param height the height of the map
+	 */
 	public MapService(String width,String height)
 	{
 		this.width=width;
@@ -182,14 +185,29 @@ public class MapService {
 		initMapOverlayPanel();
 	}
 
+	/**
+	 * Get the latitude of the user's location.
+	 * 
+	 * @return the latitude of the user's location
+	 */
 	public double getUserLat()
 	{
 		return currentUserLat;
 	}
+	/**
+	 * Get the longitude of the user's location.
+	 * 
+	 * @return the longitude of the user's location
+	 */
 	public double getUserLng()
 	{
 		return currentUserLng;
 	}
+	
+	/**
+	 * Build the map user interface.
+	 * 
+	 */
 	private void buildMapUI()
 	{
 		final MapOptions options = new MapOptions();
@@ -238,6 +256,11 @@ public class MapService {
 		
 	}
 
+	/**
+	 * Initialize the map in the map panel.
+	 * 
+	 * @return the panel that contains the map
+	 */
 	private VLayout initMapOverlayPanel()
 	{
 		
@@ -329,26 +352,43 @@ public class MapService {
 		return interactionPanel;
 	}
 	
+	/**
+	 * In
+	 * 
+	 * 
+	 */
 	private void interactionPanelMoveIn()
 	{
 		interactionPanel.animateMove(10, Integer.parseInt(height.substring(0,height.length()-2))-200);
 	}
 	
+	/**
+	 * 
+	 */
 	private void interactionPanelMoveOut()
 	{
 		interactionPanel.animateMove(-120, Integer.parseInt(height.substring(0,height.length()-2))-200);
 	}
 	
+	/**
+	 * 
+	 */
 	private void directionPanelMoveIn()
 	{
 		directionPanel.animateMove(Integer.parseInt(width.substring(0,width.length()-2)), 0);
 	}
 	
+	/**
+	 * 
+	 */
 	private void directionPanelMoveOut()
 	{
 		directionPanel.animateMove(-320, 100);
 	}
 	
+	/**
+	 * @param layout
+	 */
 	public void bindTo(Layout layout)
 	{
 		//layout.addMember(directionPanel);
@@ -356,6 +396,9 @@ public class MapService {
 		interactionPanel.setParentElement(layout);
 	}
 	
+	/**
+	 * @param panTo
+	 */
 	public void updateUserCurrentLocation(final boolean panTo)
 	{
 		
@@ -391,6 +434,12 @@ public class MapService {
 
 	}
 
+	/**
+	 * @param userName
+	 * @param panTo
+	 * @param type
+	 * @param iconUrl
+	 */
 	public void showUserMarker(final String userName,final boolean panTo, final TYPE type, final String iconUrl)
 	{
 		
@@ -428,6 +477,9 @@ public class MapService {
 		});
 	}
 
+	/**
+	 * @param n
+	 */
 	public void showPublicMarkers(int n)
 	{
 		userLocationService.getNearNPublicUsers(MainServices.getInstance().account.getEmailAddress(), n, currentUserLat, currentUserLng, new AsyncCallback<ArrayList<String>>(){
@@ -449,6 +501,9 @@ public class MapService {
 			}});
 	}
 	
+	/**
+	 * @return
+	 */
 	public MapWidget toWidget()
 	{
 		return mapwidget;

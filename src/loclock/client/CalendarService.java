@@ -18,44 +18,68 @@ import loclock.server.PMF;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.smartgwt.client.widgets.calendar.CalendarEvent;
-/**
- * 
- * 	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private int eventId;
-	@Persistent
-	private String userName;
-	@Persistent
-	private String eventName;
-	@Persistent
-	private String description;
-	@Persistent
-	private Date startDate;
-	@Persistent
-	private Date endDate;
-	@Persistent
-	private boolean canEdit;
-	
-	public Calendar(String userName, String eventName, String description,
-			Date startDate, Date endDate) {
-		super();
-		this.userName = userName;
-		this.eventName = eventName;
-		this.description = description;
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
- *
- */
+
 @RemoteServiceRelativePath("CalendarServlet")
 public interface CalendarService extends RemoteService{
+	
+	/**
+	 * Save an event to the user calendar.
+	 * 
+	 * @param userName the user name of the account
+	 * @param eventName the name of the event
+	 * @param description the description of the event
+	 * @param startDate the start time of the event
+	 * @param endDate the end time of the event
+	 * @throws NotLoggedInException exception thrown if user no longer logged in
+	 */
 	public void saveEvent(String userName, String eventName,String description, Date startDate, Date endDate) throws NotLoggedInException;
-	//public List<CalendarEvent> getEvent(String name);
+	
+	/**
+	 * Get all the events belonged to a user
+	 * 
+	 * @param userName the user name of the account
+	 * @return the list of events belong to the user
+	 */	
 	public List<ArrayList<Object>> getEventByUserName(String userName);
+	
+	/**
+	 * Delete an event from the calendar.
+	 * 
+	 * @param userName the user name of the account
+	 * @param eventName the name of the event
+	 * @param description the description of the event
+	 * @param startDate the start time of the event
+	 * @param endDate the end time of the event
+	 */
 	public void deleteEvent(String userName, String eventName,String description, Date startDate, Date endDate);
+	
+	/**
+	 * @param userName the user name of the account
+	 * @param eventName the name of the event
+	 * @param description the description of the event
+	 * @param startDate the start time of the event
+	 * @param endDate the end time of the event
+	 * @return 1 if duplicate, 0 if not duplicate
+	 */
 	public String checkDuplicate(String userName, String eventName,String description, Date startDate, Date endDate);
-	//public boolean checkFree(String userName, Date time);
+	
+	/**
+	 * Get the list of events taking place on the current day.
+	 * 
+	 * @param userName the user name of the account
+	 * @return the list of event for the current date
+	 */
 	public List<ArrayList<Object>> getCalendarEventsForTodayByUsername(String userName);
+	
+	/**
+	 * Check if the passed hour argument is within the time range
+	 * 
+	 * @param hour the specified time for checking
+	 * @param amPm am or pm
+	 * @param start start time of the event
+	 * @param end end time of the event
+	 * @return true if it is within the range, false if not
+	 */
 	public boolean isWithinRange(String hour, String amPm, Date start, Date end);
 }
 
