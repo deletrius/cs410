@@ -23,8 +23,6 @@ public interface UserLocationService extends RemoteService {
 	public void updateUserImage(String username, String url) throws NotLoggedInException;
 	public List<ArrayList<Object>> getUsersAsArrayList(String userName) throws NotLoggedInException; 
 	public String getUserNameByID(String username) throws NotLoggedInException;
-//	public Double getUserLatitude(String username) throws NotLoggedInException;
-//	public Double getUserLongitude(String username) throws NotLoggedInException;
 	public ArrayList<String> getUserLocation(String username) throws NotLoggedInException;
 	
 	public void updateUserPrivacy(String username, String privacy) throws NotLoggedInException;

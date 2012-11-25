@@ -612,7 +612,10 @@ public class FriendService extends Service{
 
 
 	/**
-	 * @param user2
+	 * Check if someone is still friend with the user, and thus the user is subscribing
+	 * to him/her.
+	 * 
+	 * @param user2 the user to be inspected upon
 	 */
 	private void checkSubscription(String user2)
 	{
@@ -631,23 +634,5 @@ public class FriendService extends Service{
 			}});
 
 	}
-
-	//	private String getPersonProfilePic()
-	//	{
-	//		JsonFactory JSON_FACTORY = new GsonFactory();
-	//		HttpTransport TRANSPORT = new NetHttpTransport();
-	//		Plus.Builder builder=new Plus.Builder(TRANSPORT, JSON_FACTORY, null);
-	//		Plus plus=builder.build();
-	//		 try {
-	//			Person profile = plus.people().get("me").execute();
-	//			 System.out.println("image url: " + profile.getImage().getUrl());
-	//		} catch (IOException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		}
-	//		
-	////		Auth.authorize();
-	//		return "";
-	//		//Person mePerson = plus.people.get("me").execute();
-	//	}
+	
 }

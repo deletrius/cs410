@@ -42,12 +42,10 @@ public class TimeTableService extends Service{
 	private Calendar calendar=null;
 	private CalendarEvent[] events;
 	private ArrayList<String> friendList = new ArrayList();
-//	private ButtonItem sendInvitationButton = new ButtonItem("SendInvitation");
 	private NotificationServiceAsync notification = GWT.create(NotificationService.class);
 	private CalendarEventClick event1;
 	private ClickHandler clickHandler1;
 	private VLayout calContainer;
-	//private String uName = MainServices.account.getEmailAddress();
 	private static volatile TimeTableService timeTableServiceInstance;
 	private int count=0;
 	private TimeTableService()
@@ -259,20 +257,6 @@ public class TimeTableService extends Service{
 										
 									}
 								});
-						//Window.alert("Event Saved");
-//						calendarService.getEventByUserName(MainServices.account.getEmailAddress(), new AsyncCallback<List<ArrayList<Object>>>(){
-//
-//							@Override
-//							public void onFailure(Throwable caught) {
-//								// TODO Auto-generated method stub
-//
-//							}
-//
-//							@Override
-//							public void onSuccess(List<ArrayList<Object>> result) {
-//								// TODO Auto-generated method stub
-//								Window.alert(result.get(0).get(0).toString()+" "+result.get(0).get(1).toString()+" "+result.get(0).get(2).toString()+ " "+result.get(0).get(3).toString());
-//							}});
 
 					}});
 				System.out.println("event is: "+event.getEvent());
@@ -286,9 +270,6 @@ public class TimeTableService extends Service{
           
         cal1.setEventDialogFields(nameItem, sendInvitationButton);
 		
-//		cal1.setEventDialogFields(sendInvitationButton);
-//		googleCalendar.setWidth("600px");
-//		googleCalendar.setHeight("600px");
 		cal1.setCanEditEvents(true);//CAL_PUBLIC_URL;
 		if(MainServices.account != null)
 		{
@@ -298,10 +279,8 @@ public class TimeTableService extends Service{
 
 				@Override
 				public void onFailure(Throwable caught) {
-					//							Window.alert("Failed to get User Calendar Events");
-					System.out.println("Failed to get User Calendar Events");
-
-				}
+					Window.alert("Failed to get User Calendar Events");					
+					}
 				//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate
 				@Override
 				public void onSuccess(List<ArrayList<Object>> result) {
@@ -346,19 +325,15 @@ public class TimeTableService extends Service{
 		final Calendar cal2 = new Calendar();
 		PopupPanel popUp = new PopupPanel();
 		if(userName != null)
-		//if(MainServices.account != null)
 		{
-		//calendarService.getEventByUserName(MainServices.account.getEmailAddress(), 
 			calendarService.getEventByUserName(userName, 
 				new AsyncCallback<List<ArrayList<Object>>>(){
 
 						@Override
 						public void onFailure(Throwable caught) {
-//							Window.alert("Failed to get User Calendar Events");
 							System.out.println("Failed to get User Calendar Events");
 
 						}
-			//int eventId, String name, String description, java.util.Date startDate, java.util.Date endDate
 						@Override
 						public void onSuccess(List<ArrayList<Object>> result) {
 							
@@ -389,21 +364,15 @@ public class TimeTableService extends Service{
 		cal2.setDisableWeekends(false);
 		cal2.setCanEditEvents(false);
 		calendar = cal2;
-//		calendar.draw();
 		VLayout popUpCalendar = new VLayout();
 		popUpCalendar.setBackgroundColor("#ffffd0");
 		popUpCalendar.setWidth(1200);
-//		popUpCalendar.setHeight(calendar.getHeight() + 20);
-//		popUpCalendar.setSize(Integer.toString(calendar.getWidth() + 20), Integer.toString(calendar.getHeight() + 15));
 		popUpCalendar.setShowEdges(true);
 		popUpCalendar.addMember(calendar);
 		popUp.add(popUpCalendar);
-//		popUp.setGlassEnabled(true);
-		//popUp.setPixelSize(calendar.getWidth(), calendar.getHeight());
 		popUp.setAnimationEnabled(true);
 		popUp.setAutoHideEnabled(true);
 		popUp.center();
-//		popUp.setVisible(true);
 		popUp.show();
 
 

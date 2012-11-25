@@ -52,10 +52,7 @@ public class FileUploadService extends Service{
 		this.setIcon("http://i46.tinypic.com/2622yo0.png");
 		fileUploadForm = new VLayout();	
 		fileUploadForm.setSize("100%", "100%");
-		//fileUploadForm.setNumCols(4);  		
-		//fileUploadForm.setAutoFocus(false);
-
-
+	
 		instructions = new HTMLFlow();
 
 		String content = "<b>UBC Students:</b><br>Download your schedule from UBC courses as a .ics file and then upload it here.";
@@ -63,25 +60,12 @@ public class FileUploadService extends Service{
 
 		final FormPanel form = new FormPanel();
 		form.setAction(UPLOAD_ACTION_URL);
-
-		//		System.out.println(UPLOAD_ACTION_URL);
-
+		
 		form.setEncoding(FormPanel.ENCODING_MULTIPART);
 		form.setMethod(FormPanel.METHOD_POST);
 
 		HorizontalPanel panel = new HorizontalPanel();
 		form.setWidget(panel);
-
-		//final TextBox tb = new TextBox();
-		//tb.setName("textBoxFormElement");
-		//panel.add(tb);
-
-		//ListBox lb = new ListBox();
-		//		lb.setName("listBoxFormElement");
-		//		lb.addItem("foo", "fooValue");
-		//		lb.addItem("bar", "barValue");
-		//		lb.addItem("baz", "bazValue");
-		//		panel.add(lb);
 
 		FileUpload upload = new FileUpload();
 		upload.setName("uploadFormElement");
@@ -103,20 +87,9 @@ public class FileUploadService extends Service{
 
 		panel.add(submitButton);
 
-		//		panel.add(new Button("Submit Schedule", new ClickHandler() {
-		//			public void onClick(ClickEvent event) {
-		//				form.submit();
-		//			}
-		//		}));
-
 		form.addSubmitHandler(new FormPanel.SubmitHandler() {
 			public void onSubmit(SubmitEvent event) {
-				// This event is fired just before the form is submitted. We can
-				// take this opportunity to perform validation.
-				//				if (tb.getText().length() == 0) {
-				//					Window.alert("The text box must not be empty");
-				//					event.cancel();
-				//				}
+			
 			}
 		});
 
@@ -128,8 +101,6 @@ public class FileUploadService extends Service{
 				// text/html, we can get the result text here (see the FormPanel
 				// documentation for further explanation).
 
-				//Window.alert("THE RESULT IS: " + event.getResults());
-				//Window.alert(event.getResults().toString());
 				String str = event.getResults().toString();
 				ParserServiceAsync parser = GWT.create(ParserService.class);
 
@@ -141,8 +112,6 @@ public class FileUploadService extends Service{
 						// TODO Auto-generated method stub
 						System.out.println("Failed");
 					}
-
-
 
 					@Override
 					public void onSuccess(List<ArrayList<Object>> result) {
@@ -167,41 +136,23 @@ public class FileUploadService extends Service{
 
 							int weekDiff =(int) ((dateTermEnd.getTime()-d1.getTime())/WEEKS_IN_MILLIS);
 
-							//System.out.println("WEEKS_IN_MILLIS is:"+ weekDiff);
-
 							for(int j=0; j<weekDiff+1;j++)
 							{
 
 								boolean contains = false;
-								//if(d1.before(dateTermEnd)){
-								//System.out.println("Date end is: "+ dateTermEnd);
-								//System.out.println("d1 is: " + d1.toString());
 								if(!(d1.after(dateTermEnd))){
-									//System.out.println("Date end is: "+ dateTermEnd);
-									//System.out.println("d1 is: " + d1.toString());
 									if(calEvents.length!=0){
-										//System.out.println("Size of calEvent is: "+ calEvents.length);
 										for(int k = 0; k<calEvents.length;k++){
-											//check duplication if event consider to be duplicated if this event has same startDate, endDate, name, and description
-											//else add the calendar
-											//System.out.println(calEvents[k].getName());
-
+											
 											if(calEvents[k].getStartDate().equals(d1)){
 
-												//System.out.println("different startDate");
 												if(calEvents[k].getEndDate().equals(d2)){
 
 													contains = true;
 
-													//System.out.println("different endDate");
 													if(calEvents[k].getName() == result.get(i).get(0).toString()){
-														//System.out.println("same name");
-														//System.out.println("different eventName");
 														if(calEvents[k].getDescription() == result.get(i).get(1).toString()){
-															//System.out.println("different description");
-
-
-
+															
 														}
 
 													}
@@ -256,14 +207,11 @@ public class FileUploadService extends Service{
 
 			}
 		});
-		//FormItem lol;
-		//fileUploadForm.add(form);
 		VerticalPanel newV = new VerticalPanel();
 		newV.add(instructions);
 		newV.add(form);
 
 		fileUploadForm.addChild(newV);
-		//fileUploadForm.addChild(form);
 		this.setPane(fileUploadForm);
 	}
 

@@ -34,6 +34,10 @@ import com.smartgwt.client.widgets.layout.HLayout;
 import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.tab.TabSet;
 
+/**
+ * The parent service of all services. The collection of all tabs.
+ *
+ */
 public class MainServices extends TabSet{
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
@@ -46,27 +50,10 @@ public class MainServices extends TabSet{
 	private Image loadingImage = new Image("images/300.gif");
 	private static HLayout rightTabLayout;
 	private PopupPanel pop = new PopupPanel();
-	//Gerry's Key
-
-//	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
-//	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
 	
-	//Raymond's Key
-	//private static final String CLIENT_ID = "603225197081.apps.googleusercontent.com";
-	//private static final String API_KEY = "AIzaSyCRh7dhcjAd9xWPQQTxdX61z_BoYwKcchc";
-	
-
-	//	private static final String CLIENT_ID = "280564165047.apps.googleusercontent.com";
-	//	private static final String API_KEY = "AIzaSyAgtpPYGuQ60KpiPRbwcFcR7tSylxuD1XI";
-
-	//Raymond's myloclock Key
+	//myloclock Key
 	private static final String CLIENT_ID = "118588470471.apps.googleusercontent.com";
 	private static final String API_KEY = "3Nk4zNSGJW8efRAO0Og4jOTJ";
-
-	//Raymond's yunyunloclock Key
-//	private static final String CLIENT_ID = "118588470471-pll4trc5hvbj8d808bgpr3s34ljblt9g.apps.googleusercontent.com";
-//	private static final String API_KEY = "F897RO-8nnVd_s2AjviDV0bu";
-
 
 	private static final String APPLICATION_NAME = "loclock/3.0";
 
@@ -78,11 +65,14 @@ public class MainServices extends TabSet{
 	
 	public static String currentUserDisplayPicUrl = "";
 	
+	/**
+	 * Class constructor of MainServices. This is the parent service
+	 * of all services, need to create object with singleton approach,
+	 * only one instance can be initiated.
+	 */
 	private MainServices()
 	{
 		this.setTabBarThickness(40);
-//		this.setAutoHeight();
-//		this.setAutoWidth();
 		rootLayout=new HLayout();
 		rootLayout.setSize("100%", "100%");
 		
@@ -94,6 +84,14 @@ public class MainServices extends TabSet{
 
 	}
 
+	/**
+	 * Method that creates an instance of the class MainServices.
+	 * 
+	 * @return MainServices the only instance of the MainServices class
+	 */
+	/**
+	 * @return
+	 */
 	public static MainServices getInstance()
 	{
 		if (mainServicesInstance == null)
@@ -102,6 +100,10 @@ public class MainServices extends TabSet{
 		}
 		return mainServicesInstance;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.Widget#onLoad()
+	 */
 	public void onLoad(){
 		pop.add(loadingImage);
 		pop.setAnimationEnabled(true);
@@ -109,15 +111,25 @@ public class MainServices extends TabSet{
 		pop.center();
 		pop.show();
 	}
+	
 	public void loaded(){
 		pop.hide();
 	}
+	/**
+	 * Add a service the tab set.
+	 * 
+	 * @param service the service to be added.
+	 */
 	public void addService(Service service)
 	{
 		this.addTab(service);
 		
 	}
 
+	/**
+	 * Add the map service to MainServices.
+	 * 
+	 */
 	private void addMapService()
 	{
 		final HLayout mapPanel=new HLayout();
@@ -128,10 +140,7 @@ public class MainServices extends TabSet{
 		mapService=new MapService(mapWidth,mapHeight);
 
 		mapPanel.setSize("50%", "100%");
-		//mapPanel.setAlign(Alignment.RIGHT);
-		//mapPanel.setAlign(VerticalAlignment.BOTTOM);
-		//mapPanel.setMemberOverlap(200);
-
+		
 		mapPanel.addMember(mapService.toWidget());	
 
 		mapService.bindTo(mapPanel);
@@ -155,36 +164,68 @@ public class MainServices extends TabSet{
 			}});
 
 	}
+	
+	/**
+	 * Get the MapService.
+	 * 
+	 * @return the map service
+	 */
 	public MapService getMapService()
 	{
 		return mapService;
 	}
 
-	public Account  getAccount()
+	/**
+	 * Get the account object of the user account.
+	 * 
+	 * @return account the user account
+	 */
+	public Account getAccount()
 	{
 		return account;
 	}
 	
+	/**
+	 * Get the root layout of the entire web app.
+	 * 
+	 * @return account the user account
+	 */
 	public static HLayout getRootLayout()
 	{
 		return rootLayout;
 	}
 	
+	/**
+	 * Add the panel for the tab collections.
+	 * 
+	 */
 	public void addRightTabPanel()
 	{
 		rightTabLayout.addMember(this);
 		rootLayout.addMember(rightTabLayout);
 	}
 	
+	/**
+	 * Get the panel for the tab collections.
+	 * @return the panel for the tab collections
+	 */
 	public static HLayout getRightTabLayout()
 	{
 		return rightTabLayout;
 	}
 
+	/**
+	 * Get the URL of the user's profile picture.
+	 * @return the URL of the user's profile picture
+	 */
 	public static String getCurrentUserDisplayPicUrl() {
 		return currentUserDisplayPicUrl;
 	}
 
+	/**
+	 * The Google login service class.
+	 * 
+	 */
 	private class LoginService
 	{
 		private AccountServiceAsync accountService = GWT.create(AccountService.class);
@@ -251,20 +292,6 @@ public class MainServices extends TabSet{
 			rootLayout.draw();
 
 
-			//     		plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-			//			 final IButton b = new IButton("Authenticate to get public activities");
-			//
-			//			 b.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-			//				
-			//				@Override
-			//				public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-			//					// TODO Auto-generated method stub
-			//					login();
-			//					Window.alert("After login!");
-			//				}
-			//			});
-
-			//			 loginLayout.addMember(b);
 		}
 
 		protected void loadLoggedInScreen() {
@@ -274,19 +301,9 @@ public class MainServices extends TabSet{
 			login();
 
 
-			//plus.initialize(new SimpleEventBus(), new GoogleApiRequestTransport(APPLICATION_NAME, API_KEY));
-			//login();
-			//System.out.println("OK");
-			//rootLayout.destroy();
 			rootLayout=new HLayout(5);
 			rootLayout.setSize("100%", "100%");
 			
-			//TabPanel tabPanel=new TabPanel();
-//			TabSet tabSet = new TabSet();
-//			tabSet.setAutoHeight();
-//			tabSet.setAutoWidth();
-//			tabSet.setTabBarThickness(1000);
-			//tabSet.setSize("50%", "100%");
 			System.out.println("Good");
 
 
@@ -301,11 +318,6 @@ public class MainServices extends TabSet{
 			addService(new NotificationTabService());
 			addService(new SettingTabService());
 			addService(new FileUploadService());
-//			rootLayout.addMember(MainServices.this);
-		
-//			if (!rootLayout.contains(this))
-//				rootLayout.addMember(this);
-//			rootLayout.redraw();
 			addRightTabPanel();
 		
 			rootLayout.draw();
@@ -320,7 +332,6 @@ public class MainServices extends TabSet{
 			OAuth2Login.get().authorize(CLIENT_ID, PlusAuthScope.PLUS_ME, new Callback<Void, Exception>() {
 				@Override
 				public void onSuccess(Void v) {
-//					Window.alert("Authorized");
 					println("authorize into Google+");
 					getMe();		        
 				}
@@ -360,28 +371,8 @@ public class MainServices extends TabSet{
 			}).fire();
 		}
 
-		//		private void getMyActivities() {	
-		//			
-		//		    plus.activities().list("me", Collection.PUBLIC).to(new Receiver<ActivityFeed>() {
-		//		      @Override
-		//		      public void onSuccess(ActivityFeed feed) {
-		//		        println("===== PUBLIC ACTIVITIES =====");
-		//		        if (feed.getItems() == null || feed.getItems().isEmpty()) {
-		//		          println("You have no public activities");
-		//		        } else {
-		//		          for (Activity a : feed.getItems()) {
-		//		            println(a.getTitle());
-		//		          }
-		//		        }
-		//		      }
-		//		    }).fire();
-		//		  }
-
-
 		private void println(String msg) {
 			System.out.println(msg);
-			//loginLayout.addMember(new Label(msg));
-			//rootLayout.draw();
 		}
 
 		private void addUser(final String username)

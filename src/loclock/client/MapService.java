@@ -134,7 +134,6 @@ public class MapService {
 						UserMarker um=userMarkers.get(i);
 						um.infoWindow.close();
 					}
-
 					//					infoWindow.close();
 					interactionPanelMoveIn();
 					DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
@@ -161,7 +160,6 @@ public class MapService {
 			this.lastupdate=lastupdate;
 			DateTimeFormat dtf = DateTimeFormat.getFormat("yyyy MM dd HH:mm.ss");
 			infoWindow.setContent(Canvas.imgHTML(icon,50,50)+"<br><b>" + username + "</b><br><br>Last updated: " + "<i>" + dtf.format(this.lastupdate) + "</i>");
-			//			infoWindow.setContent("Your " + username + " location at: " + dtf.format(this.lastupdate));
 			marker.setPosition(latlng);
 			if (panTo)
 				mapwidget.getMap().panTo(latlng);
@@ -188,6 +186,11 @@ public class MapService {
 		}
 	}
 
+	/**
+	 * Class constructor of MapService
+	 * @param width the width of the map
+	 * @param height the height of the map
+	 */
 	public MapService(String width,String height)
 	{
 		this.width=width;
@@ -197,6 +200,7 @@ public class MapService {
 		buildMapUI();
 		initMapOverlayPanel();
 	}
+
 
 	public void removePublicUserMarkers(){
 
@@ -234,14 +238,30 @@ public class MapService {
 		}
 	}
 	
+
+	/**
+	 * Get the latitude of the user's location.
+	 * 
+	 * @return the latitude of the user's location
+	 */
 	public double getUserLat()
 	{
 		return currentUserLat;
 	}
+	/**
+	 * Get the longitude of the user's location.
+	 * 
+	 * @return the longitude of the user's location
+	 */
 	public double getUserLng()
 	{
 		return currentUserLng;
 	}
+	
+	/**
+	 * Build the map user interface.
+	 * 
+	 */
 	private void buildMapUI()
 	{
 		final MapOptions options = new MapOptions();
@@ -290,6 +310,11 @@ public class MapService {
 
 	}
 
+	/**
+	 * Initialize the map in the map panel.
+	 * 
+	 * @return the panel that contains the map
+	 */
 	private VLayout initMapOverlayPanel()
 	{
 
@@ -419,6 +444,7 @@ public class MapService {
 
 		//panel.setShowEdges(true);
 		return interactionPanel;
+
 		}
 
 		private void interactionPanelMoveIn()
@@ -511,6 +537,7 @@ public class MapService {
 						//System.out.println("put");
 						userMarkers.put(userName, new UserMarker(userName,pos,date,panTo,type,iconUrl));
 					}
+
 					else
 					{
 						//System.out.println("get");
@@ -547,3 +574,4 @@ public class MapService {
 			return mapwidget;
 		}
 	}
+
