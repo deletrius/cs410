@@ -77,12 +77,12 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 public class FriendService extends Service{
 	public static ChatPanelManager chatManager;
 	private VLayout friendsPanel;
-	
-	private String user;
+
+	private static String user;
 	private String friendUserName;
 	private String friendPic;
 	private UserLocationServiceAsync locationService = GWT.create(UserLocationService.class);
-	private SubscriptionServiceAsync subscriptionService=GWT.create(SubscriptionService.class);
+	private static SubscriptionServiceAsync subscriptionService=GWT.create(SubscriptionService.class);
 	private final CalendarServiceAsync calendarService = GWT.create(CalendarService.class);
 	private TimeTableService timeTableService = GWT.create(TimeTableService.class);
 	private static boolean free = true;
@@ -90,7 +90,7 @@ public class FriendService extends Service{
 	private TileGrid tileGrid;
 	private HLayout requestPanel;
 	private DynamicForm profileForm=new DynamicForm();
-	
+
 	/**
 	 * Constructor for friend service.
 	 * 
@@ -117,7 +117,7 @@ public class FriendService extends Service{
 		this.setPane(friendsPanel);
 
 	}
-	
+
 	/**
 	 * Check the all invitations sent to the user, let 
 	 * the user decide whether to accept or reject the 
@@ -328,17 +328,13 @@ public class FriendService extends Service{
 
 						@Override
 						public void onSuccess(List<String> result2) {
-							
+
 							for (int i=0;i<result.size();i++)
 							{
-								
-								//friends.add(new StudentRecord(i, "https://dotabuff.com/assets/heroes/drow-ranger-757bb2a5ae36ee4f138803062ac9a1d2.png","Profile"));
-									System.out.println(result2.get(i));
-										friends.add(new StudentRecord(result.get(i),result2.get(i)));
-										MainServices.getInstance().getMapService().showUserMarker(result.get(i), false, TYPE.FRIEND,result2.get(i));
-									
+								friends.add(new StudentRecord(result.get(i),result2.get(i)));
+								MainServices.getInstance().getMapService().showUserMarker(result.get(i), false, TYPE.FRIEND,result2.get(i));
 							}
-							MainServices.getInstance().getMapService().showPublicMarkers(1);
+							//MainServices.getInstance().getMapService().showPublicMarkers(1);
 							StudentRecord[] friendsRecord=new StudentRecord[friends.size()];
 							for (int i=0;i<friends.size();i++)
 							{
@@ -356,7 +352,7 @@ public class FriendService extends Service{
 			DetailViewerField pictureField = new DetailViewerField("picture"); 
 
 			pictureField.setType("image");  
-			
+
 			pictureField.setImageWidth(tileGrid.getTileSize());  
 			pictureField.setImageHeight(tileGrid.getTileSize());  
 			//pictureField.setImageURLPrefix("war/images/");
@@ -379,6 +375,38 @@ public class FriendService extends Service{
 			friendsPanel.addMember(tileGrid,0);
 	} 
 
+
+	public static void refreshFriendMarkers()
+	{
+		subscriptionService.getFriends(user, new AsyncCallback<List<String>>(){
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Window.alert(caught.getMessage());
+			}
+			@Override
+			public void onSuccess(final List<String> result) {
+				subscriptionService.getFriendsImages(user, new AsyncCallback<List<String>>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Failed to retrieve pics");
+
+					}
+
+					@Override
+					public void onSuccess(List<String> result2) {
+
+						for (int i=0;i<result.size();i++)
+						{
+							MainServices.getInstance().getMapService().showUserMarker(result.get(i), false, TYPE.FRIEND,result2.get(i));
+						}						
+					}});
+
+			}});
+
+	}
+
 	/**
 	 * View the profile of a friend, view friend's position on a map,
 	 * remove a friend if needed
@@ -391,7 +419,7 @@ public class FriendService extends Service{
 	{			
 
 		profileForm.clearValues();
-		
+
 		StaticTextItem profileName=new StaticTextItem("ProfileName","Profile Name");
 		profileName.setValue(name);
 		profileForm.setNumCols(4);
@@ -424,7 +452,7 @@ public class FriendService extends Service{
 			public void onClick(ClickEvent event) {
 				checkSubscription(name);
 				MainServices.getInstance().getMapService().showUserMarker(name, true, TYPE.FRIEND,friendPic);
-				}});
+			}});
 		showMap.setRowSpan(2);
 		showMap.setColSpan(1);
 		ButtonItem removeFriend=new ButtonItem("RemoveFriend","Remove Friend");
@@ -456,23 +484,23 @@ public class FriendService extends Service{
 
 		removeFriend.setRowSpan(2);
 		removeFriend.setColSpan(1);
-		
+
 		final SelectItem dropBox=new SelectItem();
-		
+
 		dropBox.setTitle("Show nearby users:");
-//		LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
+		//		LinkedHashMap<String, String> valueMap = new LinkedHashMap<String, String>();
 		String[] values={"0","5","10","20","40"};
-//		valueMap.put("0", "0");
-//		valueMap.put("5", "5");
-//		valueMap.put("10", "10");
-//		valueMap.put("20", "20");
-//		valueMap.put("40", "40");
+		//		valueMap.put("0", "0");
+		//		valueMap.put("5", "5");
+		//		valueMap.put("10", "10");
+		//		valueMap.put("20", "20");
+		//		valueMap.put("40", "40");
 		dropBox.setValue("0");
 		dropBox.setHint("Select number");
 		dropBox.setValueMap(values);
 		dropBox.setRowSpan(4);
 		dropBox.setColSpan(1);
-		
+
 		ButtonItem showNearby=new ButtonItem("ShowNearBy","Show Nearby Users");
 		showNearby.setRowSpan(1);
 		showNearby.setColSpan(1);
@@ -480,11 +508,10 @@ public class FriendService extends Service{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				MainServices.getInstance().getMapService().showPublicMarkers(Integer.parseInt(dropBox.getDisplayValue()));
 			}});
-		
-		
+
+
 		profileForm.setItems(profileName,freeToMeet,profileDistance,profileLastUpdate,showCalendar,showMap,removeFriend,showNearby,dropBox);		
 		profileForm.setAutoHeight();
 	}
@@ -504,7 +531,7 @@ public class FriendService extends Service{
 
 		requestForm=new DynamicForm();
 		requestForm.setSize("100%", "5%");
-		
+
 		searchBox.setShowTitle(false);
 		searchBox.setHeight(10);
 		searchBox.setWidth(Window.getClientWidth()/3);
@@ -541,7 +568,7 @@ public class FriendService extends Service{
 								requestPanel.addMember(label0);
 								requestPanel.addMember(requestButton);
 							}
-							
+
 							requestButton.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
 								@Override
